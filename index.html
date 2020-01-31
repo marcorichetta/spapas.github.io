@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="google-site-verification" content="5_8DTmIiEq4gFvNAfxAD6TsGOgrMAjp8lQFQvfA6zZc" />
+    <title>/var/</title>
+    <meta name="author" content="Serafeim Papastefanos">
+
+
+
+
+    <!-- http://t.co/dKP3o1e -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="https://spapas.github.io/favicon.png" rel="icon">
+
+    <link href="https://spapas.github.io/theme/css/main.css" media="screen, projection" rel="stylesheet"
+      type="text/css">
+
+    <link href="https://spapas.github.io/theme/css/extra_style.css" media="screen, projection" rel="stylesheet"
+      type="text/css">
+
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans:400,700&amp;subset=greek" rel="stylesheet">
+
+
+    <script data-ad-client="pub-7673322832689008" async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </head>
+
+<body>
+  <header role="banner"><hgroup>
+  <h1><a href="https://spapas.github.io/">/var/</a></h1>
+    <h2>Various programming stuff</h2>
+</hgroup></header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+</ul>
+
+
+<ul class="main-navigation">
+      <li >
+        <a href="https://spapas.github.io/category/android.html">Android</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/css.html">Css</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/django.html">Django</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/elixir.html">Elixir</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/flask.html">Flask</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/git.html">Git</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/html.html">Html</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/javascript.html">Javascript</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/pelican.html">Pelican</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/postgresql.html">Postgresql</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/python.html">Python</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/spring.html">Spring</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/unix.html">Unix</a>
+      </li>
+      <li >
+        <a href="https://spapas.github.io/category/wagtail.html">Wagtail</a>
+      </li>
+</ul></nav>
+  <div id="main">
+    <div id="content">
+<div class="blog-index">
+  		<article>
+<header>
+      <h1 class="entry-title">
+        <a href="https://spapas.github.io/2019/10/17/declarative-ecto-query-sorting/">Declarative Ecto query sorting</a>
+      </h1>
+    <p class="meta">
+<time datetime="2019-10-17T12:20:00+03:00" pubdate>Πεμ 17 Οκτώβριος 2019</time>    </p>
+</header>
+
+<div class="entry-content"><p>In a <a class="reference external" href="https://spapas.github.io/2019/07/25/declarative-ecto-query-filters/">previous article</a> I presented a method for declaring dynamic filters for your ecto queries.
+Continuing this article, I&#8217;ll present here a way to allow dynamic sorting for your queries using
+fields that may even span&nbsp;relations.</p>
+<div class="section" id="what-will-it-do">
+<h2>What will it&nbsp;do</h2>
+<p>The solution is a couple of function that can be put inside the <tt class="docutils literal">QueryFilterEx</tt> I mentioned
+in the <a class="reference external" href="https://spapas.github.io/2019/07/25/declarative-ecto-query-filters/">previous article</a>. Please make sure that you&#8217;ve completely read and understand this
+article before continuing&nbsp;here.</p>
+<p>To use the dynamic sorting function you&#8217;ll need to declare the fields that would allow sorting using
+a simple array of strings. The sort fields should then be added as links to your phoenix page which
+will then pass an <tt class="docutils literal">order_by=field_name</tt> query parameter to your&nbsp;controller.</p>
+<p>The module has a very simple <span class="caps">API</span> consisting of a single&nbsp;function:</p>
+<ul class="simple">
+<li><tt class="docutils literal">sort_by_params(query, params, allowed_sort_fields)</tt>: Pass it the query, the <tt class="docutils literal"><span class="caps">GET</span></tt> request parameters you got from your form and the declared sort fields array to return you a sorted&nbsp;query</li>
+</ul>
+<p>You can find a sample of the technique presented in this article in my <span class="caps">PHXCRD</span> repository:
+<a class="reference external" href="https://github.com/spapas/phxcrd">https://github.com/spapas/phxcrd</a>  for example in the <tt class="docutils literal">user_controller</tt> or <tt class="docutils literal">authority_controller</tt>.</p>
+</div>
+<div class="section" id="preparing-the-query">
+<h2>Preparing the&nbsp;query</h2>
+<p>In order to use dynamic sorting you&#8217;ll need to properly &#8220;prepare&#8221; your Ecto query by <em>naming all your relations</em>
+as I&#8217;ve already explained in the <a class="reference external" href="https://spapas.github.io/2019/07/25/declarative-ecto-query-filters/">previous article</a>.</p>
+</div>
+<div class="section" id="declaring-the-sort-fields">
+<h2>Declaring the sort&nbsp;fields</h2>
+<p>To declare the sort fields you&#8217;ll just add an array of fields you&#8217;ll want to allow sorting on. Each field
+should have the form <tt class="docutils literal">binding_name__field_name</tt> where <tt class="docutils literal">binding_name</tt> is the name of the table
+you&#8217;ve declared in your
+query and <tt class="docutils literal">field_name</tt> is the name of the field that the query will be sorted by. This is the way
+that the sort
+fields will also be declared in the phoenix html page. Django users will definitely remember the
+<tt class="docutils literal">model__field</tt> convention.</p>
+<p>Declaring the sort fields here and using them again in the html page may seem reduntant, however
+it is absolute necessary to declare a priori which fields are allowed because the sort http params
+will be received
+as strings and to be used in queries these strings will be converted to atoms. The number of atoms is
+finite (there&#8217;s an absolute limit of allowed atoms in an erlang program; if that limit is surpassed
+your program will crash) so you can&#8217;t allow the user to pass whatever he wants (so if the <tt class="docutils literal">order_by</tt>
+parameter does not contain one of the fields you declare here then no strings will be converted to&nbsp;atoms).</p>
+</div>
+<div class="section" id="integrating-with-a-controller">
+<h2>Integrating with a&nbsp;controller</h2>
+<p>As an example let&#8217;s see how the dynamic sort fields will be integrated with the phxcrd user_controller.
+The query I&#8217;d like to filter on is the following (see that everything I&#8217;ll need is named using <tt class="docutils literal">:as</tt>):</p>
+<div class="highlight"><pre><span></span><span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:user</span><span class="p">,</span>
+  <span class="ss">left_join</span><span class="p">:</span> <span class="n">a</span> <span class="ow">in</span> <span class="nc">Authority</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:authority</span><span class="p">,</span>
+  <span class="ss">on</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">authority_id</span><span class="p">,</span>
+  <span class="ss">left_join</span><span class="p">:</span> <span class="n">up</span> <span class="ow">in</span> <span class="nc">UserPermission</span><span class="p">,</span>
+  <span class="ss">on</span><span class="p">:</span> <span class="n">up</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+  <span class="ss">left_join</span><span class="p">:</span> <span class="n">p</span> <span class="ow">in</span> <span class="nc">Permission</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:permission</span><span class="p">,</span>
+  <span class="ss">on</span><span class="p">:</span> <span class="n">up</span><span class="o">.</span><span class="n">permission_id</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+  <span class="ss">preload</span><span class="p">:</span> <span class="p">[</span><span class="ss">authority</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="ss">permissions</span><span class="p">:</span> <span class="n">p</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+<p>To declare the sort fields I like to create a module attribute ending with <tt class="docutils literal">sort_fields</tt>, something like
+<tt class="docutils literal">&#64;user_sort_fields</tt> for example. Here&#8217;s the sort fields I&#8217;m going to use for&nbsp;user_controller:</p>
+<div class="highlight"><pre><span></span><span class="na">@user_sort_fields</span> <span class="p">[</span>
+  <span class="s2">&quot;user__username&quot;</span><span class="p">,</span> <span class="s2">&quot;user__name&quot;</span><span class="p">,</span> <span class="s2">&quot;user__last_login&quot;</span>
+<span class="p">]</span>
+</pre></div>
+<p>So it will only allow the <tt class="docutils literal">user.username</tt>, <tt class="docutils literal">user.name</tt> and <tt class="docutils literal">user.last_login</tt> fields for sorting.
+I could easily sort by <tt class="docutils literal">authority.name</tt> or <tt class="docutils literal">permission.name</tt> in a similar&nbsp;fashion.</p>
+<p>Finally, here&#8217;s the full code of the index&nbsp;controller:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">index</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">changeset</span> <span class="o">=</span> <span class="nc">QueryFilterEx</span><span class="o">.</span><span class="n">get_changeset_from_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="na">@user_filters</span><span class="p">)</span>
+
+  <span class="n">users</span> <span class="o">=</span>
+    <span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">,</span>
+      <span class="ss">as</span><span class="p">:</span> <span class="ss">:user</span><span class="p">,</span>
+      <span class="ss">left_join</span><span class="p">:</span> <span class="n">a</span> <span class="ow">in</span> <span class="nc">Authority</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:authority</span><span class="p">,</span>
+      <span class="ss">on</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">authority_id</span><span class="p">,</span>
+
+      <span class="ss">left_join</span><span class="p">:</span> <span class="n">up</span> <span class="ow">in</span> <span class="nc">UserPermission</span><span class="p">,</span>
+      <span class="ss">on</span><span class="p">:</span> <span class="n">up</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+      <span class="ss">left_join</span><span class="p">:</span> <span class="n">p</span> <span class="ow">in</span> <span class="nc">Permission</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:permission</span><span class="p">,</span>
+      <span class="ss">on</span><span class="p">:</span> <span class="n">up</span><span class="o">.</span><span class="n">permission_id</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+      <span class="ss">preload</span><span class="p">:</span> <span class="p">[</span><span class="ss">authority</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="ss">permissions</span><span class="p">:</span> <span class="n">p</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="nc">QueryFilterEx</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">changeset</span><span class="p">,</span> <span class="na">@user_filters</span><span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="nc">QueryFilterEx</span><span class="o">.</span><span class="n">sort_by_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="na">@user_sort_fields</span><span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+  <span class="n">render</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="ss">users</span><span class="p">:</span> <span class="n">users</span><span class="p">,</span> <span class="ss">changeset</span><span class="p">:</span> <span class="n">changeset</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+<p>Notice that this is exactly the
+same as the controller I discussed in the dynamic filters article with the addition of the
+<tt class="docutils literal">QueryFilterEx.sort_by_params(params, &#64;user_sort_fields)</tt> pipe to do the&nbsp;sorting.</p>
+</div>
+<div class="section" id="the-template">
+<h2>The&nbsp;template</h2>
+<p>The template for the user index action is also the same with a couple of minor changes: Instead of
+using a static header for the table title I will use a link that will change the sorting&nbsp;order:</p>
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">thead</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>
+      <span class="err">&lt;</span>%= link gettext(&quot;Username&quot;), to: create_order_url(@conn, &quot;user__username&quot;) %&gt;
+    <span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>
+      <span class="err">&lt;</span>%= link gettext(&quot;Name&quot;), to: create_order_url(@conn, &quot;user__name&quot;) %&gt;
+    <span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>First name<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Last name<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Email<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Am / Am phxcrd<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Kind<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>
+      <span class="err">&lt;</span>%= link gettext(&quot;Last login&quot;), to: create_order_url(@conn, &quot;user__last_login&quot;) %&gt;
+    <span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Is enabled<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">thead</span><span class="p">&gt;</span>
+</pre></div>
+<p>Notice that I just used the <tt class="docutils literal">create_order_url</tt> function passing it the <tt class="docutils literal">&#64;conn</tt> and the
+sort field. This <tt class="docutils literal">create_order_url</tt> function is implemented in a module I include in
+all my views and will properly add an <tt class="docutils literal">order_by=field</tt> in the url (it will also add
+an <tt class="docutils literal"><span class="pre">order_by=-field</span></tt> if the same header is clicked twice). I will explain it more
+in the following&nbsp;sections.</p>
+<p>Finally, please notice that if you use pagination and sorting you need to properly handle the <tt class="docutils literal">order_by</tt>
+query parameter when creating the next-previous page links. Actually, there are three things
+competing on their url parameter dominance; I&#8217;d like to talk about that in the next&nbsp;interlude.</p>
+<div class="section" id="interlude-http-get-parameter-priority">
+<h3>Interlude: <span class="caps">HTTP</span> <span class="caps">GET</span> parameter&nbsp;priority</h3>
+<p>Now, in an index page you will probably have three things all of which will want to put parameters
+to your urls to be&nbsp;activated:</p>
+<ul class="simple">
+<li>Query filtering; this will put a <tt class="docutils literal">filter</tt> query parameter to filter your query. Notice that because of how phoenix works (it allows maps in the query parameters) the filter can be a single query parameter but contain multiple filters (i.e the filter will be something like <tt class="docutils literal"><span class="pre">%{&quot;key1&quot;</span> =&gt; &quot;value1&quot;, &quot;key2&quot; =&gt; &quot;value2&quot;}</tt></li>
+<li>Order by: This will put an <tt class="docutils literal">order_by</tt> query parameter to denote the field that the query will be&nbsp;sorted</li>
+<li>Pagination: This will put an <tt class="docutils literal">page</tt> query parameter to denote the current&nbsp;page</li>
+</ul>
+<p>I like to give them a priority in the order I&#8217;ve listed them; when one of them is changed, it will
+<em>clear</em> the ones following it. So if the query filters are changed both the pagination and the order by
+fields will be cleared, if the order by field is changed then only the pagination field will be cleared
+but if the pagination field is changed both the query filters and the order by fields will be kept&nbsp;there.</p>
+<p>I think that&#8217;s the best way to do it from an <span class="caps">UX</span> point of view; try to think about it and you&#8217;ll probably&nbsp;agree.</p>
+</div>
+</div>
+<div class="section" id="how-does-this-work">
+<h2>How does this&nbsp;work?</h2>
+<p>In this section I&#8217;ll try to explain exactly how the dynamic sort fields&nbsp;work.</p>
+<p>So I&#8217;ll split this explanation in two parts: Explain <tt class="docutils literal">create_order_url</tt>
+and then explain <tt class="docutils literal">sort_by_params</tt>.</p>
+<div class="section" id="create-order-url">
+<h3><tt class="docutils literal">create_order_url</tt></h3>
+<p>This function receives three parameters: The current <tt class="docutils literal">&#64;conn</tt>, the name of a <tt class="docutils literal">field</tt> to
+sort by and an optional list of query parameters that need to be kept while creating the
+order by links. I&#8217;ve put this function in a <tt class="docutils literal">ViewHelpers</tt> module that I am including to
+all my views (by adding an <tt class="docutils literal">import PhxcrdWeb.ViewHelpers</tt> line to the <tt class="docutils literal">PhxcrdWeb</tt> module).</p>
+<p>Let&#8217;s take a look at the&nbsp;code:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">create_order_url</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">allowed_keys</span> <span class="p">\\</span> <span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">])</span> <span class="k">do</span>
+  <span class="nc">Phoenix.Controller</span><span class="o">.</span><span class="n">current_url</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">get_order_params</span><span class="p">(</span><span class="n">conn</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">allowed_keys</span><span class="p">,</span> <span class="n">field_name</span><span class="p">))</span>
+<span class="k">end</span>
+</pre></div>
+<p>This doesn&#8217;t do much, it just uses the phoenix&#8217;s <tt class="docutils literal">current_url</tt> that generates a new
+url to the current page, passing it a dictionary
+of http get parameters that should be appended to the url that
+are created through <tt class="docutils literal">get_order_params</tt>. Notice that there&#8217;s an
+<tt class="docutils literal">allowed_keys</tt> parameter that contains the query parameters that we need to keep after
+the sorting (see the previous interlude).
+By default I pass the <tt class="docutils literal">filter</tt> query parameter so if theres a filter (check
+my previous article) it will keep it when sorting (but any pagination will be cleared;
+if I sort by a new field I want to go to the first page there&#8217;s no reason for me to keep
+seeing the page I was on before changing the order&nbsp;by).</p>
+<p>The <tt class="docutils literal">get_order_params</tt> receives the query parameters of the current connection (as a map),
+the allowed keys I mentioned before and the actual name of the field to sort on. This method is a
+little more&nbsp;complex:</p>
+<div class="highlight"><pre><span></span><span class="kd">defp</span> <span class="n">get_order_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">allowed_keys</span><span class="p">,</span> <span class="n">order_key</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">params</span>
+  <span class="o">|&gt;</span> <span class="nc">Map</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">allowed_keys</span> <span class="o">++</span> <span class="p">[</span><span class="s2">&quot;order_by&quot;</span><span class="p">])</span>
+  <span class="o">|&gt;</span> <span class="nc">Enum</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">fn</span> <span class="p">{</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nc">String</span><span class="o">.</span><span class="n">to_atom</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">v</span><span class="p">}</span> <span class="k">end</span><span class="p">)</span>
+  <span class="o">|&gt;</span> <span class="nc">Map</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+  <span class="o">|&gt;</span> <span class="nc">Map</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="ss">:order_by</span><span class="p">,</span>
+    <span class="n">order_key</span><span class="p">,</span>
+    <span class="o">&amp;</span><span class="k">case</span> <span class="ni">&amp;1</span> <span class="k">do</span>
+      <span class="s2">&quot;-&quot;</span> <span class="o">&lt;&gt;</span> <span class="o">^</span><span class="n">order_key</span> <span class="o">-&gt;</span> <span class="n">order_key</span>
+      <span class="o">^</span><span class="n">order_key</span> <span class="o">-&gt;</span> <span class="s2">&quot;-&quot;</span> <span class="o">&lt;&gt;</span> <span class="n">order_key</span>
+      <span class="bp">_</span> <span class="o">-&gt;</span> <span class="s2">&quot;-&quot;</span> <span class="o">&lt;&gt;</span> <span class="n">order_key</span>
+    <span class="k">end</span>
+  <span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+<p>It only keeps the parameters in the <tt class="docutils literal">allowed_keys</tt> list and the current <tt class="docutils literal">order_by</tt> parameter
+(if there&#8217;s one)  discarding everything else. It will then convert the keys of the map to atoms and
+put them in a new map. Finally, it will update the <tt class="docutils literal">order_by</tt> field (if exists) either by
+switching the <tt class="docutils literal">-</tt> in front of the field to declare asc/desc sorting or adding it for the field
+that was clicked. Actually the logic of that <tt class="docutils literal">Map.update</tt> is the&nbsp;following:</p>
+<ul class="simple">
+<li>If there&#8217;s no <tt class="docutils literal">:order_by</tt> key then add it and assign the passed <tt class="docutils literal">order_key</tt></li>
+<li>If the current value of <tt class="docutils literal">:order_by</tt> is equal to <tt class="docutils literal">order_key</tt> with or without a <tt class="docutils literal">-</tt> then toggle the <tt class="docutils literal">-</tt> (this happens when you click on a field that is already used for&nbsp;sorting)</li>
+<li>If the current value of <tt class="docutils literal">:order_by</tt> is anything else (i.e not the same as the <tt class="docutils literal">order_key</tt>) then just change <tt class="docutils literal">:order_by</tt> to <tt class="docutils literal"><span class="pre">-orderKey</span></tt> (this happens when there&#8217;s sorting but you click on a different field, not the one used for the&nbsp;sorting)</li>
+</ul>
+<p>Notice that this juggling between map, list of keywords and then map again (using <tt class="docutils literal">Enum.map</tt> and then
+<tt class="docutils literal">Map.new</tt> etc) is needed because
+the query parameters are in a map with strings as keys form (<tt class="docutils literal"><span class="pre">%{&quot;key&quot;</span> =&gt; &quot;value&quot;}</tt>) while
+the <tt class="docutils literal">current_url</tt> function needs the query params in a map with atoms as keys form
+(<tt class="docutils literal">%{key: &quot;value&quot;}</tt>).</p>
+</div>
+<div class="section" id="sort-by-params">
+<h3><tt class="docutils literal">sort_by_params</tt></h3>
+<p>The <tt class="docutils literal">sort_by_params</tt> method gets three parameters: The <tt class="docutils literal">query</tt> that will be sorted,
+the existing http parameters map (so as to retrieve the <tt class="docutils literal">order_by</tt> value)
+and the declared list of allowed sorting fields. Let&#8217;s take a look at&nbsp;it:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">sort_by_params</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="p">%{</span><span class="s2">&quot;order_by&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;-&quot;</span> <span class="o">&lt;&gt;</span> <span class="n">val</span><span class="p">},</span> <span class="n">allowed</span><span class="p">),</span>
+  <span class="ss">do</span><span class="p">:</span> <span class="n">do_sort_by_params</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="ss">:asc</span><span class="p">,</span> <span class="n">allowed</span><span class="p">)</span>
+
+<span class="kd">def</span> <span class="n">sort_by_params</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="p">%{</span><span class="s2">&quot;order_by&quot;</span> <span class="o">=&gt;</span> <span class="n">val</span><span class="p">},</span> <span class="n">allowed</span><span class="p">),</span>
+  <span class="ss">do</span><span class="p">:</span> <span class="n">do_sort_by_params</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="ss">:desc</span><span class="p">,</span> <span class="n">allowed</span><span class="p">)</span>
+
+<span class="kd">def</span> <span class="n">sort_by_params</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="bp">_</span><span class="p">,</span> <span class="bp">_</span><span class="p">),</span> <span class="ss">do</span><span class="p">:</span> <span class="n">qs</span>
+</pre></div>
+<p>This multi-legged function will only do something if there&#8217;s an <tt class="docutils literal">order_by</tt> parameter in the http
+parameters (else it will just return the query as is) and will call <tt class="docutils literal">do_sort_by_params</tt> passing
+it the received query,
+either <tt class="docutils literal">:asc</tt> or <tt class="docutils literal">:desc</tt> (depending if there&#8217;s a <tt class="docutils literal">-</tt> in front of the value) and the
+received allowed fields&nbsp;list.</p>
+<p>The <tt class="docutils literal">do_sort_by_params</tt> makes sure that the passed parameter is in the allowed list
+and if yes
+it creates the atoms of the binding and field name (using <tt class="docutils literal">String.to_atom</tt>) and
+does the actual sorting to the passed&nbsp;query:</p>
+<div class="highlight"><pre><span></span><span class="kd">defp</span> <span class="n">do_sort_by_params</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">ord</span><span class="p">,</span> <span class="n">allowed</span><span class="p">)</span> <span class="k">do</span>
+  <span class="k">if</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">allowed</span> <span class="k">do</span>
+    <span class="p">[</span><span class="n">binding</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span> <span class="o">|&gt;</span> <span class="nc">String</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="nc">Enum</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="nc">String</span><span class="o">.</span><span class="n">to_atom</span><span class="o">/</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">qs</span> <span class="o">|&gt;</span> <span class="n">order_by</span><span class="p">([{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span> <span class="p">[{</span><span class="o">^</span><span class="n">ord</span><span class="p">,</span> <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">name</span><span class="p">)}])</span>
+  <span class="k">else</span>
+    <span class="n">qs</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>The line <tt class="docutils literal">qs |&gt; <span class="pre">order_by([{^binding,</span> <span class="pre">t}],</span> <span class="pre">[{^ord,</span> field(t, <span class="pre">^name)}])</span></tt> may seem a little
+complex but it has been thoroughly explained in the previous&nbsp;article.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>By using the methods described here you can easily add a dynamic sorting to your queries
+through fields that may span relations just by creating a bunch of http <span class="caps">GET</span> links
+and passing them an <tt class="docutils literal">order_by</tt> query&nbsp;parameter.</p>
+</div>
+</div>
+  		</article>
+  		<article>
+<header>
+      <h1 class="entry-title">
+        <a href="https://spapas.github.io/2019/10/03/html-form-submit-php/">How to properly handle an HTML form</a>
+      </h1>
+    <p class="meta">
+<time datetime="2019-10-03T14:20:00+03:00" pubdate>Πεμ 03 Οκτώβριος 2019</time>    </p>
+</header>
+
+<div class="entry-content"><p>One of the simplest things somebody would like to do in a web application is to display a form to the user and then handle the data the application
+received from the form. This is a very common task however there are many loose ends and things that a new developer can do wrong. Recently, I tried
+to explain this to somebody however I couldn&#8217;t find a tutorial containing all the information I think it is important. So I decided to write it&nbsp;here.</p>
+<p>To make it very easy to test it and understand it I decided to use <span class="caps">PHP</span> to handle the form submission. I must confess that I don&#8217;t like <span class="caps">PHP</span> and I never
+use it in production apps (unless I need to support an existing one). However, for such simple tasks and examples <span class="caps">PHP</span> is probably the easiest thing for
+a new developer to understand: Just create a <tt class="docutils literal">.php</tt> file and put it in a folder in your apache <tt class="docutils literal">htdocs</tt>; there now you can test the&nbsp;behavior!</p>
+<p>This tutorial will be as comprehensive as possible and will try to explain all things that I feel that need explaining. However I won&#8217;t go into details
+about <span class="caps">HTML</span> or <span class="caps">PHP</span> syntax; you&#8217;ll need to know some things about them to understand what&#8217;s going on here; after all the important thing is to understand
+the big picture so you can re-implement them in your case (or understand why your web framework does what it&nbsp;does).</p>
+<div class="section" id="a-quick-http-primer">
+<h2>A quick <span class="caps">HTTP</span>&nbsp;primer</h2>
+<p>So, what happens during a form display and submission? To properly understand that you need to know what an <span class="caps">HTTP</span> request is. An <span class="caps">HTTP</span> request is the way
+the browser &#8220;requests&#8221; a <span class="caps">URL</span> from a web server. This is thoroughly explained in the <span class="caps">HTTP</span> protocol however, for our purposes here it should suffice to say
+that an <span class="caps">HTTP</span> request is a text message that is send from the browser/<span class="caps">HTTP</span> Client to the <span class="caps">HTTP</span>/web server. This message should have the following&nbsp;format:</p>
+<pre class="code literal-block">
+METHOD PATH HTTP/VERSION
+Header 1: Value 1
+Header 2: Value 2
+
+Request data
+</pre>
+<p>The <tt class="docutils literal"><span class="caps">METHOD</span></tt> can be one of various methods supported in the <span class="caps">HTTP</span> protocol like <cite><span class="caps">GET</span>, <span class="caps">POST</span>, <span class="caps">PUT</span>, <span class="caps">OPTIONS</span></cite> etc however the most popular and the ones we&#8217;ll talk about here
+are <tt class="docutils literal"><span class="caps">GET</span></tt> and <tt class="docutils literal"><span class="caps">POST</span></tt>. The <tt class="docutils literal"><span class="caps">PATH</span></tt> is the actual url of the &#8220;page&#8221; you want to view without the server part. So if you are visiting <tt class="docutils literal"><span class="pre">http://www.example.com/path/to/page.html</span></tt>
+the path parameter will have a value of <tt class="docutils literal">/path/to/page.html</tt>. The <tt class="docutils literal"><span class="caps">HTTP</span>/<span class="caps">VERSION</span></tt> will contain the version of <span class="caps">HTTP</span> the client uses; usually it is something like
+<tt class="docutils literal"><span class="caps">HTTP</span>/1.1</tt>. Finally, after that first line there&#8217;s a bunch of optional headers with various extra information the client wants to pass to the
+server (for example what encoding it supports, what&#8217;s the host it connects to&nbsp;etc).</p>
+<p>Additionally, in case
+of a <tt class="docutils literal"><span class="caps">POST</span></tt> request the headers are followed by a blank line which in turn is followed by a chunk of &#8220;data&#8221; that the client passes to the&nbsp;server.</p>
+<p>The server will then response back with a text message similar to this (<span class="caps">HTTP</span>&nbsp;Response):</p>
+<pre class="code literal-block">
+HTTP/VERSION STATUS
+Header 1: Value 1
+Header 2: Value 2
+
+Response data
+</pre>
+<p>The <tt class="docutils literal"><span class="caps">HTTP</span>/<span class="caps">VERSION</span></tt> will also be something like <tt class="docutils literal"><span class="caps">HTTP</span>/1.1</tt> while the <tt class="docutils literal"><span class="caps">STATUS</span></tt> will be the status of the response. This status
+is a 3-digit numeric value followed by a textual description of the
+status. There are <a class="reference external" href="https://httpstatuses.com/">various statuses that you can receive</a>, however the statuses can be grouped by the number they start with like&nbsp;this:</p>
+<ul class="simple">
+<li>1xx: Information; rarely&nbsp;used</li>
+<li>2xx: Success; status 200 is the most common&nbsp;one</li>
+<li>3xx: Redirection (browser must visit another page); either permanent or&nbsp;temporary</li>
+<li>4xx: Client error; 404 is page not found (also access denied errors will be&nbsp;40x)</li>
+<li>5xx: Server error; something fishy happened to the server while&nbsp;responding</li>
+</ul>
+<p>In this article we&#8217;ll mainly talk about 2xx and 3xx: A <tt class="docutils literal">200 <span class="caps">OK</span></tt> answer is the most common one, it means that the <span class="caps">HTTP</span> request was
+completed successfully. A <tt class="docutils literal">302 <span class="caps">FOUND</span></tt> request means that the browser should display a &#8220;different&#8221; path; that path will be provided in
+a <tt class="docutils literal">Location: path</tt> header. When the browser receives a redirect it will do another <tt class="docutils literal"><span class="caps">GET</span></tt> request to retrieve the redirect to&nbsp;page.</p>
+<p>Notice that the Headers and Data parts of the server reply may also be optional like for the client however they usually exist
+(especially with a 200 response; without the data the client won&#8217;t have anything to&nbsp;display).</p>
+<p>So when a browser &#8220;requests&#8221; a page it will send an <span class="caps">HTTP</span> <tt class="docutils literal"><span class="caps">GET</span></tt> to the path. This happens all the time when we visit(click) links or entering
+urls to our browser. However, when we submit an <span class="caps">HTML</span> form the situation is a little more&nbsp;complex.</p>
+</div>
+<div class="section" id="form-methods">
+<h2>Form&nbsp;methods</h2>
+<p>An html form is a <tt class="docutils literal">&lt;form&gt;</tt> tag that contains a bunch of <tt class="docutils literal">&lt;input&gt;</tt> elements each one of which should have <em>at least</em> a name property.
+One of the inputs will usually be is a submit&nbsp;button.</p>
+<p>Also, the form tag has two important&nbsp;attributes:</p>
+<ul class="simple">
+<li><tt class="docutils literal">action</tt>: Defines the url where the post will be submitted to; it can be omitted to submit the form to the current&nbsp;path</li>
+<li><tt class="docutils literal">method</tt>: Will be either <span class="caps">GET</span> or <span class="caps">POST</span></li>
+</ul>
+<p>Thus, a sample form is something&nbsp;like:</p>
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">form</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;GET&quot;</span> <span class="na">action</span><span class="o">=</span><span class="s">&quot;form.php&quot;</span> <span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#39;text&#39;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#39;input1&#39;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#39;text&#39;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#39;input2&#39;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&#39;submit&#39;</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+</pre></div>
+<p>So what are the differences between a <tt class="docutils literal">&lt;form <span class="pre">method='<span class="caps">GET</span>'&gt;</span></tt> and a <tt class="docutils literal">&lt;form <span class="pre">method='<span class="caps">POST</span>'&gt;</span></tt>?</p>
+<ul class="simple">
+<li>Submitting an <span class="caps">HTML</span> form will translate to either an <span class="caps">HTTP</span> <span class="caps">GET</span> request or an <span class="caps">HTTP</span> <span class="caps">POST</span> request to the server depending on the method&nbsp;attribute</li>
+<li>The data of a <span class="caps">GET</span> form will be encoded in the <span class="caps">PATH</span> of the <span class="caps">HTTP</span> request while the data of the <span class="caps">POST</span> form will be in the corresponding data part of the <span class="caps">HTTP</span>&nbsp;Request</li>
+<li>A form that is submitted with <span class="caps">GET</span> should be idempotent i.e it should <em>not</em> modify anything in the server; a form that is submitted with <span class="caps">POST</span> should modify something the&nbsp;server</li>
+</ul>
+<p>So, the form we defined previously (that has a <span class="caps">GET</span> method) will issue the following <span class="caps">HTTP</span> request (if we fill the values value1 and value2 to the&nbsp;inputs):</p>
+<pre class="code literal-block">
+GET /form.php?input1=value1&amp;input2=value2 HTTP/1.1
+</pre>
+<p>One the other hand if the form had a <span class="caps">POST</span> method the <span class="caps">HTTP</span> request would be like&nbsp;this:</p>
+<pre class="code literal-block">
+POST /form.php HTTP/1.1
+
+input1=value1&amp;input2=value2
+</pre>
+<p>Notice that in the first case the data is in the <span class="caps">PATH</span> in the 1st line of the request while in the second case it is passed in the data section.
+Also, in both cases the encoded data of the form is similar to <tt class="docutils literal">input1=value1&amp;input2=value2</tt>: it is a list of <tt class="docutils literal">key=value</tt> pairs seperated
+with <tt class="docutils literal">&amp;</tt> where the <tt class="docutils literal">name</tt> attribute of each <tt class="docutils literal">input</tt> is used as the&nbsp;key.</p>
+<p>Concerning the idempotency of the action; this is not something that the <span class="caps">HTTP</span> protocol can enforce but it relies on the developer to implement it.
+When a form will not change anything to the server then it should be implemented as a method=<span class="caps">GET</span>. For example when you have a form with a search
+box that just returns some results. On the other hand, when a form does change things for example when you create a new item in an application
+then it should be implemented as a method=<span class="caps">POST</span>.</p>
+<p>The browser has a different behavior after a <span class="caps">GET</span> vs after a <span class="caps">POST</span> because it expects that when you do a <span class="caps">GET</span> request then it won&#8217;t matter if that
+request is repeated many times. One the other hand, the browser will try to prevent you from submitting a request many times (because something is
+changed in the server so the user must do it intentionally by for example pressing a button to submit the&nbsp;form).</p>
+</div>
+<div class="section" id="proper-form-handling">
+<h2>Proper form&nbsp;handling</h2>
+<p>So, following the previous section we can now explain how to handle a form&nbsp;properly:</p>
+<p>For a <span class="caps">GET</span> form we don&#8217;t have to do anything fancy; we just retrieve the parameter values and we display the data these parameters correspond to
+just like if we displayed any other&nbsp;page.</p>
+<p>For a <span class="caps">POST</span> form however we need to be extra careful as to avoid re-duplication of data and have a good user experience: When a <span class="caps">POST</span> form is
+submitted we need first to make sure that the submitted parameters are valid (for example there are no missing required fields). If the form is not
+valid then we will return a status 200 <span class="caps">OK</span> explaining to the user what went wrong; we usually return the same page containing the initial form with
+the fields that had errors&nbsp;marked.</p>
+<p>On the other hand, if the form <em>was valid</em> we need to do the actual action that the form corresponds to; for example insert something to the database.
+After this is finished we should return a <em>redirect</em> (302) to either a different or even the same page. This will result to the browsing doing a
+<span class="caps">GET</span> request to the page we redirect to so there would be no danger of the user refreshing the page and resubmitting the form. We should <em>not</em>
+return a 200 <span class="caps">OK</span> after a <span class="caps">POST</span> request because then the user would be able to press F5 to duplicate the previous <span class="caps">POST</span> request (and re-insert the&nbsp;data).</p>
+<p>One extra thing that we need to consider is how should we inform the user that his action was successful after the form submission and
+redirection? As we said, we can&#8217;t return a 200 <span class="caps">OK</span> message so we can&#8217;t really &#8220;create&#8221; the response, we instead need to redirect to another page.
+A common practice for this is to use a &#8220;flash&#8221; message; this is offered by many web frameworks through specific functions
+but can be easily implemented. I&#8217;ll explain how in the next&nbsp;section.</p>
+</div>
+<div class="section" id="implementing-flash-messages">
+<h2>Implementing flash&nbsp;messages</h2>
+<p>Before talking about the flash message I&#8217;d like to quickly explain what&#8217;s a cookie and a browser session in <span class="caps">HTTP</span>, because
+the flash message builds upon these&nbsp;concepts:</p>
+<p>A cookie is a way for the server to tell the client to store some information to be re-used later. What happens is that
+the server returns an <span class="caps">HTTP</span> header line similar to <tt class="docutils literal"><span class="pre">Set-Cookie:</span> <span class="pre">cookie-name=cookie-value</span></tt>. When the client receives that
+header line it will pass an <span class="caps">HTTP</span> header line similar to <tt class="docutils literal">Cookie:&nbsp; <span class="pre">cookie-name=cookie-value</span></tt> to all future requests
+so the server will know which value it had send to the client (there are various options for expiring cookies etc but they
+are not important here). This may seem like a primitive solution however because <span class="caps">HTTP</span> is a stateless protocol
+that&#8217;s the only way for the server to store information about a client. If you disable cookies completely in a browser
+then there won&#8217;t be a way for the server to remember you, for example you won&#8217;t be able to login&nbsp;anywhere!</p>
+<p>A session is a better way to store info about the client that builds upon the cookies. What happens is that when a client visits
+a site for the first time (so it has no cookies for that particular site) the server will send back a cookie named <tt class="docutils literal">session_id</tt> (or something like
+that) containing a very big random number. The server will save this session id number in a persistent storage (for example in a
+database or a text file) and will correlate that number with information for that particular client. When the client sends back that
+<tt class="docutils literal">session_id</tt> cookie the server will fetch the correlated info for that particular client from the persistent storage (and may
+update them etc). This way the server can store whatever info it wants about a particular client. The server usually keeps a
+a dictionary (map) of key-values for each&nbsp;session.</p>
+<p>Now, a flash message is some information (message) that should be displayed to the user <em>once</em>. For example a message like
+&#8220;Your form has been&nbsp;submitted!&#8221;.</p>
+<p>A simple way to implement this is to add a <tt class="docutils literal">message</tt>
+attribute to the session when you want to display the flash message. The next page that is displayed (irrelevantly if there&#8217;s a redirect involved)
+will check to see if there&#8217;s a <tt class="docutils literal">message</tt> attribute to the session; if yes it will display the actual message and remove the <tt class="docutils literal">message</tt> attribute
+from the session (so it won&#8217;t be displayed&nbsp;again).</p>
+</div>
+<div class="section" id="implementing-the-form-submission">
+<h2>Implementing the form&nbsp;submission</h2>
+<p>Following the above guidelines I&#8217;ll present here a typical, production-ready form submission for <span class="caps">PHP</span>. Some choices I&#8217;ve&nbsp;made:</p>
+<ul class="simple">
+<li>I am going to implement a <span class="caps">POST</span> form since a <span class="caps">GET</span> form doesn&#8217;t need any special&nbsp;handling</li>
+<li>The form handler will be the same <span class="caps">PHP</span> page as the one displaying the form. This is a usual thing to do, you check the <span class="caps">HTTP</span> method and either display the form as-is (if it is <span class="caps">GET</span>) or handle the submission (if it is <span class="caps">POST</span>)</li>
+<li>When the form is submitted successfully redirect to the same page and display a flash&nbsp;message</li>
+<li>Check for valid input and display the error&nbsp;message</li>
+</ul>
+<p>So without further ado here&#8217;s the complete php code that will submit your form; store it in a file named <tt class="docutils literal">test.php</tt>:</p>
+<div class="highlight"><pre><span></span><span class="x">&lt;!DOCTYPE HTML&gt;</span>
+<span class="x">&lt;html&gt;</span>
+
+<span class="x">&lt;head&gt;</span>
+<span class="x">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span>
+<span class="x">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span>
+<span class="x">  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot;&gt;</span>
+<span class="x">  &lt;title&gt;TEST FORM&lt;/title&gt;</span>
+<span class="x">  &lt;link href=&quot;https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css&quot; rel=&quot;stylesheet&quot;&gt;</span>
+<span class="x">&lt;/head&gt;</span>
+
+<span class="x">&lt;body class=&quot;bg-gray-100&quot;&gt;</span>
+<span class="x">  &lt;div class=&quot;px-8 py-8 w-1/2 m-auto&quot;&gt;</span>
+
+<span class="x">    </span><span class="cp">&lt;?php</span>
+    <span class="nb">session_start</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">??</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">echo</span> <span class="s1">&#39;&lt;div class=&quot;rounded bg-green-300 px-2 py-2&quot;&gt;&#39;</span><span class="o">.</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">;</span>
+      <span class="nb">unset</span><span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]);</span>
+    <span class="p">}</span>
+
+    <span class="nv">$nameErr</span> <span class="o">=</span> <span class="nv">$wsErr</span> <span class="o">=</span> <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$comment</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="nv">$formValid</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s2">&quot;REQUEST_METHOD&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span> <span class="p">{</span>
+        <span class="nv">$nameErr</span> <span class="o">=</span> <span class="s2">&quot;Name is required&quot;</span><span class="p">;</span>
+        <span class="nv">$formValid</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">];</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]))</span> <span class="p">{</span>
+        <span class="nv">$comment</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nv">$comment</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">];</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="nv">$formValid</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">==</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="p">{</span>
+          <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success! You have submitted the values: &lt;b&gt;&quot;</span> <span class="o">.</span> <span class="nv">$name</span> <span class="o">.</span> <span class="s2">&quot; / &quot;</span> <span class="o">.</span> <span class="nv">$comment</span> <span class="o">.</span> <span class="s2">&quot;&lt;/b&gt;&quot;</span><span class="p">;</span>
+          <span class="nb">header</span><span class="p">(</span><span class="s1">&#39;Location: ./test.php&#39;</span><span class="p">);</span>
+          <span class="k">exit</span><span class="p">();</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+          <span class="nv">$wsErr</span> <span class="o">=</span> <span class="s2">&quot;Error while trying to submit the form!&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="cp">?&gt;</span><span class="x"></span>
+
+<span class="x">    &lt;h1 class=&quot;text-4xl font-bold text-indigo-500&quot;&gt;Test a PHP form!&lt;/h1&gt;</span>
+
+<span class="x">    &lt;form class=&#39;border border-blue-800 rounded p-2&#39; method=&quot;POST&quot;&gt;</span>
+
+<span class="x">      </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$wsErr</span> <span class="o">?</span> <span class="s2">&quot;&lt;div class=&#39;text-red-600 py-3&#39;&gt;&quot;</span> <span class="o">.</span> <span class="nv">$wsErr</span> <span class="o">.</span> <span class="s2">&quot;&lt;/div&gt;&quot;</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span> <span class="cp">?&gt;</span><span class="x"></span>
+
+<span class="x">      &lt;div class=&quot;p-1&quot;&gt;</span>
+<span class="x">        &lt;label for=&quot;name&quot;&gt;Name:&lt;/label&gt; &lt;input class=&quot;border border-blue-800 rounded&quot; id=&quot;name&quot; type=&quot;text&quot; name=&quot;name&quot; value=&quot;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$name</span> <span class="cp">?&gt;</span><span class="x">&quot;&gt;</span>
+<span class="x">        &lt;span class=&quot;text-red-600&quot;&gt;* </span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$nameErr</span><span class="p">;</span> <span class="cp">?&gt;</span><span class="x">&lt;/span&gt;</span>
+<span class="x">      &lt;/div&gt;</span>
+
+<span class="x">      &lt;div class=&quot;p-1&quot;&gt;</span>
+<span class="x">        &lt;label for=&quot;comment&quot;&gt;Comment:&lt;/label&gt; &lt;textarea class=&quot;border border-blue-800 rounded&quot; id=&quot;comment&quot; name=&quot;comment&quot; rows=&quot;5&quot; cols=&quot;40&quot;&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$comment</span> <span class="cp">?&gt;</span><span class="x">&lt;/textarea&gt;</span>
+<span class="x">      &lt;/div&gt;</span>
+
+<span class="x">      &lt;input class=&quot;rounded px-2 my-4 py-2 bg-blue-800 text-gray-100&quot; type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Save&quot;&gt;</span>
+<span class="x">    &lt;/form&gt;</span>
+<span class="x">  &lt;/div&gt;</span>
+<span class="x">&lt;/body&gt;</span>
+<span class="x">&lt;/html&gt;</span>
+</pre></div>
+<p>So how is that working? As we can see there&#8217;s the php code first and the html is following (with some sprinkles of php). The <span class="caps">HTML</span> code is rather simple: It will
+display a <tt class="docutils literal"><span class="caps">POST</span></tt> form with two inputs named <tt class="docutils literal">name</tt> and <tt class="docutils literal">comment</tt>. Notice that we pass the <tt class="docutils literal">$name</tt> and <tt class="docutils literal">$comment</tt> php variables as their values.
+It also has a submit button and will display the <tt class="docutils literal">$wsErr</tt> variable if it is not null (which means that there was an error while submitting the data). The <span class="caps">PHP</span>
+code now first starts the session (i.e it passes the <tt class="docutils literal">session_id</tt> cookie to the client if such a cookie does not exist) checks to see if there&#8217;s a
+<tt class="docutils literal">message</tt> attribute to the session. If such a message exists it will display it in a rounded green panel and remove that from the session (so it won&#8217;t be displayed
+again next&nbsp;time):</p>
+<div class="highlight"><pre><span></span><span class="x">session_start();</span>
+<span class="x">if ($_SESSION[&#39;message&#39;] ?? &#39;&#39;) {</span>
+<span class="x">  echo &#39;&lt;div class=&quot;rounded bg-green-300 px-2 py-2&quot;&gt;&#39;.$_SESSION[&#39;message&#39;].&#39;&lt;/div&gt;&#39;;</span>
+<span class="x">  unset($_SESSION[&#39;message&#39;]);</span>
+<span class="x">}</span>
+</pre></div>
+<p>After that there are some variable initializations and we check if the <span class="caps">HTTP</span> request is <tt class="docutils literal"><span class="caps">POST</span></tt> (if the request is <span class="caps">GET</span> we&#8217;ll just disply the <span class="caps">HTML</span>):</p>
+<div class="highlight"><pre><span></span><span class="x">if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {</span>
+</pre></div>
+<p>For each of the inputs we check if they are empty or not and assign their values to the corresponding php variable. If the name is empty then we&#8217;ll
+set <tt class="docutils literal">$formValid = false;</tt> and add an error message since this field is required. Then, if <tt class="docutils literal">$formValid</tt> is not false we can do the actual action
+(for example write to the database). I&#8217;ve simulated that using a coin-toss with rand (so there&#8217;s a 50% possibility that the action will fail). If
+the action &#8220;failed&#8221; then nothing happened in the database so we should return the same page with the <tt class="docutils literal">wsErr</tt> variable containing the&nbsp;error.</p>
+<p>However if the action is successful that means that the data has been inserted to the database so we&#8217;ll need to set the flash message and do
+the redirect (the name of the page containing the form is <tt class="docutils literal">/test.php</tt> so we&#8217;ll redirect to&nbsp;it):</p>
+<div class="highlight"><pre><span></span><span class="x">$_SESSION[&#39;message&#39;] = &quot;Success! You have submitted the values: &lt;b&gt;&quot; . $name . &quot; / &quot; . $comment . &quot;&lt;/b&gt;&quot;;</span>
+<span class="x">header(&#39;Location: ./test.php&#39;);</span>
+<span class="x">exit();</span>
+</pre></div>
+<p>The two commands above (<tt class="docutils literal">header</tt> and <tt class="docutils literal">exit</tt>) will do the actual redirect in php. Since the session contains the <tt class="docutils literal">message</tt> it will
+be displayed after the redirect has&nbsp;finished!</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>So following the above tutorial, here&#8217;s what you should absolutely do to submit an <span class="caps">HTML</span>&nbsp;form:</p>
+<ul class="simple">
+<li>Use <span class="caps">HTTP</span> <span class="caps">POST</span> if the form is going to change data on the server; use <span class="caps">HTTP</span> <span class="caps">GET</span> otherwise (mainly for search/filter&nbsp;forms)</li>
+<li>When using <span class="caps">POST</span>: Redirect when the form is valid and the action on the server has finished successfully; never return a 200 <span class="caps">OK</span> status when you&#8217;ve changed things in the server&nbsp;(database)</li>
+<li>Use flash messages to pass information to the user after a&nbsp;redirect</li>
+</ul>
+</div>
+</div>
+  		</article>
+  		<article>
+<header>
+      <h1 class="entry-title">
+        <a href="https://spapas.github.io/2019/07/25/declarative-ecto-query-filters/">Declarative Ecto query filters</a>
+      </h1>
+    <p class="meta">
+<time datetime="2019-07-25T14:20:00+03:00" pubdate>Πεμ 25 Ιούλιος 2019</time>    </p>
+</header>
+
+<div class="entry-content"><p>Continuing my Elixir <a class="reference external" href="https://spapas.github.io/2019/06/04/phoenix-form-select2-ajax/">journey</a> I&#8217;d like to discuss here a method to implement one of my
+<a class="reference external" href="https://spapas.github.io/2017/10/11/essential-django-packages/">favorite Django features</a>: Declarative query filters. This functionality is not a core Django
+feature but it is offered
+through the excellent <a class="reference external" href="https://github.com/carltongibson/django-filter/:">django-filter</a> package: Using this, you can create a <tt class="docutils literal">Filter</tt> class which defines
+which fields are to be used for filtering the queryset and how each field will be queried (i.e using
+things like exact, like, year of date&nbsp;etc).</p>
+<p>This is a functionality I am greatly missing in Elixir/phoenix
+so I&#8217;ve tried implementing it on my own. Of course, django-filter has various other capabilities that
+result from the implicit generation of things that Django offers like automatically creating the html
+for the declared fields, automatically declare the fields based on their types etc but such things are
+not supported by phoenix in any case so I won&#8217;t be trying in them&nbsp;here.</p>
+<p>During my research I&#8217;ve seen a bunch of blog posts or packages about this thing however they didn&#8217;t
+properly support joins (i.e you could only filter on fields on a specific schema) or needed too much
+work to filter on joins (i.e define different filters for each part of the join). In the solution
+I&#8217;ll present here you&#8217;ll just define a filter for the specific query you need to filter no matter how
+many joins it has (just like in&nbsp;django-filters).</p>
+<div class="section" id="what-will-it-do">
+<h2>What will it&nbsp;do</h2>
+<p>The solution is more or less a self contained Elixir module named <tt class="docutils literal">QueryFilterEx</tt> that can be used
+to declaratively filter your queries.
+To use that you&#8217;ll need to declare your filters using
+a simple array of maps. The filters should then be added in your form using a different input
+for each filter; then your queryset will be filtered with all the values you&#8217;ve added to the
+inputs using <tt class="docutils literal"><span class="caps">AND</span></tt>.</p>
+<p>The module has a very simple <span class="caps">API</span> consisting of three&nbsp;functions:</p>
+<ul class="simple">
+<li><tt class="docutils literal">get_changeset_from_params(params, filters)</tt>: Pass it the <tt class="docutils literal"><span class="caps">GET</span></tt> request parameters you got from your form and the declared filters array to return you a proper changeset (which you can then use to build your form in your&nbsp;html)</li>
+<li><tt class="docutils literal">make_filter_changeset(filters, params)</tt>: This function actually generates the changeset using the filters and a <tt class="docutils literal">Map</tt> of <tt class="docutils literal">filter_name: value</tt> pairs (it is actually used by <tt class="docutils literal">get_changeset_from_params</tt>)</li>
+<li><tt class="docutils literal">filter(query, changeset, filters)</tt>: Filter the <tt class="docutils literal">query</tt> using the previously created <tt class="docutils literal">changeset</tt> and the declared filters&nbsp;array</li>
+</ul>
+<p>You can find a sample of the technique presented in this article in my <span class="caps">PHXCRD</span> repository:
+<a class="reference external" href="https://github.com/spapas/phxcrd">https://github.com/spapas/phxcrd</a>  for example in the <tt class="docutils literal">user_controller</tt> or <tt class="docutils literal">authority_controller</tt>.</p>
+</div>
+<div class="section" id="preparing-the-query">
+<h2>Preparing the&nbsp;query</h2>
+<p>In order to use the <tt class="docutils literal">QueryFilterEx</tt> module you&#8217;ll need to properly &#8220;prepare&#8221; your Ecto query. By preparing
+I don&#8217;t mean a big deal just the fact that you&#8217;ll need to <em>name all your relations</em>  (or at least name all
+the relations you&#8217;re going to use for filtering). This is very simple to do, for example for the following&nbsp;query:</p>
+<div class="highlight"><pre><span></span><span class="n">from</span><span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="nc">Authority</span><span class="p">,</span>
+  <span class="ss">join</span><span class="p">:</span> <span class="n">ak</span> <span class="ow">in</span> <span class="nc">AuthorityKind</span><span class="p">,</span>
+  <span class="ss">on</span><span class="p">:</span> <span class="p">[</span><span class="ss">id</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">authority_kind_id</span><span class="p">],</span>
+  <span class="ss">preload</span><span class="p">:</span> <span class="p">[</span><span class="ss">authority_kind</span><span class="p">:</span> <span class="n">ak</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+<p>you can name the relations by adding two <tt class="docutils literal">as:</tt> atoms like&nbsp;this:</p>
+<div class="highlight"><pre><span></span><span class="n">from</span><span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="nc">Authority</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:authority</span><span class="p">,</span>
+  <span class="ss">join</span><span class="p">:</span> <span class="n">ak</span> <span class="ow">in</span> <span class="nc">AuthorityKind</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:authority_kind</span><span class="p">,</span>
+  <span class="ss">on</span><span class="p">:</span> <span class="p">[</span><span class="ss">id</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">authority_kind_id</span><span class="p">],</span>
+  <span class="ss">preload</span><span class="p">:</span> <span class="p">[</span><span class="ss">authority_kind</span><span class="p">:</span> <span class="n">ak</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+<p>So after each <cite>join:</cite> you&#8217;ll add a name for your joined relation (and also add a name for your initial
+relation). Please notice that you can use any name you want for these (not related to the schema&nbsp;names).</p>
+</div>
+<div class="section" id="declaring-the-filters">
+<h2>Declaring the&nbsp;filters</h2>
+<p>To declare the filters you&#8217;ll just add an array of simple Elixir maps. Each map must have the following&nbsp;fields:</p>
+<ul class="simple">
+<li><tt class="docutils literal">:name</tt> This is the name of the specific filter; it is mainly used in conjunction with the queryset and the form fields to set initial values&nbsp;etc</li>
+<li><tt class="docutils literal">:type</tt> This is the type of the specific filter; it should be a proper Ecto type like <tt class="docutils literal">:string</tt>, <tt class="docutils literal">:date</tt>, <tt class="docutils literal">:integer</tt> etc. This is needed to properly cast the values and catch&nbsp;errors</li>
+<li><tt class="docutils literal">:binding</tt> This is the name of the relation this filter concerns which you defined in your query using <tt class="docutils literal">:as</tt> (discussed in previous&nbsp;section)</li>
+<li><tt class="docutils literal">:field_name</tt> This is the actual name of the field you want to filter&nbsp;on</li>
+<li><tt class="docutils literal">:method</tt> How to filter on this field; I&#8217;ve defined a couple of methods I needed but you can implement anything you&nbsp;want</li>
+</ul>
+<p>The methods I&#8217;ve implemented are the&nbsp;following:</p>
+<ul class="simple">
+<li><tt class="docutils literal">:eq</tt> Equality</li>
+<li><tt class="docutils literal">:ilike</tt> Field value starts with the input - ignore&nbsp;case</li>
+<li><tt class="docutils literal">:icontains</tt> Field value contains the input - ignore&nbsp;case</li>
+<li><tt class="docutils literal">:year</tt> Field is a date or datetime an its year is the same as the&nbsp;value</li>
+<li><tt class="docutils literal">:date</tt> Field is a datetime and its date part is equal to the&nbsp;value</li>
+</ul>
+<p>Anything else will just be compared using <tt class="docutils literal">=</tt> (same as <tt class="docutils literal">:eq</tt>).</p>
+</div>
+<div class="section" id="integrating-it-with-a-controller">
+<h2>Integrating it with a&nbsp;controller</h2>
+<p>As an example let&#8217;s see how <tt class="docutils literal">QueryFilterEx</tt> is integrated it with the phxcrd user_controller.
+The query I&#8217;d like to filter on is the following (see that everything I&#8217;ll need is named using <tt class="docutils literal">:as</tt>:</p>
+<div class="highlight"><pre><span></span><span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:user</span><span class="p">,</span>
+  <span class="ss">left_join</span><span class="p">:</span> <span class="n">a</span> <span class="ow">in</span> <span class="nc">Authority</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:authority</span><span class="p">,</span>
+  <span class="ss">on</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">authority_id</span><span class="p">,</span>
+  <span class="ss">left_join</span><span class="p">:</span> <span class="n">up</span> <span class="ow">in</span> <span class="nc">UserPermission</span><span class="p">,</span>
+  <span class="ss">on</span><span class="p">:</span> <span class="n">up</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+  <span class="ss">left_join</span><span class="p">:</span> <span class="n">p</span> <span class="ow">in</span> <span class="nc">Permission</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:permission</span><span class="p">,</span>
+  <span class="ss">on</span><span class="p">:</span> <span class="n">up</span><span class="o">.</span><span class="n">permission_id</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+  <span class="ss">preload</span><span class="p">:</span> <span class="p">[</span><span class="ss">authority</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="ss">permissions</span><span class="p">:</span> <span class="n">p</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+<p>To declare the filters I like to create a module attribute ending with <tt class="docutils literal">filters</tt>, something like
+<tt class="docutils literal">&#64;user_filters</tt> for example. Here&#8217;s the filters I&#8217;m going to use for&nbsp;user_controller:</p>
+<div class="highlight"><pre><span></span><span class="na">@user_filters</span> <span class="p">[</span>
+  <span class="p">%{</span><span class="ss">name</span><span class="p">:</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">binding</span><span class="p">:</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">field_name</span><span class="p">:</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">method</span><span class="p">:</span> <span class="ss">:ilike</span><span class="p">},</span>
+  <span class="p">%{</span><span class="ss">name</span><span class="p">:</span> <span class="ss">:authority_name</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">binding</span><span class="p">:</span> <span class="ss">:authority</span><span class="p">,</span> <span class="ss">field_name</span><span class="p">:</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">method</span><span class="p">:</span> <span class="ss">:icontains</span><span class="p">},</span>
+  <span class="p">%{</span><span class="ss">name</span><span class="p">:</span> <span class="ss">:permission_name</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">binding</span><span class="p">:</span> <span class="ss">:permission</span><span class="p">,</span> <span class="ss">field_name</span><span class="p">:</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">method</span><span class="p">:</span> <span class="ss">:ilike</span><span class="p">},</span>
+  <span class="p">%{</span><span class="ss">name</span><span class="p">:</span> <span class="ss">:last_login_date</span><span class="p">,</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:date</span><span class="p">,</span> <span class="ss">binding</span><span class="p">:</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">field_name</span><span class="p">:</span> <span class="ss">:last_login</span><span class="p">,</span> <span class="ss">method</span><span class="p">:</span> <span class="ss">:date</span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+<p>So it will check if the <tt class="docutils literal">user.username</tt> and <tt class="docutils literal">permission.name</tt> start with the passed value,
+<tt class="docutils literal">authority.name</tt> contains the passed value and if the <tt class="docutils literal">user.login_date</tt> (which is a datetime)
+is the same as the passed date&nbsp;value.</p>
+<p>Finally, here&#8217;s the full code of the index&nbsp;controller:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">index</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">changeset</span> <span class="o">=</span> <span class="nc">QueryFilterEx</span><span class="o">.</span><span class="n">get_changeset_from_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="na">@user_filters</span><span class="p">)</span>
+
+  <span class="n">users</span> <span class="o">=</span>
+    <span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">,</span>
+      <span class="ss">as</span><span class="p">:</span> <span class="ss">:user</span><span class="p">,</span>
+      <span class="ss">left_join</span><span class="p">:</span> <span class="n">a</span> <span class="ow">in</span> <span class="nc">Authority</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:authority</span><span class="p">,</span>
+      <span class="ss">on</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">authority_id</span><span class="p">,</span>
+
+      <span class="ss">left_join</span><span class="p">:</span> <span class="n">up</span> <span class="ow">in</span> <span class="nc">UserPermission</span><span class="p">,</span>
+      <span class="ss">on</span><span class="p">:</span> <span class="n">up</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">u</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+      <span class="ss">left_join</span><span class="p">:</span> <span class="n">p</span> <span class="ow">in</span> <span class="nc">Permission</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:permission</span><span class="p">,</span>
+      <span class="ss">on</span><span class="p">:</span> <span class="n">up</span><span class="o">.</span><span class="n">permission_id</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+      <span class="ss">preload</span><span class="p">:</span> <span class="p">[</span><span class="ss">authority</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="ss">permissions</span><span class="p">:</span> <span class="n">p</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="nc">QueryFilterEx</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">changeset</span><span class="p">,</span> <span class="na">@user_filters</span><span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+  <span class="n">render</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="ss">users</span><span class="p">:</span> <span class="n">users</span><span class="p">,</span> <span class="ss">changeset</span><span class="p">:</span> <span class="n">changeset</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+<p>It is very simple, it just uses the <tt class="docutils literal">get_changeset_from_params</tt> method I discussed before to
+generate the changeset and then uses it to filter the query. Also please notice that it passes
+the changeset to the template to be properly rendered in the filter&nbsp;form.</p>
+</div>
+<div class="section" id="the-template">
+<h2>The&nbsp;template</h2>
+<p>The template for the user index action is the&nbsp;following:</p>
+<div class="highlight"><pre><span></span><span class="err">&lt;</span>%= form_for @changeset, AdminRoutes.user_path(@conn, :index), [method: :get, class: &quot;filter-form&quot;, as: :filter],  fn f -&gt; %&gt;
+  <span class="err">&lt;</span>%= label f, :username, gettext &quot;Username&quot; %&gt;
+  <span class="err">&lt;</span>%= text_input f, :username  %&gt;
+
+  <span class="err">&lt;</span>%= label f, :authority_name, gettext &quot;Authority name&quot; %&gt;
+  <span class="err">&lt;</span>%= text_input f, :authority_name  %&gt;
+
+  <span class="err">&lt;</span>%= label f, :permission_name, gettext &quot;Permission name&quot; %&gt;
+  <span class="err">&lt;</span>%= text_input f, :permission_name  %&gt;
+
+  <span class="err">&lt;</span>%= label f, :last_login_date, gettext &quot;Last login date&quot; %&gt;
+  <span class="err">&lt;</span>%= text_input f, :last_login_date  %&gt;
+  <span class="err">&lt;</span>%= error_tag f, :last_login_date %&gt;
+
+  <span class="err">&lt;</span>%= submit gettext(&quot;Filter&quot;), class: &quot;ml-5&quot; %&gt;
+  <span class="err">&lt;</span>%= link gettext(&quot;Reset&quot;), to: AdminRoutes.user_path(@conn, :index), class: &quot;button button-outline ml-2&quot; %&gt;
+<span class="err">&lt;</span>% end %&gt;
+<span class="err">&lt;</span>%= for user <span class="p">&lt;</span><span class="nt">-</span> <span class="err">@</span><span class="na">users</span> <span class="na">do</span> <span class="err">%</span><span class="p">&gt;</span>
+<span class="c">&lt;!-- display the user info --&gt;</span>
+<span class="err">&lt;</span>% end %&gt;
+</pre></div>
+<p>Notice that it gets the <tt class="docutils literal">&#64;changeset</tt> and uses it to properly fill the initial values and display
+error messages. For this case I&#8217;ve only added an error_tag for the <tt class="docutils literal">:last_login_date</tt> field,
+the others since are strings do not really need it since they will accept all&nbsp;values.</p>
+<p>Also, the form method  form must be <tt class="docutils literal">:get</tt> since we only filter (not change anything) and I&#8217;ve passed
+the <tt class="docutils literal">as: :filter</tt> option to the <tt class="docutils literal">form_for</tt> to collect the parameters under the <tt class="docutils literal">filter</tt> server side
+parameter (this can be anything you want and can be optionally be
+passed to <tt class="docutils literal">QueryFilterEx.get_changeset_from_params</tt> to know which parameter the filters are collected&nbsp;on).</p>
+</div>
+<div class="section" id="how-does-this-work">
+<h2>How does this&nbsp;work?</h2>
+<p>In this section I&#8217;ll try to explain exactly how the <tt class="docutils literal">QueryFilterEx</tt> module works. Before continuing
+I want to thank the people at the <a class="reference external" href="https://elixirforum.com/">Elixir forum</a> and #elixir-lang Freenode <span class="caps">IRC</span> chat
+that helped me with understanding how to be able to <a class="reference external" href="https://elixirforum.com/t/create-dynamic-bindings-for-where-clause/23797/7">create dynamic bindings</a>.</p>
+<p>So I&#8217;ll split this explanation in two parts: Explain <tt class="docutils literal">QueryFilterEx.get_changeset_from_params</tt>
+and <tt class="docutils literal">make_filter_changeset</tt> (easy) and
+then explain <tt class="docutils literal">QueryFilterEx.filter</tt> (more&nbsp;difficult).</p>
+<div class="section" id="queryfilterex-get-changeset-from-params-and-make-filter-changeset">
+<h3><tt class="docutils literal">QueryFilterEx.get_changeset_from_params</tt> and <tt class="docutils literal">make_filter_changeset</tt></h3>
+<p>This function generates a changeset using the <span class="caps">GET</span> request parameters and the list of declared filters. The
+create changeset is a <a class="reference external" href="https://hexdocs.pm/ecto/Ecto.Changeset.html#module-schemaless-changesets">schemaless one</a> since it may contains fields of various schemas (or fields that
+are not even exist on a schema). To generate it it uses the <a class="reference external" href="https://hexdocs.pm/ecto/Ecto.Changeset.html#cast/4">cast/4</a> function passing it a <tt class="docutils literal">{data, types}</tt>
+first parameter to generate the schemaless changeset. It has two public methods: <tt class="docutils literal">get_changeset_from_params</tt>
+and <tt class="docutils literal">make_filter_changeset</tt>. The <tt class="docutils literal">get_changeset_from_params</tt> is the one we&#8217;ve used to integrate
+with the controller and is used to retrieve the filter parameters from the request
+parameters based on the collect parameter of the form we mentioned before (the <tt class="docutils literal">as: :filter</tt>). If such
+parameters are found they will be passed to <tt class="docutils literal">make_filter_changeset</tt> (or else it will pass an empty
+struct). Notice that the <tt class="docutils literal">filter_name</tt> by default is <tt class="docutils literal">&quot;filter&quot;</tt> but you can change it to anything
+you&nbsp;want.</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">get_changeset_from_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">filter_name</span> <span class="p">\\</span> <span class="s2">&quot;filter&quot;</span><span class="p">)</span> <span class="k">do</span>
+  <span class="k">case</span> <span class="n">params</span> <span class="k">do</span>
+    <span class="p">%{</span><span class="o">^</span><span class="n">filter_name</span> <span class="o">=&gt;</span> <span class="n">filter_params</span><span class="p">}</span> <span class="o">-&gt;</span>
+      <span class="n">filters</span> <span class="o">|&gt;</span> <span class="n">make_filter_changeset</span><span class="p">(</span><span class="n">filter_params</span><span class="p">)</span>
+
+    <span class="bp">_</span> <span class="o">-&gt;</span>
+      <span class="n">filters</span> <span class="o">|&gt;</span> <span class="n">make_filter_changeset</span><span class="p">(%{})</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>The <tt class="docutils literal">make_filter_changeset</tt> is the function that actually creates the schemaless changeset. To do that
+it uses two private functions that operate on the passed filters array: <tt class="docutils literal">make_filter_keys</tt>
+to extract the <tt class="docutils literal">:name</tt> field of each key filter and the <tt class="docutils literal">make_filter_types</tt> to generate a
+<tt class="docutils literal">Map</tt> of <tt class="docutils literal">%{name: :type}</tt> as needed by the <tt class="docutils literal">types</tt> of the <tt class="docutils literal">{data, types}</tt> tuple passed
+to <tt class="docutils literal">cast</tt> (the <tt class="docutils literal">data</tt> is just an empty <tt class="docutils literal">Map</tt>):</p>
+<div class="highlight"><pre><span></span><span class="kd">defp</span> <span class="n">make_filter_keys</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">filters</span> <span class="o">|&gt;</span> <span class="nc">Enum</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span> <span class="ni">&amp;1</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="kd">defp</span> <span class="n">make_filter_types</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">filters</span> <span class="o">|&gt;</span> <span class="nc">Enum</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="p">{</span><span class="ni">&amp;1</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="ni">&amp;1</span><span class="o">.</span><span class="n">type</span><span class="p">})</span> <span class="o">|&gt;</span> <span class="nc">Map</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+<span class="k">end</span>
+
+<span class="kd">def</span> <span class="n">make_filter_changeset</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="p">%{}</span>
+  <span class="n">types</span> <span class="o">=</span> <span class="n">filters</span> <span class="o">|&gt;</span> <span class="n">make_filter_types</span>
+
+  <span class="p">{</span><span class="n">data</span><span class="p">,</span> <span class="n">types</span><span class="p">}</span>
+  <span class="o">|&gt;</span> <span class="nc">Ecto.Changeset</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">filters</span> <span class="o">|&gt;</span> <span class="n">make_filter_keys</span><span class="p">)</span>
+  <span class="o">|&gt;</span> <span class="nc">Map</span><span class="o">.</span><span class="n">merge</span><span class="p">(%{</span><span class="ss">action</span><span class="p">:</span> <span class="ss">:insert</span><span class="p">})</span>
+<span class="k">end</span>
+</pre></div>
+<p>One interesting thing here is the <tt class="docutils literal"><span class="pre">Map.merge(%{action:</span> :insert})</tt> that is piped to the
+generated changeset. This is needed to actually display the validation errors, if there&#8217;s
+no action to the changeset (and there won&#8217;t be since we aren&#8217;t going do any updates to the database
+with this changeset) then the casting errors won&#8217;t be&nbsp;displayed.</p>
+<p>Please notice that although I use the <tt class="docutils literal">get_changeset_from_params</tt> in my controller the important
+function here is the <tt class="docutils literal">make_filter_changeset</tt>. The <tt class="docutils literal">get_changeset_from_params</tt> is mainly used to
+retrieve the filter-related <span class="caps">GET</span> query parameter; however to use <tt class="docutils literal">QueryFilterEx</tt> you can just
+create (however you want) a <tt class="docutils literal">Map</tt> of <tt class="docutils literal">filter_name: value</tt> pairs  and pass it to
+<tt class="docutils literal">make_filter_changeset</tt> to get the&nbsp;changeset.</p>
+</div>
+<div class="section" id="queryfilterex-filter">
+<h3><tt class="docutils literal">QueryFilterEx.filter</tt></h3>
+<p>The <tt class="docutils literal">filter</tt> method gets three parameters. The <tt class="docutils literal">query</tt>, the <tt class="docutils literal">changeset</tt> (that was created with
+<tt class="docutils literal">make_filter_changeset</tt>) and the declared <tt class="docutils literal">filters</tt>. This function will then check all declared <tt class="docutils literal">filters</tt>
+one by one and see if the <tt class="docutils literal">changeset</tt> contains a change for this filter (i.e if the field has a value).
+If yes it will append a <a class="reference external" href="https://hexdocs.pm/ecto/Ecto.Query.html#where/3">where/3</a> to the query based on the passed value of the <tt class="docutils literal">changeset</tt> and the
+declared filter <tt class="docutils literal">:method</tt>.</p>
+<p>To do that it just uses <tt class="docutils literal">Enum.reduce</tt> starting with the initial query as an accumulator and
+reducing on all the declared <tt class="docutils literal">filters</tt>:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">filter</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">changeset</span><span class="p">,</span> <span class="n">filters</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">changes</span> <span class="o">=</span> <span class="nc">Map</span><span class="o">.</span><span class="n">fetch!</span><span class="p">(</span><span class="n">changeset</span><span class="p">,</span> <span class="ss">:changes</span><span class="p">)</span>
+  <span class="n">filters</span> <span class="o">|&gt;</span> <span class="nc">Enum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">creat_where_clauses_reducer</span><span class="p">(</span><span class="n">changes</span><span class="p">))</span>
+<span class="k">end</span>
+
+<span class="kd">defp</span> <span class="n">creat_where_clauses_reducer</span><span class="p">(</span><span class="n">changes</span><span class="p">)</span> <span class="k">do</span>
+  <span class="k">fn</span> <span class="p">%{</span><span class="ss">name</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="ss">field_name</span><span class="p">:</span> <span class="n">field_name</span><span class="p">,</span> <span class="ss">binding</span><span class="p">:</span> <span class="n">binding</span><span class="p">,</span> <span class="ss">method</span><span class="p">:</span> <span class="n">method</span><span class="p">},</span> <span class="n">acc</span> <span class="o">-&gt;</span>
+    <span class="k">case</span> <span class="nc">Map</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">changes</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">do</span>
+      <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">value</span><span class="p">}</span> <span class="o">-&gt;</span>
+        <span class="n">acc</span> <span class="o">|&gt;</span> <span class="n">creat_where_clause</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">binding</span><span class="p">,</span>  <span class="n">method</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+      <span class="bp">_</span> <span class="o">-&gt;</span>
+        <span class="n">acc</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>Notice that the <tt class="docutils literal">creat_where_clauses_reducer</tt> function returns a function (the reducer) that
+<tt class="docutils literal">reduce</tt> will use. This function checks to see if the current changes of the <tt class="docutils literal">changeset</tt> contain
+the <tt class="docutils literal">filter_name:</tt>. If yes it will pass the following values to the <tt class="docutils literal">creat_where_clause</tt> function:</p>
+<ul class="simple">
+<li>The accumulated query (<tt class="docutils literal">acc</tt>)</li>
+<li>The <tt class="docutils literal">field_name:</tt>, <tt class="docutils literal">:binding</tt> and <tt class="docutils literal">:method</tt> values of the current&nbsp;filter</li>
+<li>The value of the changes of the <tt class="docutils literal">changeset</tt></li>
+</ul>
+<p>If the current <tt class="docutils literal">filter_name</tt> is not contained in the changes then it just returns the accumulated query as it&nbsp;is.</p>
+<p>Let&#8217;s now take a look at the <tt class="docutils literal">creat_where_clause</tt> function:</p>
+<div class="highlight"><pre><span></span><span class="kd">defp</span> <span class="n">creat_where_clause</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">binding</span><span class="p">,</span>  <span class="n">method</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">do</span>
+  <span class="k">case</span> <span class="n">method</span> <span class="k">do</span>
+    <span class="ss">:eq</span> <span class="o">-&gt;</span> <span class="n">acc</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">(</span>
+      <span class="p">[{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span>
+      <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">)</span> <span class="o">==</span> <span class="o">^</span><span class="n">value</span>
+    <span class="p">)</span>
+    <span class="ss">:ilike</span> <span class="o">-&gt;</span> <span class="n">acc</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">(</span>
+      <span class="p">[{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span>
+      <span class="n">ilike</span><span class="p">(</span><span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">),</span> <span class="o">^</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">value</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span> <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="ss">:icontains</span> <span class="o">-&gt;</span> <span class="n">acc</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">(</span>
+      <span class="p">[{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span>
+      <span class="n">ilike</span><span class="p">(</span><span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">),</span> <span class="o">^</span><span class="p">(</span><span class="s2">&quot;%</span><span class="si">#{</span><span class="n">value</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span> <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="ss">:year</span> <span class="o">-&gt;</span> <span class="n">acc</span>  <span class="o">|&gt;</span> <span class="n">where</span><span class="p">(</span>
+      <span class="p">[{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span>
+      <span class="n">fragment</span><span class="p">(</span><span class="s2">&quot;extract (year from ?) = ?&quot;</span><span class="p">,</span> <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">),</span> <span class="o">^</span><span class="n">value</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="ss">:date</span> <span class="o">-&gt;</span> <span class="n">acc</span>  <span class="o">|&gt;</span> <span class="n">where</span><span class="p">(</span>
+      <span class="p">[{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span>
+      <span class="n">fragment</span><span class="p">(</span><span class="s2">&quot;? &gt;= cast(? as date) and ? &lt; (cast(? as date) + &#39;1 day&#39;::interval&quot;</span><span class="p">),</span> <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">),</span> <span class="o">^</span><span class="n">value</span><span class="p">,</span> <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">),</span> <span class="o">^</span><span class="n">value</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="bp">_</span> <span class="o">-&gt;</span> <span class="n">acc</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">(</span>
+      <span class="p">[{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span>
+      <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">)</span> <span class="o">==</span> <span class="o">^</span><span class="n">value</span>
+    <span class="p">)</span>
+
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>This function is just a simple <tt class="docutils literal">case</tt> that pipes the accumulated query to a different <tt class="docutils literal">where</tt> clause
+depending on the <tt class="docutils literal">method:</tt>. Let&#8217;s take a closer look at what happens when <tt class="docutils literal">:method == :eq</tt>:</p>
+<div class="highlight"><pre><span></span><span class="n">acc</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">(</span>
+  <span class="p">[{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span>
+  <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">)</span> <span class="o">==</span> <span class="o">^</span><span class="n">value</span>
+<span class="p">)</span>
+</pre></div>
+<p>This may seem a little confusing so let&#8217;s take a look at a simple <tt class="docutils literal">where</tt> first:</p>
+<div class="highlight"><pre><span></span><span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">([</span><span class="n">u</span><span class="p">],</span> <span class="n">u</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+<p>Nothing fancy here, now let&#8217;s add a named&nbsp;query:</p>
+<div class="highlight"><pre><span></span><span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:user</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">([</span><span class="ss">user</span><span class="p">:</span> <span class="n">u</span><span class="p">],</span> <span class="n">u</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+<p>Notice that now we can declare that <tt class="docutils literal">u</tt> is an alias for the <tt class="docutils literal">users</tt> named binding. What if
+we used the tuples syntax for the <tt class="docutils literal">user: u</tt> instead of the keyword&nbsp;one:</p>
+<div class="highlight"><pre><span></span><span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:user</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">([{</span><span class="ss">:user</span><span class="p">,</span> <span class="n">u</span><span class="p">}],</span> <span class="n">u</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+<p>Yes this still works. What if we wanted to use a variable for the binding name in the&nbsp;where?</p>
+<div class="highlight"><pre><span></span><span class="n">binding</span> <span class="o">=</span> <span class="ss">:user</span>
+<span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:user</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">([{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">u</span><span class="p">}],</span> <span class="n">u</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+<p>I think it starts to make sense now, let&#8217;s finally use a variable for the field name&nbsp;also:</p>
+<div class="highlight"><pre><span></span><span class="n">binding</span> <span class="o">=</span> <span class="ss">:user</span>
+<span class="n">field_name</span> <span class="o">=</span> <span class="ss">:name</span>
+<span class="n">from</span><span class="p">(</span><span class="n">u</span> <span class="ow">in</span> <span class="nc">User</span><span class="p">,</span> <span class="ss">as</span><span class="p">:</span> <span class="ss">:user</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">where</span><span class="p">([{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">u</span><span class="p">}],</span> <span class="n">field</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;root&quot;</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+<p>So this is exactly how this&nbsp;works!</p>
+<p>Beyond the <tt class="docutils literal">:eq</tt> I&#8217;ve got the definitions for the other methods I described there, the most
+complex one is probably the <tt class="docutils literal">:date</tt> which is something&nbsp;like:</p>
+<div class="highlight"><pre><span></span><span class="n">where</span><span class="p">(</span>
+  <span class="p">[{</span><span class="o">^</span><span class="n">binding</span><span class="p">,</span> <span class="n">t</span><span class="p">}],</span>
+  <span class="n">fragment</span><span class="p">(</span><span class="s2">&quot;? &gt;= cast(? as date) and ? &lt; (cast(? as date) + &#39;1 day&#39;::interval&quot;</span><span class="p">),</span> <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">),</span> <span class="o">^</span><span class="n">value</span><span class="p">,</span> <span class="n">field</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">^</span><span class="n">field_name</span><span class="p">),</span> <span class="o">^</span><span class="n">value</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+<p>What this does is that it generates the following <span class="caps">SQL</span>&nbsp;fragment:</p>
+<div class="highlight"><pre><span></span><span class="n">field_name</span> <span class="o">&gt;=</span> <span class="k">cast</span><span class="p">(</span><span class="n">value</span> <span class="k">as</span> <span class="nb">date</span><span class="p">)</span> <span class="k">AND</span> <span class="n">field_name</span> <span class="o">&lt;</span> <span class="p">(</span><span class="k">cast</span><span class="p">(</span><span class="n">value</span> <span class="k">as</span> <span class="nb">date</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;1 day&#39;</span><span class="p">::</span><span class="nb">interval</span><span class="p">)</span>
+</pre></div>
+<p>You can add your own methods by adding more clauses to the case of the <tt class="docutils literal">creat_where_clause</tt> function
+and following a similar&nbsp;pattern.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>By using the <tt class="docutils literal">QueryFilterEx</tt> module presented here you can very quickly declare the fields you want
+to filter on and the method you want to use for each field no matter if these fields are in the same
+schema or are accessed through joins. You can easily extend the functionality of the module by adding
+your own methods. The only extra thing you need to do is to just add names to your&nbsp;queries.</p>
+</div>
+</div>
+  		</article>
+  		<article>
+<header>
+      <h1 class="entry-title">
+        <a href="https://spapas.github.io/2019/06/04/phoenix-form-select2-ajax/">Phoenix forms integration with select2 and ajax</a>
+      </h1>
+    <p class="meta">
+<time datetime="2019-06-04T14:20:00+03:00" pubdate>Τρι 04 Ιούνιος 2019</time>    </p>
+</header>
+
+<div class="entry-content"><p>During the past months I&#8217;ve tried to implement a project using <a class="reference external" href="https://elixir-lang.org/">Elixir</a> and the <a class="reference external" href="https://phoenixframework.org/">Phoenix framework</a>. Old
+visitors of my blog will probably remember that I mainly use Django for back-end development but I decided to
+also give Phoenix a&nbsp;try.</p>
+<p>My first impressions are positive but I don&#8217;t want to go into detail in this post; I&#8217;ll try to add a more
+extensive post comparing Elixir / Phoenix with Python / Django&nbsp;someday.</p>
+<p>The problem that this particular post will try to explain is how to properly integrate a jQuery <a class="reference external" href="https://select2.org/">select2</a>
+dropdown ajax with autocomplete search to your <a class="reference external" href="https://hexdocs.pm/phoenix_html/Phoenix.HTML.Form.html">Phonix Forms</a>. This seems like a very common problem however I
+couldn&#8217;t find a proper solution anywhere in the internet. It seems that most people using Phoenix prefer to
+implement their autocompletes using <span class="caps">SPA</span> like functionality (react etc). Also I found <a class="reference external" href="https://github.com/nico-amsterdam/phoenix_form_awesomplete">this project</a> that
+seems to be working, however it does not use select2 and I really didn&#8217;t like to mess with a different
+<span class="caps">JS</span> library for reasons that should be too obvious to most&nbsp;people.</p>
+<p>So here we&#8217;ll implement a simple solution for allowing your foreign key value to be autocompleted through ajax
+using select2. The specific example is that you have a User that belongs to an Authority i.e user has a field
+named <cite>authority_id</cite> which is a foreign key to authority. We&#8217;ll add a functionality to the user edit form to
+select the authority using&nbsp;ajax-autocomplete.</p>
+<p>Please notice that you can find a working version of this tutorial in my Phoenix Crud template project:
+<a class="reference external" href="https://github.com/spapas/phxcrd">https://github.com/spapas/phxcrd</a>. This project contains various other functionality that I need but you should be
+able to test the user - authority integration by following the instructions&nbsp;there.</p>
+<div class="section" id="the-schemas">
+<h2>The&nbsp;schemas</h2>
+<p>For this tutorial, we&#8217;ll use two schemas: A <tt class="docutils literal">User</tt> and an <tt class="docutils literal">Authority</tt>. Each <tt class="docutils literal">User</tt> belongs to an <tt class="docutils literal">Authority</tt>
+(thus will have a foreign key to <tt class="docutils literal">Authority</tt>; that&#8217;s what we want to set using the ajax select2). Here are
+the ecto schemas for these&nbsp;entities:</p>
+<div class="highlight"><pre><span></span><span class="kd">defmodule</span> <span class="nc">Phxcrd.Auth.Authority</span> <span class="k">do</span>
+  <span class="kn">use</span> <span class="nc">Ecto.Schema</span>
+
+  <span class="kn">import</span> <span class="nc">Ecto.Changeset</span>
+  <span class="kn">alias</span> <span class="nc">Phxcrd.Auth.User</span>
+
+  <span class="n">schema</span> <span class="s2">&quot;authorities&quot;</span> <span class="k">do</span>
+    <span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">has_many</span> <span class="ss">:users</span><span class="p">,</span> <span class="nc">User</span><span class="p">,</span> <span class="ss">on_replace</span><span class="p">:</span> <span class="ss">:nilify</span>
+    <span class="n">timestamps</span><span class="p">()</span>
+  <span class="k">end</span>
+
+  <span class="na">@doc</span> <span class="no">false</span>
+  <span class="kd">def</span> <span class="n">changeset</span><span class="p">(</span><span class="n">authority</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">authority</span>
+    <span class="o">|&gt;</span> <span class="n">cast</span><span class="p">(</span><span class="n">attrs</span><span class="p">,</span> <span class="p">[</span><span class="ss">:name</span><span class="p">])</span>
+    <span class="o">|&gt;</span> <span class="n">validate_required</span><span class="p">([</span><span class="ss">:name</span><span class="p">],</span> <span class="ss">message</span><span class="p">:</span> <span class="s2">&quot;The field is required&quot;</span><span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="n">unique_constraint</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">message</span><span class="p">:</span> <span class="s2">&quot;The name already exists!&quot;</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="kn">use</span> <span class="nc">Accessible</span>
+<span class="k">end</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kd">defmodule</span> <span class="nc">Phxcrd.Auth.User</span> <span class="k">do</span>
+  <span class="kn">use</span> <span class="nc">Ecto.Schema</span>
+
+  <span class="kn">import</span> <span class="nc">Ecto.Changeset</span>
+  <span class="kn">alias</span> <span class="nc">Phxcrd.Auth.Authority</span>
+
+  <span class="n">schema</span> <span class="s2">&quot;users&quot;</span> <span class="k">do</span>
+    <span class="n">field</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">field</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">field</span> <span class="ss">:password_hash</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">field</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">virtual</span><span class="p">:</span> <span class="no">true</span>
+
+    <span class="n">belongs_to</span> <span class="ss">:authority</span><span class="p">,</span> <span class="nc">Authority</span>
+
+    <span class="n">timestamps</span><span class="p">()</span>
+  <span class="k">end</span>
+
+  <span class="na">@doc</span> <span class="no">false</span>
+  <span class="kd">def</span> <span class="n">changeset</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">user</span>
+    <span class="o">|&gt;</span> <span class="n">cast</span><span class="p">(</span><span class="n">attrs</span><span class="p">,</span> <span class="p">[</span><span class="ss">:username</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:authority_id</span><span class="p">])</span>
+    <span class="o">|&gt;</span> <span class="n">validate_required</span><span class="p">([</span><span class="ss">:username</span><span class="p">,</span> <span class="ss">:email</span> <span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="kn">use</span> <span class="nc">Accessible</span>
+<span class="k">end</span>
+</pre></div>
+<p>Notice that both these entities are contained in the <tt class="docutils literal">Auth</tt> context and were created using
+<tt class="docutils literal">mix phx.gen.html</tt>; I won&#8217;t include the migrations&nbsp;here.</p>
+</div>
+<div class="section" id="the-search-api">
+<h2>The search <span class="caps">API</span></h2>
+<p>Let&#8217;s now take a look at the search api for <tt class="docutils literal">Authority</tt>. I&#8217;ve added an <tt class="docutils literal">ApiController</tt>  which contains
+the following&nbsp;function:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">search_authorities</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">]</span>
+
+    <span class="n">authorities</span> <span class="o">=</span>
+      <span class="n">from</span><span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="nc">Authority</span><span class="p">,</span>
+        <span class="ss">where</span><span class="p">:</span> <span class="n">ilike</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="o">^</span><span class="s2">&quot;%</span><span class="si">#{</span><span class="n">q</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+      <span class="p">)</span>
+      <span class="o">|&gt;</span> <span class="n">limit</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+      <span class="o">|&gt;</span> <span class="nc">Repo</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="n">render</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s2">&quot;authorities.json&quot;</span><span class="p">,</span> <span class="ss">authorities</span><span class="p">:</span> <span class="n">authorities</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+<p>Notice that this retrieves a <cite>q</cite> parameter and makes an <cite>ilike</cite> query to <cite>Authority.name</cite>. It then
+passes the results to the view for rendering. Here&#8217;s the corresponding function for <cite>ApiView</cite>:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">render</span><span class="p">(</span><span class="s2">&quot;authorities.json&quot;</span><span class="p">,</span> <span class="p">%{</span><span class="ss">authorities</span><span class="p">:</span> <span class="n">authorities</span><span class="p">})</span> <span class="k">do</span>
+    <span class="p">%{</span><span class="ss">results</span><span class="p">:</span> <span class="nc">Enum</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">authorities</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">authority_json</span><span class="o">/</span><span class="mi">1</span><span class="p">)}</span>
+  <span class="k">end</span>
+
+  <span class="kd">def</span> <span class="n">authority_json</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">do</span>
+    <span class="p">%{</span>
+      <span class="ss">id</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+      <span class="ss">text</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span>
+    <span class="p">}</span>
+<span class="k">end</span>
+</pre></div>
+<p>Notice that select2 wants its results in a <span class="caps">JSON</span> struct with the following form <tt class="docutils literal">{results: [{id: 1, name: &quot;Authority <span class="pre">1&quot;}]}</span></tt>.</p>
+<p>To add this controller action to my routes I&#8217;ve added this to <tt class="docutils literal">router.ex</tt>:</p>
+<div class="highlight"><pre><span></span><span class="n">scope</span> <span class="s2">&quot;/api&quot;</span><span class="p">,</span> <span class="nc">PhxcrdWeb</span> <span class="k">do</span>
+    <span class="n">pipe_through</span> <span class="ss">:api</span>
+
+    <span class="n">get</span> <span class="s2">&quot;/search_authorities&quot;</span><span class="p">,</span> <span class="nc">ApiController</span><span class="p">,</span> <span class="ss">:search_authorities</span>
+<span class="k">end</span>
+</pre></div>
+<p>Thus if you visit <tt class="docutils literal"><span class="pre">http://127.0.0.1/search_authorities?q=A</span></tt> you should retrieve authorities containing <tt class="docutils literal">A</tt> in their&nbsp;name.</p>
+</div>
+<div class="section" id="the-controller">
+<h2>The&nbsp;controller</h2>
+<p>Concenring the <tt class="docutils literal">UserController</tt> I&#8217;ve added the following methods to it for creating and updating&nbsp;users:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">new</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">_params</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">changeset</span> <span class="o">=</span> <span class="nc">Auth</span><span class="o">.</span><span class="n">change_user</span><span class="p">(%</span><span class="nc">User</span><span class="p">{})</span>
+  <span class="n">render</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s2">&quot;new.html&quot;</span><span class="p">,</span> <span class="ss">changeset</span><span class="p">:</span> <span class="n">changeset</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="kd">def</span> <span class="n">create</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="p">%{</span><span class="s2">&quot;user&quot;</span> <span class="o">=&gt;</span> <span class="n">user_params</span><span class="p">})</span> <span class="k">do</span>
+  <span class="k">case</span> <span class="nc">Auth</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">user_params</span><span class="p">)</span> <span class="k">do</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">user</span><span class="p">}</span> <span class="o">-&gt;</span>
+      <span class="n">conn</span>
+      <span class="o">|&gt;</span> <span class="n">put_flash</span><span class="p">(</span><span class="ss">:info</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> created!&quot;</span><span class="p">)</span>
+      <span class="o">|&gt;</span> <span class="n">redirect</span><span class="p">(</span><span class="ss">to</span><span class="p">:</span> <span class="nc">Routes</span><span class="o">.</span><span class="n">user_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:show</span><span class="p">,</span> <span class="n">user</span><span class="p">))</span>
+
+    <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="n">changeset</span><span class="p">}</span> <span class="o">-&gt;</span>
+      <span class="n">render</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s2">&quot;new.html&quot;</span><span class="p">,</span> <span class="ss">changeset</span><span class="p">:</span> <span class="n">changeset</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="kd">def</span> <span class="n">edit</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="p">%{</span><span class="s2">&quot;id&quot;</span> <span class="o">=&gt;</span> <span class="n">id</span><span class="p">})</span> <span class="k">do</span>
+  <span class="n">user</span> <span class="o">=</span> <span class="nc">Auth</span><span class="o">.</span><span class="n">get_user!</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+  <span class="n">changeset</span> <span class="o">=</span> <span class="nc">Auth</span><span class="o">.</span><span class="n">change_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+  <span class="n">render</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s2">&quot;edit.html&quot;</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span> <span class="ss">changeset</span><span class="p">:</span> <span class="n">changeset</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="kd">def</span> <span class="n">update</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="p">%{</span><span class="s2">&quot;id&quot;</span> <span class="o">=&gt;</span> <span class="n">id</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span> <span class="o">=&gt;</span> <span class="n">user_params</span><span class="p">})</span> <span class="k">do</span>
+  <span class="n">user</span> <span class="o">=</span> <span class="nc">Auth</span><span class="o">.</span><span class="n">get_user!</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+
+  <span class="n">user_params</span> <span class="o">=</span> <span class="nc">Map</span><span class="o">.</span><span class="n">merge</span><span class="p">(%{</span><span class="s2">&quot;authority_id&quot;</span> <span class="o">=&gt;</span> <span class="no">nil</span><span class="p">},</span> <span class="n">user_params</span><span class="p">)</span>
+
+  <span class="k">case</span> <span class="nc">Auth</span><span class="o">.</span><span class="n">update_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">user_params</span><span class="p">)</span> <span class="k">do</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">user</span><span class="p">}</span> <span class="o">-&gt;</span>
+      <span class="n">conn</span>
+      <span class="o">|&gt;</span> <span class="n">put_flash</span><span class="p">(</span><span class="ss">:info</span><span class="p">,</span> <span class="s2">&quot;User updated successfully.&quot;</span><span class="p">)</span>
+      <span class="o">|&gt;</span> <span class="n">redirect</span><span class="p">(</span><span class="ss">to</span><span class="p">:</span> <span class="nc">Routes</span><span class="o">.</span><span class="n">user_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:show</span><span class="p">,</span> <span class="n">user</span><span class="p">))</span>
+
+    <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="p">%</span><span class="nc">Ecto.Changeset</span><span class="p">{}</span> <span class="o">=</span> <span class="n">changeset</span><span class="p">}</span> <span class="o">-&gt;</span>
+      <span class="n">render</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s2">&quot;edit.html&quot;</span><span class="p">,</span> <span class="ss">user</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span> <span class="ss">changeset</span><span class="p">:</span> <span class="n">changeset</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>Most of these are more or less the default things that <tt class="docutils literal">mix phx.gen.html</tt> creates.
+One thing that may seem a strange here is the <tt class="docutils literal">user_params = <span class="pre">Map.merge(%{&quot;authority_id&quot;</span> =&gt; nil}, user_params)</tt>
+line of <tt class="docutils literal">update</tt>. What happens here is that I want to be able to clear the authority of a user (I&#8217;ll
+explain how in the next sections). If I do
+that then the <tt class="docutils literal">user_params</tt> that is passed to <tt class="docutils literal">update</tt> will <em>not</em> contain an <tt class="docutils literal">authority_id</tt> key thus
+the <tt class="docutils literal">authority_id</tt> won&#8217;t be changed at all (so even though I cleared it, it will keep its previous value after
+I save it). To fix that I set a default value of <tt class="docutils literal">nil</tt> to <tt class="docutils literal">authority_id</tt>; if the user has actually selected
+an authority from the form this will be overriden when merging the two maps. So the resulting <tt class="docutils literal">user_params</tt> will
+<em>always</em> contain an <tt class="docutils literal">authority_id</tt> key, either set to nil or to the selected&nbsp;authority.</p>
+<p>Beyond that I wont&#8217; go into detail explaining the above functions,  but if something seems strange feel free to ask. I
+also won&#8217;t explain the <tt class="docutils literal">Auth.*</tt> functions; all these are created by phoenix in the context&nbsp;module.</p>
+</div>
+<div class="section" id="the-view">
+<h2>The&nbsp;view</h2>
+<p>The <tt class="docutils literal">UserView</tt> module contains a simple but very important&nbsp;function:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">get_select_value</span><span class="p">(</span><span class="n">changeset</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">do</span>
+  <span class="k">case</span> <span class="n">changeset</span><span class="o">.</span><span class="n">changes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="k">do</span>
+    <span class="no">nil</span> <span class="o">-&gt;</span> <span class="nc">Map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">changeset</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">-&gt;</span> <span class="n">z</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+<p>This functions gets two parameters: The changeset and the name of the attribute (<tt class="docutils literal">:authority_id</tt> in our case). What
+it does is to first check if this attribute is contained in the changeset.changes; if yes it will return that value. If
+it isn&#8217;t contained in the changeset.changes then it will return the value of changeset.data for that&nbsp;attribute.</p>
+<p>This is a little complex but let&#8217;s try to understand its logic: When you start editing a <tt class="docutils literal">User</tt> you want to display
+the current authority of that instance. However, when you submit an edited user and retrieve an errored form (for example
+because you forgot to fill the username) you want to display the authority that <em>was submitted</em> in the form. So the
+<tt class="docutils literal">changeset.changes</tt> contains the changes that were submitted just before while the <tt class="docutils literal">changeset.data</tt> contain the
+initial value of the&nbsp;struct.</p>
+<p><strong>Update 02/07/2019:</strong> Please notice that instead of using the
+<tt class="docutils literal">get_select_value</tt> I presented before you can use the
+<tt class="docutils literal">Ecto.Changeset.get_field</tt> function that does exactly this! So
+<tt class="docutils literal">get_select_value</tt> could be defined like&nbsp;this:</p>
+<div class="highlight"><pre><span></span><span class="kd">def</span> <span class="n">get_select_value</span><span class="p">(</span><span class="n">changeset</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">changeset</span> <span class="o">|&gt;</span> <span class="nc">Ecto.Changeset</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<div class="section" id="the-form-template">
+<h2>The form&nbsp;template</h2>
+<p>Both the <tt class="docutils literal">:new</tt> and <tt class="docutils literal">:edit</tt> actions include a common form.html.eex&nbsp;template:</p>
+<div class="highlight"><pre><span></span><span class="err">&lt;</span>%= form_for @changeset, @action, fn f -&gt; %&gt;
+  <span class="err">&lt;</span>%= if @changeset.action do %&gt;
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;alert alert-danger&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span><span class="err">&lt;</span>%= gettext(&quot;Problems while saving&quot;) %&gt;<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="err">&lt;</span>% end %&gt;
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#39;row&#39;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#39;column&#39;</span><span class="p">&gt;</span>
+      <span class="err">&lt;</span>%= label f, :username %&gt;
+      <span class="err">&lt;</span>%= text_input f, :username %&gt;
+      <span class="err">&lt;</span>%= error_tag f, :username %&gt;
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#39;column&#39;</span><span class="p">&gt;</span>
+      <span class="err">&lt;</span>%= label f, :email %&gt;
+      <span class="err">&lt;</span>%= text_input f, :email %&gt;
+      <span class="err">&lt;</span>%= error_tag f, :email %&gt;
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#39;row&#39;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#39;column&#39;</span><span class="p">&gt;</span>
+      <span class="err">&lt;</span>%= label f, :authority %&gt;
+      <span class="err">&lt;</span>%= select(f,
+        :authority_id, [
+          (with sv when not is_nil(sv) <span class="p">&lt;</span><span class="nt">-</span> <span class="na">get_select_value</span><span class="err">(@</span><span class="na">changeset</span><span class="err">,</span> <span class="na">:authority_id</span><span class="err">),</span>
+                                     <span class="na">a</span> <span class="err">&lt;</span><span class="na">-</span> <span class="na">Phxcrd</span><span class="err">.</span><span class="na">Auth</span><span class="err">.</span><span class="na">get_authority</span><span class="err">!(</span><span class="na">sv</span><span class="err">),</span> <span class="na">do:</span> <span class="err">{</span><span class="na">a</span><span class="err">.</span><span class="na">name</span><span class="err">,</span> <span class="na">a</span><span class="err">.</span><span class="na">id</span><span class="err">})</span>
+        <span class="err">],</span>
+        <span class="na">style:</span> <span class="err">&quot;</span><span class="na">width:</span> <span class="na">100</span><span class="err">%&quot;)</span>
+        <span class="err">%</span><span class="p">&gt;</span>
+      <span class="err">&lt;</span>%= error_tag f, :authority_id %&gt;
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+  <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="err">&lt;</span>%= submit gettext(&quot;Save&quot;) %&gt;
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="err">&lt;</span>% end %&gt;
+</pre></div>
+<p>This is a custom Phoenix form but it has the following addition which is more or less the meat of this article
+(along with the <tt class="docutils literal">get_select_value</tt> function I explained&nbsp;before):</p>
+<div class="highlight"><pre><span></span><span class="n">select</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="ss">:authority_id</span><span class="p">,</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">with</span> <span class="n">sv</span> <span class="ow">when</span> <span class="ow">not</span> <span class="n">is_nil</span><span class="p">(</span><span class="n">sv</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">get_select_value</span><span class="p">(</span><span class="na">@changeset</span><span class="p">,</span> <span class="ss">:authority_id</span><span class="p">),</span>
+                                   <span class="n">a</span> <span class="o">&lt;-</span> <span class="nc">Phxcrd.Auth</span><span class="o">.</span><span class="n">get_authority!</span><span class="p">(</span><span class="n">sv</span><span class="p">),</span> <span class="ss">do</span><span class="p">:</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span><span class="p">})</span>
+      <span class="p">],</span>
+      <span class="ss">style</span><span class="p">:</span> <span class="s2">&quot;width: 100%&quot;</span><span class="p">)</span>
+</pre></div>
+<p>So this will create an html select element which will contain a single value (the array in the third
+parameter of <tt class="docutils literal">select</tt>): The authority of that object or the authority that the user had submitted
+in the form. For this it uses <tt class="docutils literal">get_select_value</tt> to retrieve the :authority_id and if it&#8217;s not nil
+it passes it to <tt class="docutils literal">get_authority!</tt> to retrieve the actual authority and return a tuple with its name and&nbsp;id.</p>
+<p>By default when you create a <tt class="docutils literal">select</tt> element you&#8217;ll pass an array of all options in the third
+parameter, for&nbsp;example:</p>
+<div class="highlight"><pre><span></span><span class="n">select</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="ss">:authority_id</span><span class="p">,</span> <span class="nc">Phxcrd.Auth</span><span class="o">.</span><span class="n">list_authorities</span> <span class="o">|&gt;</span> <span class="nc">Enum</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="p">{</span><span class="ni">&amp;1</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="ni">&amp;1</span><span class="o">.</span><span class="n">id</span><span class="p">}))</span>
+</pre></div>
+<p>Of course this beats the purpose of using ajax since all options will be&nbsp;rendered.</p>
+<p>The final step is to add the required custom javascript to convert that select to&nbsp;select2-with-ajax:</p>
+<div class="highlight"><pre><span></span><span class="nx">$</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#user_authority_id&#39;</span><span class="p">).</span><span class="nx">select2</span><span class="p">({</span>
+      <span class="nx">allowClear</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="nx">placeholder</span><span class="o">:</span> <span class="s1">&#39;Select authority&#39;</span><span class="p">,</span>
+      <span class="nx">ajax</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;&lt;%= Routes.api_path(@conn, :search_authorities) %&gt;&#39;</span><span class="p">,</span>
+        <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
+        <span class="nx">delay</span><span class="o">:</span> <span class="mi">150</span><span class="p">,</span>
+        <span class="nx">minimumInputLength</span><span class="o">:</span> <span class="mi">2</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">})</span>
+</pre></div>
+<p>The <span class="caps">JS</span> very rather simple; the <tt class="docutils literal">allowClear</tt> option will display an <tt class="docutils literal">x</tt> so that you can clear the
+selected authority while the ajax url will be that of the <tt class="docutils literal">:search_authorities</tt>.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion</h2>
+<p>Although this article may seem a little long, as I&#8217;ve already mentioned the most important thing
+to keep is how to properly set the value that should be displayed in your <tt class="docutils literal">select2</tt> widget. Beyond
+that everything is a walk in the park by following the&nbsp;docs.</p>
+</div>
+</div>
+  		</article>
+  		<article>
+<header>
+      <h1 class="entry-title">
+        <a href="https://spapas.github.io/2019/04/05/android-custom-filter-adapter/">How to create a custom filtered adapter in Android</a>
+      </h1>
+    <p class="meta">
+<time datetime="2019-04-05T12:20:00+03:00" pubdate>Παρ 05 Απρίλιος 2019</time>    </p>
+</header>
+
+<div class="entry-content"><div class="section" id="introduction">
+<h2>Introduction</h2>
+<p>Android offers a nice component named <a class="reference external" href="https://developer.android.com/reference/android/widget/AutoCompleteTextView">AutoCompleteTextView</a> that can be used to auto-fill a text box from a list of values.
+In its simplest form, you just create an array adapter passing it a list of objects (that have a proper <tt class="docutils literal">toString()</tt> method).
+Then you type some characters to the textbox and by default it will filter the results searching
+in the <em>beginning of the backing object&#8217;s toString() result</em>.</p>
+<p>However there are times that you don&#8217;t want to look at the beginning of the string (because you want to look at the middle of the string) or
+you don&#8217;t want to just to search in toString() method of the object or you want to do some more fancy things in object output. For this
+you must override the <tt class="docutils literal">ArrayAdapter</tt> and add a custom <tt class="docutils literal">Filter</tt>.</p>
+<p>Unfurtunately this isn&#8217;t as straightforward as I&#8217;d like and I couldn&#8217;t find a quick and easy tutorial on how it can be&nbsp;done.</p>
+<p>So here goes nothing: In the following I&#8217;ll show you a very simple android application that will have <em>the minimum viable</em> custom filtered
+adapter implementation. You can find the whole project in github: <a class="reference external" href="https://github.com/spapas/CustomFilteredAdapeter">https://github.com/spapas/CustomFilteredAdapeter</a> but I am going to discuss
+everything here&nbsp;also.</p>
+</div>
+<div class="section" id="the-application">
+<h2>The&nbsp;application</h2>
+<p>Just create a new project with an empty activity from Android Studio. Use kotlin as the&nbsp;language.</p>
+</div>
+<div class="section" id="the-layout">
+<h2>The&nbsp;layout</h2>
+<p>I&#8217;ll keep it as simple as&nbsp;possible:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="nt">&lt;LinearLayout</span>
+        <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+        <span class="na">xmlns:tools=</span><span class="s">&quot;http://schemas.android.com/tools&quot;</span>
+        <span class="na">android:orientation=</span><span class="s">&quot;vertical&quot;</span>
+        <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;match_parent&quot;</span>
+        <span class="na">tools:context=</span><span class="s">&quot;.MainActivity&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;TextView</span>
+            <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
+            <span class="na">android:text=</span><span class="s">&quot;Hello World!&quot;</span>
+            <span class="na">android:textSize=</span><span class="s">&quot;32sp&quot;</span>
+            <span class="na">android:textAlignment=</span><span class="s">&quot;center&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;AutoCompleteTextView</span>
+            <span class="na">android:layout_marginTop=</span><span class="s">&quot;32dip&quot;</span>
+            <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span> <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
+            <span class="na">android:id=</span><span class="s">&quot;@+id/autoCompleteTextView&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/LinearLayout&gt;</span>
+</pre></div>
+<p>You should just care about the <tt class="docutils literal">AutoCompleteTextView</tt> with an id of <tt class="docutils literal">autoCompleteTextView</tt>.</p>
+</div>
+<div class="section" id="the-backing-data-object">
+<h2>The backing data&nbsp;object</h2>
+<p>I&#8217;ll use a simple PoiDao Kotlin data class for&nbsp;this:</p>
+<div class="highlight"><pre><span></span><span class="k">data</span> <span class="k">class</span> <span class="nc">PoiDao</span><span class="p">(</span>
+    <span class="k">val</span> <span class="py">id</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span>
+    <span class="k">val</span> <span class="py">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+    <span class="k">val</span> <span class="py">city</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+    <span class="k">val</span> <span class="py">category_name</span><span class="p">:</span> <span class="n">String</span>
+<span class="p">)</span>
+</pre></div>
+<p>I&#8217;d like to be able to search to both name, city and category_name of each object. To create a list of the pois to be used to the adapter I can do something&nbsp;like:</p>
+<div class="highlight"><pre><span></span><span class="k">val</span> <span class="py">poisArray</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+    <span class="n">PoiDao</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="s">&quot;Taco Bell&quot;</span><span class="p">,</span> <span class="s">&quot;Athens&quot;</span><span class="p">,</span> <span class="s">&quot;Restaurant&quot;</span><span class="p">),</span>
+    <span class="n">PoiDao</span><span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="s">&quot;McDonalds&quot;</span><span class="p">,</span> <span class="s">&quot;Athens&quot;</span><span class="p">,</span><span class="s">&quot;Restaurant&quot;</span><span class="p">),</span>
+    <span class="n">PoiDao</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="s">&quot;KFC&quot;</span><span class="p">,</span> <span class="s">&quot;Piraeus&quot;</span><span class="p">,</span> <span class="s">&quot;Restaurant&quot;</span><span class="p">),</span>
+    <span class="n">PoiDao</span><span class="p">(</span><span class="m">4</span><span class="p">,</span> <span class="s">&quot;Shell&quot;</span><span class="p">,</span> <span class="s">&quot;Lamia&quot;</span><span class="p">,</span><span class="s">&quot;Gas Station&quot;</span><span class="p">),</span>
+    <span class="n">PoiDao</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="s">&quot;BP&quot;</span><span class="p">,</span> <span class="s">&quot;Thessaloniki&quot;</span><span class="p">,</span> <span class="s">&quot;Gas Station&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="the-custom-adapter">
+<h2>The custom&nbsp;adapter</h2>
+<p>This will be an <tt class="docutils literal">ArrayAdapter&lt;PoiDao&gt;</tt> implementing also the <tt class="docutils literal">Filterable</tt> interface:</p>
+<div class="highlight"><pre><span></span><span class="k">inner</span> <span class="k">class</span> <span class="nc">PoiAdapter</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">@LayoutRes</span> <span class="k">private</span> <span class="k">val</span> <span class="py">layoutResource</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="k">private</span> <span class="k">val</span> <span class="py">allPois</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">PoiDao</span><span class="p">&gt;):</span>
+    <span class="n">ArrayAdapter</span><span class="p">&lt;</span><span class="n">PoiDao</span><span class="p">&gt;(</span><span class="n">context</span><span class="p">,</span> <span class="n">layoutResource</span><span class="p">,</span> <span class="n">allPois</span><span class="p">),</span>
+    <span class="n">Filterable</span> <span class="p">{</span>
+    <span class="k">private</span> <span class="k">var</span> <span class="py">mPois</span><span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">PoiDao</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">allPois</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getCount</span><span class="p">():</span> <span class="n">Int</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">mPois</span><span class="p">.</span><span class="n">size</span>
+    <span class="p">}</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getItem</span><span class="p">(</span><span class="n">p0</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">PoiDao</span><span class="p">?</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">mPois</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getItemId</span><span class="p">(</span><span class="n">p0</span><span class="p">:</span> <span class="n">Int</span><span class="p">):</span> <span class="n">Long</span> <span class="p">{</span>
+        <span class="c1">// Or just return p0</span>
+        <span class="k">return</span> <span class="n">mPois</span><span class="p">.</span><span class="k">get</span><span class="p">(</span><span class="n">p0</span><span class="p">).</span><span class="n">id</span><span class="p">.</span><span class="n">toLong</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getView</span><span class="p">(</span><span class="n">position</span><span class="p">:</span> <span class="n">Int</span><span class="p">,</span> <span class="n">convertView</span><span class="p">:</span> <span class="n">View</span><span class="p">?,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">ViewGroup</span><span class="p">?):</span> <span class="n">View</span> <span class="p">{</span>
+        <span class="k">val</span> <span class="py">view</span><span class="p">:</span> <span class="n">TextView</span> <span class="p">=</span> <span class="n">convertView</span> <span class="k">as</span> <span class="n">TextView</span><span class="p">?</span> <span class="o">?:</span> <span class="n">LayoutInflater</span><span class="p">.</span><span class="n">from</span><span class="p">(</span><span class="n">context</span><span class="p">).</span><span class="n">inflate</span><span class="p">(</span><span class="n">layoutResource</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="k">false</span><span class="p">)</span> <span class="k">as</span> <span class="n">TextView</span>
+        <span class="n">view</span><span class="p">.</span><span class="n">text</span> <span class="p">=</span> <span class="s">&quot;${mPois[position].name} ${mPois[position].city} (${mPois[position].category_name})&quot;</span>
+        <span class="k">return</span> <span class="n">view</span>
+    <span class="p">}</span>
+
+    <span class="k">override</span> <span class="k">fun</span> <span class="nf">getFilter</span><span class="p">():</span> <span class="n">Filter</span> <span class="p">{</span>
+        <span class="c1">// See next section</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>You&#8217;ll see that we add an instance variable named <tt class="docutils literal">mPois</tt> that gets initialized in the start with <tt class="docutils literal">allPois</tt> (which is the initial list of all pois that is passed to the adapter). The mPois
+will contain the <em>filtered</em> results. Then,
+for <tt class="docutils literal">getCount</tt> and <tt class="docutils literal">getItem</tt> we return the corresponding valeus from <tt class="docutils literal">mPois</tt>; the <tt class="docutils literal">getItemId</tt> is used when you have an sqlite backed adapter but I&#8217;m including it here for&nbsp;completeness.</p>
+<p>The <tt class="docutils literal">getView</tt> will create the specific line for each item in the dropdown. As you&#8217;ll see the layout that is passed must have a <tt class="docutils literal">text</tt> child which is set based on some of the attributes of
+the corresponding poi for each position. Notice that we can use whatever view layout we want for our dropdown result line (this is the <tt class="docutils literal">layoutResource</tt> parameter) but we need to configure
+it (i.e bind it with the values of the backing object) here&nbsp;properly.</p>
+<p>Finally we create a custom instance of the <tt class="docutils literal">Filter</tt>, explained in the next&nbsp;section.</p>
+</div>
+<div class="section" id="the-custom-filter">
+<h2>The custom&nbsp;filter</h2>
+<p>The <tt class="docutils literal">getFilter</tt> creates an object instance of a Filter and returns&nbsp;it:</p>
+<div class="highlight"><pre><span></span><span class="k">override</span> <span class="k">fun</span> <span class="nf">getFilter</span><span class="p">():</span> <span class="n">Filter</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">object</span> <span class="p">:</span> <span class="nc">Filter</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">publishResults</span><span class="p">(</span><span class="n">charSequence</span><span class="p">:</span> <span class="n">CharSequence</span><span class="p">?,</span> <span class="n">filterResults</span><span class="p">:</span> <span class="n">Filter</span><span class="p">.</span><span class="n">FilterResults</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">mPois</span> <span class="p">=</span> <span class="n">filterResults</span><span class="p">.</span><span class="n">values</span> <span class="k">as</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">PoiDao</span><span class="p">&gt;</span>
+            <span class="n">notifyDataSetChanged</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="k">override</span> <span class="k">fun</span> <span class="nf">performFiltering</span><span class="p">(</span><span class="n">charSequence</span><span class="p">:</span> <span class="n">CharSequence</span><span class="p">?):</span> <span class="n">Filter</span><span class="p">.</span><span class="n">FilterResults</span> <span class="p">{</span>
+            <span class="k">val</span> <span class="py">queryString</span> <span class="p">=</span> <span class="n">charSequence</span><span class="o">?.</span><span class="n">toString</span><span class="p">()</span><span class="o">?.</span><span class="n">toLowerCase</span><span class="p">()</span>
+
+            <span class="k">val</span> <span class="py">filterResults</span> <span class="p">=</span> <span class="n">Filter</span><span class="p">.</span><span class="n">FilterResults</span><span class="p">()</span>
+            <span class="n">filterResults</span><span class="p">.</span><span class="n">values</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">queryString</span><span class="p">==</span><span class="k">null</span> <span class="p">||</span> <span class="n">queryString</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span>
+                <span class="n">allPois</span>
+            <span class="k">else</span>
+                <span class="n">allPois</span><span class="p">.</span><span class="n">filter</span> <span class="p">{</span>
+                    <span class="n">it</span><span class="p">.</span><span class="n">name</span><span class="p">.</span><span class="n">toLowerCase</span><span class="p">().</span><span class="n">contains</span><span class="p">(</span><span class="n">queryString</span><span class="p">)</span> <span class="p">||</span>
+                    <span class="n">it</span><span class="p">.</span><span class="n">city</span><span class="p">.</span><span class="n">toLowerCase</span><span class="p">().</span><span class="n">contains</span><span class="p">(</span><span class="n">queryString</span><span class="p">)</span> <span class="p">||</span>
+                    <span class="n">it</span><span class="p">.</span><span class="n">category_name</span><span class="p">.</span><span class="n">toLowerCase</span><span class="p">().</span><span class="n">contains</span><span class="p">(</span><span class="n">queryString</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="k">return</span> <span class="n">filterResults</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>This object instance overrides two methods of <tt class="docutils literal">Filter</tt>: <tt class="docutils literal">performFiltering</tt> and <tt class="docutils literal">publishResults</tt>. The <tt class="docutils literal">performFiltering</tt> is where the actual filtering is done;
+it should return a <tt class="docutils literal">FilterResults</tt> object containing a <tt class="docutils literal">values</tt> attribute with the filtered values. In this method
+we retrieve the <tt class="docutils literal">charSequence</tt> parameter and converit it to lowercase. Then, if this parameter is not empty we filter the corresponding elements of <tt class="docutils literal">allPois</tt>
+(i.e name, city and category_name in our case) using contains. If the query parameter is empty then we just return all pois. Warning java developers; here the if
+is used as an expression (i.e its result will be assigned to <tt class="docutils literal">filterResults.values</tt>).</p>
+<p>After the performFiltering has finished, the <tt class="docutils literal">publishResults</tt> method is called. This method retrieves the filtered results in its <tt class="docutils literal">filterResults</tt> parameter. Thus it sets
+<tt class="docutils literal">mPois</tt> of the custom adapter is set to the result of the filter operation and calls <tt class="docutils literal">notifyDataSetChanged</tt> to display the&nbsp;results.</p>
+</div>
+<div class="section" id="using-the-custom-adapter">
+<h2>Using the custom&nbsp;adapter</h2>
+<p>To use the custom adapter you can do something like this in your activity&#8217;s&nbsp;onCreate:</p>
+<div class="highlight"><pre><span></span><span class="k">override</span> <span class="k">fun</span> <span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span> <span class="n">Bundle</span><span class="p">?)</span> <span class="p">{</span>
+    <span class="k">super</span><span class="p">.</span><span class="n">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+    <span class="n">setContentView</span><span class="p">(</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">activity_main</span><span class="p">)</span>
+
+    <span class="k">val</span> <span class="py">poisArray</span> <span class="p">=</span> <span class="n">listOf</span><span class="p">(</span>
+        <span class="c1">// See previous sections</span>
+    <span class="p">)</span>
+    <span class="k">val</span> <span class="py">adapter</span> <span class="p">=</span> <span class="n">PoiAdapter</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">android</span><span class="p">.</span><span class="n">R</span><span class="p">.</span><span class="n">layout</span><span class="p">.</span><span class="n">simple_list_item_1</span><span class="p">,</span> <span class="n">poisArray</span><span class="p">)</span>
+    <span class="n">autoCompleteTextView</span><span class="p">.</span><span class="n">setAdapter</span><span class="p">(</span><span class="n">adapter</span><span class="p">)</span>
+    <span class="n">autoCompleteTextView</span><span class="p">.</span><span class="n">threshold</span> <span class="p">=</span> <span class="m">3</span>
+
+    <span class="n">autoCompleteTextView</span><span class="p">.</span><span class="n">setOnItemClickListener</span><span class="p">()</span> <span class="p">{</span> <span class="n">parent</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">id</span> <span class="p">-&gt;</span>
+        <span class="k">val</span> <span class="py">selectedPoi</span> <span class="p">=</span> <span class="n">parent</span><span class="p">.</span><span class="n">adapter</span><span class="p">.</span><span class="n">getItem</span><span class="p">(</span><span class="n">position</span><span class="p">)</span> <span class="k">as</span> <span class="n">PoiDao</span><span class="p">?</span>
+        <span class="n">autoCompleteTextView</span><span class="p">.</span><span class="n">setText</span><span class="p">(</span><span class="n">selectedPoi</span><span class="o">?.</span><span class="n">name</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>We create the PoiAdapter passing it the poisArray and <tt class="docutils literal">android.R.layout.simple_list_item_1</tt> as the layout. That layout just contains a textview named text. As we&#8217;ve already
+discussed you can pass something more complex here. The <tt class="docutils literal">thresold</tt> defined the number of characters that the user that needs to enter to do the filtering (default is&nbsp;2).</p>
+<p>Please notice that when the user clicks (selects) on an item of the dropdown we set the contents of the textview (or else it will just use the object&#8217;s toString() method to set&nbsp;it).</p>
+</div>
+</div>
+  		</article>
+<div class="pagination">
+    <a class="prev" href="https://spapas.github.io/index2.html">&larr; Older</a>
+
+  <br />
+</div></div>
+<aside class="sidebar">
+  <section>
+  <br />
+  <a href='/feeds/all.atom.xml'>Atom</a> 
+  |
+  <a href='/feeds/all.rss.xml'>RSS</a> 
+  </section>
+  
+  <section>
+    <h1>Subscribe</h1>
+    Do you want to get notified via email when I post new content?
+    <style>.subscribe-button {
+    /* margin: 10px !important; */
+    padding: 10px !important;
+    background-color: black;
+    display: inline-block;
+    color: white !important;
+    text-decoration: none;    
+    
+    line-height: 36px !important;
+    height: 37px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    color: #ffffff !important;
+    background-color: #000000 !important;
+    border-radius: 3px !important;
+    border: 1px solid transparent !important;
+    padding: 1px 9px !important;
+    font-size: 23px !important;
+    letter-spacing: 0.6px !important;
+    box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;
+    -webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
+    margin: 0 auto !important;
+    font-family: 'Cookie', cursive !important;
+    -webkit-box-sizing: border-box !important;
+    box-sizing: border-box !important;
+    -o-transition: 0.3s all linear !important;
+    -webkit-transition: 0.3s all linear !important;
+    -moz-transition: 0.3s all linear !important;
+    -ms-transition: 0.3s all linear !important;
+    transition: 0.3s all linear !important;
+    
+    }</style>
+<a class='subscribe-button' target="_blank" href="http://eepurl.com/dxI3PP">Click here to subscribe!</a>
+  </section>
+  
+  <style>.bmc-button img{width: 27px !important;margin-bottom: 3px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-block !important;color:#ffffff !important;background-color:#000000 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 23px !important;letter-spacing:0.6px !important;;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet">
+  
+  
+  <section>
+    <h1>Recent Posts</h1>
+    <ul id="recent_posts">
+      <li class="post">
+          <a href="https://spapas.github.io/2019/10/17/declarative-ecto-query-sorting/">Declarative Ecto query sorting</a>
+      </li>
+      <li class="post">
+          <a href="https://spapas.github.io/2019/10/03/html-form-submit-php/">How to properly handle an HTML form</a>
+      </li>
+      <li class="post">
+          <a href="https://spapas.github.io/2019/07/25/declarative-ecto-query-filters/">Declarative Ecto query filters</a>
+      </li>
+      <li class="post">
+          <a href="https://spapas.github.io/2019/06/04/phoenix-form-select2-ajax/">Phoenix forms integration with select2 and ajax</a>
+      </li>
+      <li class="post">
+          <a href="https://spapas.github.io/2019/04/05/android-custom-filter-adapter/">How to create a custom filtered adapter in Android</a>
+      </li>
+    </ul>
+  </section>
+  <section>
+      
+    <h1>Categories</h1>
+    <ul id="recent_posts">
+        <li><a href="https://spapas.github.io/category/android.html">android</a></li>
+        <li><a href="https://spapas.github.io/category/css.html">css</a></li>
+        <li><a href="https://spapas.github.io/category/django.html">django</a></li>
+        <li><a href="https://spapas.github.io/category/elixir.html">elixir</a></li>
+        <li><a href="https://spapas.github.io/category/flask.html">flask</a></li>
+        <li><a href="https://spapas.github.io/category/git.html">git</a></li>
+        <li><a href="https://spapas.github.io/category/html.html">html</a></li>
+        <li><a href="https://spapas.github.io/category/javascript.html">javascript</a></li>
+        <li><a href="https://spapas.github.io/category/pelican.html">pelican</a></li>
+        <li><a href="https://spapas.github.io/category/postgresql.html">postgresql</a></li>
+        <li><a href="https://spapas.github.io/category/python.html">python</a></li>
+        <li><a href="https://spapas.github.io/category/spring.html">spring</a></li>
+        <li><a href="https://spapas.github.io/category/unix.html">unix</a></li>
+        <li><a href="https://spapas.github.io/category/wagtail.html">wagtail</a></li>
+    </ul>
+  </section>
+ 
+
+  <section>
+  <h1>Tags</h1>
+    <a href="https://spapas.github.io/tag/less.html">less</a>,    <a href="https://spapas.github.io/tag/rest.html">rest</a>,    <a href="https://spapas.github.io/tag/query.html">query</a>,    <a href="https://spapas.github.io/tag/ecto.html">ecto</a>,    <a href="https://spapas.github.io/tag/tables.html">tables</a>,    <a href="https://spapas.github.io/tag/pivot_table.html">pivot_table</a>,    <a href="https://spapas.github.io/tag/console.html">console</a>,    <a href="https://spapas.github.io/tag/async.html">async</a>,    <a href="https://spapas.github.io/tag/django-rq.html">django-rq</a>,    <a href="https://spapas.github.io/tag/github-pages.html">github-pages</a>,    <a href="https://spapas.github.io/tag/forms.html">forms</a>,    <a href="https://spapas.github.io/tag/yaml.html">yaml</a>,    <a href="https://spapas.github.io/tag/404.html">404</a>,    <a href="https://spapas.github.io/tag/ldap.html">ldap</a>,    <a href="https://spapas.github.io/tag/immutable.html">immutable</a>,    <a href="https://spapas.github.io/tag/initd.html">init.d</a>,    <a href="https://spapas.github.io/tag/youtube-dl.html">youtube-dl</a>,    <a href="https://spapas.github.io/tag/python.html">python</a>,    <a href="https://spapas.github.io/tag/django-extensions.html">django-extensions</a>,    <a href="https://spapas.github.io/tag/class-based-views.html">class-based-views</a>,    <a href="https://spapas.github.io/tag/scipy.html">scipy</a>,    <a href="https://spapas.github.io/tag/grid.html">grid</a>,    <a href="https://spapas.github.io/tag/ag-grid.html">ag-grid</a>,    <a href="https://spapas.github.io/tag/du.html">du</a>,    <a href="https://spapas.github.io/tag/watchify.html">watchify</a>,    <a href="https://spapas.github.io/tag/settings.html">settings</a>,    <a href="https://spapas.github.io/tag/flux.html">flux</a>,    <a href="https://spapas.github.io/tag/fixeddatatable.html">FixedDataTable</a>,    <a href="https://spapas.github.io/tag/queries.html">queries</a>,    <a href="https://spapas.github.io/tag/debug.html">debug</a>,    <a href="https://spapas.github.io/tag/imgur.html">imgur</a>,    <a href="https://spapas.github.io/tag/security.html">security</a>,    <a href="https://spapas.github.io/tag/npm.html">npm</a>,    <a href="https://spapas.github.io/tag/hyperapp.html">hyperapp</a>,    <a href="https://spapas.github.io/tag/spring.html">spring</a>,    <a href="https://spapas.github.io/tag/react-redux.html">react-redux</a>,    <a href="https://spapas.github.io/tag/cron.html">cron</a>,    <a href="https://spapas.github.io/tag/babelify.html">babelify</a>,    <a href="https://spapas.github.io/tag/design.html">design</a>,    <a href="https://spapas.github.io/tag/tutorial.html">tutorial</a>,    <a href="https://spapas.github.io/tag/gmail.html">gmail</a>,    <a href="https://spapas.github.io/tag/reportlab.html">reportlab</a>,    <a href="https://spapas.github.io/tag/rq.html">rq</a>,    <a href="https://spapas.github.io/tag/redis.html">redis</a>,    <a href="https://spapas.github.io/tag/python-3.html">python-3</a>,    <a href="https://spapas.github.io/tag/research.html">research</a>,    <a href="https://spapas.github.io/tag/werkzeug.html">werkzeug</a>,    <a href="https://spapas.github.io/tag/jobs.html">jobs</a>,    <a href="https://spapas.github.io/tag/redux-thunk.html">redux-thunk</a>,    <a href="https://spapas.github.io/tag/disk-usage.html">disk-usage</a>,    <a href="https://spapas.github.io/tag/javascript.html">javascript</a>,    <a href="https://spapas.github.io/tag/component.html">component</a>,    <a href="https://spapas.github.io/tag/ajax.html">ajax</a>,    <a href="https://spapas.github.io/tag/elixir.html">elixir</a>,    <a href="https://spapas.github.io/tag/ipython.html">ipython</a>,    <a href="https://spapas.github.io/tag/uglify.html">uglify</a>,    <a href="https://spapas.github.io/tag/configuration.html">configuration</a>,    <a href="https://spapas.github.io/tag/properties.html">properties</a>,    <a href="https://spapas.github.io/tag/bash.html">bash</a>,    <a href="https://spapas.github.io/tag/es6.html">es6</a>,    <a href="https://spapas.github.io/tag/spring-boot.html">spring-boot</a>,    <a href="https://spapas.github.io/tag/postgresql.html">postgresql</a>,    <a href="https://spapas.github.io/tag/kotlin.html">kotlin</a>,    <a href="https://spapas.github.io/tag/adapter.html">adapter</a>,    <a href="https://spapas.github.io/tag/filter.html">filter</a>,    <a href="https://spapas.github.io/tag/flask.html">flask</a>,    <a href="https://spapas.github.io/tag/notebook.html">notebook</a>,    <a href="https://spapas.github.io/tag/static-html.html">static-html</a>,    <a href="https://spapas.github.io/tag/pdf.html">pdf</a>,    <a href="https://spapas.github.io/tag/react-notification.html">react-notification</a>,    <a href="https://spapas.github.io/tag/pelican.html">pelican</a>,    <a href="https://spapas.github.io/tag/tasks.html">tasks</a>,    <a href="https://spapas.github.io/tag/nodejs.html">node.js</a>,    <a href="https://spapas.github.io/tag/unix.html">unix</a>,    <a href="https://spapas.github.io/tag/google.html">google</a>,    <a href="https://spapas.github.io/tag/linux.html">linux</a>,    <a href="https://spapas.github.io/tag/pivot.html">pivot</a>,    <a href="https://spapas.github.io/tag/auditing.html">auditing</a>,    <a href="https://spapas.github.io/tag/git.html">git</a>,    <a href="https://spapas.github.io/tag/java.html">java</a>,    <a href="https://spapas.github.io/tag/introduction.html">introduction</a>,    <a href="https://spapas.github.io/tag/pusher.html">pusher</a>,    <a href="https://spapas.github.io/tag/fixed-data-tables.html">fixed-data-tables</a>,    <a href="https://spapas.github.io/tag/heroku.html">heroku</a>,    <a href="https://spapas.github.io/tag/xhtml2pdf.html">xhtml2pdf</a>,    <a href="https://spapas.github.io/tag/numpy.html">numpy</a>,    <a href="https://spapas.github.io/tag/form.html">form</a>,    <a href="https://spapas.github.io/tag/django-rest-auth.html">django-rest-auth</a>,    <a href="https://spapas.github.io/tag/wagtail.html">wagtail</a>,    <a href="https://spapas.github.io/tag/rst.html">rst</a>,    <a href="https://spapas.github.io/tag/python-2.html">python-2</a>,    <a href="https://spapas.github.io/tag/ffmpeg.html">ffmpeg</a>,    <a href="https://spapas.github.io/tag/middleware.html">middleware</a>,    <a href="https://spapas.github.io/tag/profiles.html">profiles</a>,    <a href="https://spapas.github.io/tag/spring-security.html">spring-security</a>,    <a href="https://spapas.github.io/tag/githubio.html">github.io</a>,    <a href="https://spapas.github.io/tag/error.html">error</a>,    <a href="https://spapas.github.io/tag/asynchronous.html">asynchronous</a>,    <a href="https://spapas.github.io/tag/react-router-redux.html">react-router-redux</a>,    <a href="https://spapas.github.io/tag/select2.html">select2</a>,    <a href="https://spapas.github.io/tag/history.html">history</a>,    <a href="https://spapas.github.io/tag/django-rest-framework.html">django-rest-framework</a>,    <a href="https://spapas.github.io/tag/redux-form.html">redux-form</a>,    <a href="https://spapas.github.io/tag/cbv.html">cbv</a>,    <a href="https://spapas.github.io/tag/scheduling.html">scheduling</a>,    <a href="https://spapas.github.io/tag/plpgsql.html">plpgsql</a>,    <a href="https://spapas.github.io/tag/boilerplate.html">boilerplate</a>,    <a href="https://spapas.github.io/tag/generic.html">generic</a>,    <a href="https://spapas.github.io/tag/babel.html">babel</a>,    <a href="https://spapas.github.io/tag/authentication.html">authentication</a>,    <a href="https://spapas.github.io/tag/html.html">html</a>,    <a href="https://spapas.github.io/tag/android.html">android</a>,    <a href="https://spapas.github.io/tag/pandas.html">pandas</a>,    <a href="https://spapas.github.io/tag/css.html">css</a>,    <a href="https://spapas.github.io/tag/node.html">node</a>,    <a href="https://spapas.github.io/tag/phoenix.html">phoenix</a>,    <a href="https://spapas.github.io/tag/deploy.html">deploy</a>,    <a href="https://spapas.github.io/tag/mongodb.html">mongodb</a>,    <a href="https://spapas.github.io/tag/react.html">react</a>,    <a href="https://spapas.github.io/tag/autocompelte.html">autocompelte</a>,    <a href="https://spapas.github.io/tag/declarative.html">declarative</a>,    <a href="https://spapas.github.io/tag/php.html">php</a>,    <a href="https://spapas.github.io/tag/browserify.html">browserify</a>,    <a href="https://spapas.github.io/tag/branching.html">branching</a>,    <a href="https://spapas.github.io/tag/github.html">github</a>,    <a href="https://spapas.github.io/tag/jupyter.html">jupyter</a>,    <a href="https://spapas.github.io/tag/windows.html">windows</a>,    <a href="https://spapas.github.io/tag/youtube.html">youtube</a>,    <a href="https://spapas.github.io/tag/django.html">django</a>,    <a href="https://spapas.github.io/tag/q.html">q</a>,    <a href="https://spapas.github.io/tag/react-router.html">react-router</a>,    <a href="https://spapas.github.io/tag/redux.html">redux</a>,    <a href="https://spapas.github.io/tag/boostrap-material-design.html">boostrap-material-design</a>  </section>
+  
+  <section>
+  <h1>Yearly archives</h1>
+    <a href="https://spapas.github.io/posts/2013/">2013</a>,    <a href="https://spapas.github.io/posts/2014/">2014</a>,    <a href="https://spapas.github.io/posts/2015/">2015</a>,    <a href="https://spapas.github.io/posts/2016/">2016</a>,    <a href="https://spapas.github.io/posts/2017/">2017</a>,    <a href="https://spapas.github.io/posts/2018/">2018</a>,    <a href="https://spapas.github.io/posts/2019/">2019</a>  </section>
+
+
+
+  <section>
+    <h1>GitHub Repos</h1>
+    <ul id="gh_repos">
+      <li class="loading">Status updating...</li>
+    </ul>
+      <a href="https://github.com/spapas">@spapas</a> on GitHub
+    <script  src="//code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      $(function(){
+          if (!window.jXHR){
+              var jxhr = document.createElement('script');
+              jxhr.type = 'text/javascript';
+              jxhr.src = 'https://spapas.github.io/theme/js/jXHR.js';
+              var s = document.getElementsByTagName('script')[0];
+              s.parentNode.insertBefore(jxhr, s);
+          }
+
+          github.showRepos({
+              user: 'spapas',
+              count: 5,
+              skip_forks: true,
+              target: '#gh_repos'
+          });
+      });
+    </script>
+    <script src="https://spapas.github.io/theme/js/github.js" type="text/javascript"> </script>
+  </section>
+
+
+  <section>
+    <a href="https://twitter.com/_serafeim_?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @_serafeim_</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </section>
+
+</aside>    </div>
+  </div>
+  <footer role="contentinfo"><p>
+    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+  <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
+</p></footer>
+  <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>
+  <script src="https://spapas.github.io/theme/js/ender.js"></script>
+  <script src="https://spapas.github.io/theme/js/octopress.js" type="text/javascript"></script>
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-44750952-1', 'auto');
+
+    ga('send', 'pageview');
+    </script>
+  <script type="text/javascript">
+    var disqus_shortname = 'spapas-github-io';
+    (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = "//" + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+  </script>
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+</body>
+
+</html>
