@@ -167,9 +167,9 @@ the view will return a response which could be modified (if needed) by the middl
         <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span> <span class="o">=</span> <span class="n">get_response</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;M1 before response&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;M1 before response&quot;</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;M1 after response&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;M1 after response&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span>
 
 <span class="k">class</span> <span class="nc">M2</span><span class="p">:</span>
@@ -177,9 +177,9 @@ the view will return a response which could be modified (if needed) by the middl
         <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span> <span class="o">=</span> <span class="n">get_response</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;M2 before response&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;M2 before response&quot;</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;M2 after response&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;M2 after response&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span>
 </pre></div>
 <p>When you define <tt class="docutils literal"><span class="caps">MIDDLEWARE</span> = ['M1', 'M2']</tt> you&#8217;ll see the&nbsp;following:</p>
@@ -494,7 +494,7 @@ also your <span class="caps">DRF</span> <span class="caps">API</span>&nbsp;views
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

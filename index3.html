@@ -351,8 +351,8 @@ a list of urls. Here&#8217;s a small script that downloads the input video&nbsp;
         <span class="n">ydl</span> <span class="o">=</span> <span class="n">YoutubeDL</span><span class="p">(</span><span class="n">ydl_opts</span><span class="p">)</span>
         <span class="n">ydl</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Enter list of urls to download&quot;</span><span class="p">)</span>
-        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Enter list of urls to download&quot;</span><span class="p">)</span>
+        <span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 <p>Save it in a file named getvideo.py and run it like <tt class="docutils literal">py <span class="pre">-3</span> getvideo.py AjFfsOA7AQI 3dDtACSYVx0 G17E4Muylis</tt> to download all three&nbsp;videos!</p>
 </div>
@@ -372,10 +372,10 @@ script to rename all mp3 files in a directory to using english characters&nbsp;o
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">unidecode</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;mp3&#39;</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Renaming </span><span class="si">{0}</span><span class="s2"> to </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">unidecode</span><span class="o">.</span><span class="n">unidecode</span><span class="p">(</span><span class="n">file</span><span class="p">)))</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">unidecode</span><span class="o">.</span><span class="n">unidecode</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
+    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;mp3&#39;</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Renaming {0} to {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">unidecode</span><span class="o">.</span><span class="n">unidecode</span><span class="p">(</span><span class="nb">file</span><span class="p">)))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">unidecode</span><span class="o">.</span><span class="n">unidecode</span><span class="p">(</span><span class="nb">file</span><span class="p">))</span>
 </pre></div>
 <p>Copy this to a file named transliterate.py and run it in a directory containing mp3 files (<tt class="docutils literal">py <span class="pre">-3</span> transliterate.py</tt>) to rename them to non-unicode&nbsp;characters.</p>
 </div>
@@ -493,8 +493,8 @@ displays an html page and loads the client side code - we&#8217;ll talk about it
     <span class="n">authentication_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">authentication</span><span class="o">.</span><span class="n">TokenAuthentication</span><span class="p">,)</span>
     <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">permissions</span><span class="o">.</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
 
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="s2">&quot;Hello </span><span class="si">{0}</span><span class="s2">!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="s2">&quot;Hello {0}!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">))</span>
 </pre></div>
 <p>This is very simple however I&#8217;d like to make a few comments about the above. First of all you see that
 I&#8217;ve defined <tt class="docutils literal">authentication_classes</tt> and <tt class="docutils literal">permission_classes</tt>. These options&nbsp;define</p>
@@ -991,7 +991,7 @@ generic python packages (with the exception of xhtml2pdf which I discuss later).
 are a bunch of python-generic packages that I usually use (xlrd, xlwt, requests, raven, unidecode,
 database connectors etc) but these won&#8217;t be discussed&nbsp;here.</p>
 <div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#packages-i-use-in-all-my-projects" id="id30">Packages I use in all my projects</a><ul>
 <li><a class="reference internal" href="#django-tables2" id="id31">django-tables2</a></li>
@@ -1910,7 +1910,7 @@ removeing the new table and&nbsp;column.</p>
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

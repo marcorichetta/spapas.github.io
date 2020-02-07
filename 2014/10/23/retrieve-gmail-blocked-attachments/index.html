@@ -137,13 +137,13 @@ So here&#8217;s a simple program that gets an email in text/mime format as input
 
 <span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
-        <span class="nb">print</span> <span class="s2">&quot;Please enter a file to extract attachments from&quot;</span>
+        <span class="k">print</span> <span class="s2">&quot;Please enter a file to extract attachments from&quot;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="n">msg</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">message_from_file</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
     <span class="k">for</span> <span class="n">pl</span> <span class="ow">in</span> <span class="n">msg</span><span class="o">.</span><span class="n">get_payload</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">pl</span><span class="o">.</span><span class="n">get_filename</span><span class="p">():</span> <span class="c1"># if it is an attachment</span>
-            <span class="nb">open</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">get_filename</span><span class="p">(),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">get_payload</span><span class="p">(</span><span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">get_filename</span><span class="p">(),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">get_payload</span><span class="p">(</span><span class="n">decode</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 </pre></div>
 <p>Save this to a file named <tt class="docutils literal">get_attachments.py</tt> and, after saving the original message to a file
 named <tt class="docutils literal">0.txt</tt> run <tt class="docutils literal">python get_attachments.py 0.txt</tt> and you&#8217;ll see the attachments of your email in the same&nbsp;folder!</p>
@@ -383,7 +383,7 @@ Read more about it <a class="reference external" href="http://www.barfuhok.com/h
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

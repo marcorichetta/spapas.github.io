@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/spring.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2016-03-31T19:20:00+03:00</updated><entry><title>Configuring Spring Boot</title><link href="https://spapas.github.io/2016/03/31/spring-boot-settings/" rel="alternate"></link><published>2016-03-31T19:20:00+03:00</published><updated>2016-03-31T19:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2016-03-31:2016/03/31/spring-boot-settings/</id><summary type="html">&lt;div class="contents topic" id="contents"&gt;
-&lt;p class="topic-title"&gt;Contents&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - spring</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/spring.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2016-03-31T19:20:00+03:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Configuring Spring Boot</title><link href="https://spapas.github.io/2016/03/31/spring-boot-settings/" rel="alternate"></link><published>2016-03-31T19:20:00+03:00</published><updated>2016-03-31T19:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2016-03-31:/2016/03/31/spring-boot-settings/</id><summary type="html">&lt;p class="first last"&gt;Configuring your Spring Boot applications using application properties, profiles, locan  settings and command line arguments and deploying them using&amp;nbsp;init.d!&lt;/p&gt;
+</summary><content type="html">&lt;div class="contents topic" id="contents"&gt;
+&lt;p class="topic-title first"&gt;Contents&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#introduction" id="id1"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#properties-vs-yml-files" id="id2"&gt;properties vs yml&amp;nbsp;files&lt;/a&gt;&lt;/li&gt;
@@ -134,23 +135,23 @@ the normal application, you should use the &lt;tt class="docutils literal"&gt;&a
 (for example &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;&amp;#64;ActiveProfiles(&amp;quot;test&amp;quot;)&lt;/span&gt;&lt;/tt&gt;) to make sure that the tests
 will run with the correct settings. So if the contents of your &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;application-test.properties&lt;/span&gt;&lt;/tt&gt;
 are &lt;tt class="docutils literal"&gt;config.value=Hello test!&lt;/tt&gt; running this test should produce no&amp;nbsp;errors:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@RunWith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SpringJUnit4ClassRunner&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="nd"&gt;@SpringApplicationConfiguration&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;classes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SpringBootConfigApplication&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="nd"&gt;@ActiveProfiles&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;test&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SpringBootConfigApplicationTests&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@RunWith&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SpringJUnit4ClassRunner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="nd"&gt;@SpringApplicationConfiguration&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;classes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;SpringBootConfigApplication&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="nd"&gt;@ActiveProfiles&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;test&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SpringBootConfigApplicationTests&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
 
-    &lt;span class="nd"&gt;@Value&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;${config.value}&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nd"&gt;@Value&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;${config.value}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-    &lt;span class="nd"&gt;@Value&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;${spring.profiles.active}&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;profile&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nd"&gt;@Value&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;${spring.profiles.active}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="kd"&gt;private&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;profile&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
     &lt;span class="nd"&gt;@Test&lt;/span&gt;
-    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;contextLoads&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="n"&gt;assertThat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Hello test!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-        &lt;span class="n"&gt;assertThat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;profile&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;test&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;contextLoads&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;assertThat&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Hello test!&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;assertThat&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;profile&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;test&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;To activate a different profile when running your Spring Boot applications
 you&amp;#8217;ll need to use the &lt;tt class="docutils literal"&gt;spring.profiles.active&lt;/tt&gt; setting, so if you set
@@ -328,8 +329,9 @@ advanced profiles techniques (multiple profiles, profile enabled
 some really complex configurations! Finally, you&amp;#8217;ll be able to really
 quickly deploy the resulting jar as an init.d system&amp;nbsp;service!&lt;/p&gt;
 &lt;/div&gt;
-</summary><category term="spring"></category><category term="spring-boot"></category><category term="java"></category><category term="ldap"></category><category term="profiles"></category><category term="settings"></category><category term="properties"></category><category term="yaml"></category><category term="configuration"></category><category term="deploy"></category><category term="init.d"></category></entry><entry><title>Using custom authorities with spring-security LDAP authentication</title><link href="https://spapas.github.io/2013/10/14/spring-ldap-custom-authorities/" rel="alternate"></link><published>2013-10-14T08:55:00+03:00</published><updated>2013-10-14T08:55:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2013-10-14:2013/10/14/spring-ldap-custom-authorities/</id><summary type="html">&lt;div class="contents topic" id="contents"&gt;
-&lt;p class="topic-title"&gt;Contents&lt;/p&gt;
+</content><category term="spring"></category><category term="spring"></category><category term="spring-boot"></category><category term="java"></category><category term="ldap"></category><category term="profiles"></category><category term="settings"></category><category term="properties"></category><category term="yaml"></category><category term="configuration"></category><category term="deploy"></category><category term="init.d"></category></entry><entry><title>Using custom authorities with spring-security LDAP authentication</title><link href="https://spapas.github.io/2013/10/14/spring-ldap-custom-authorities/" rel="alternate"></link><published>2013-10-14T08:55:00+03:00</published><updated>2013-10-14T08:55:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2013-10-14:/2013/10/14/spring-ldap-custom-authorities/</id><summary type="html">&lt;p class="first last"&gt;Configuring spring-security for logging in through &lt;span class="caps"&gt;LDAP&lt;/span&gt; but retrieving the user&amp;#8217;s authorities from a custom (non-ldap)&amp;nbsp;source.&lt;/p&gt;
+</summary><content type="html">&lt;div class="contents topic" id="contents"&gt;
+&lt;p class="topic-title first"&gt;Contents&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#introduction" id="id3"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#a-basic-spring-security-setup" id="id4"&gt;A basic spring security&amp;nbsp;setup&lt;/a&gt;&lt;/li&gt;
@@ -481,29 +483,29 @@ No bean named &amp;#8216;org.springframework.security.authenticationManager&amp;
 &lt;div class="section" id="customldapauthoritiespopulator"&gt;
 &lt;h3&gt;&lt;a class="toc-backref" href="#id9"&gt;CustomLdapAuthoritiesPopulator&lt;/a&gt;&lt;/h3&gt;
 &lt;p&gt;The &lt;tt class="docutils literal"&gt;CustomLdapAuthoritiesPopulator&lt;/tt&gt; just needs to implement the &lt;tt class="docutils literal"&gt;LdapAuthoritiesPopulator&lt;/tt&gt; interface. Here&amp;#8217;s our&amp;nbsp;implmentation:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;gr.serafeim.springldapcustom&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;gr.serafeim.springldapcustom&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.Collection&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.HashSet&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.ldap.core.DirContextOperations&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.security.core.GrantedAuthority&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.security.core.authority.SimpleGrantedAuthority&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.stereotype.Component&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.Collection&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;java.util.HashSet&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.ldap.core.DirContextOperations&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.security.core.GrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.security.core.authority.SimpleGrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.springframework.stereotype.Component&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
 &lt;span class="nd"&gt;@Component&lt;/span&gt;
-&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CustomLdapAuthoritiesPopulator&lt;/span&gt; &lt;span class="kd"&gt;implements&lt;/span&gt; &lt;span class="n"&gt;LdapAuthoritiesPopulator&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;CustomLdapAuthoritiesPopulator&lt;/span&gt; &lt;span class="kd"&gt;implements&lt;/span&gt; &lt;span class="n"&gt;LdapAuthoritiesPopulator&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
        &lt;span class="nd"&gt;@Override&lt;/span&gt;
-       &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;Collection&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;?&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;GrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;getGrantedAuthorities&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-                       &lt;span class="n"&gt;DirContextOperations&lt;/span&gt; &lt;span class="n"&gt;userData&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-               &lt;span class="n"&gt;Collection&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;GrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;gas&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;HashSet&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;GrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-               &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;equals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;spapas&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-                       &lt;span class="n"&gt;gas&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;SimpleGrantedAuthority&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;admin&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-               &lt;span class="p"&gt;}&lt;/span&gt;
-               &lt;span class="n"&gt;gas&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;SimpleGrantedAuthority&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-               &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;gas&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-       &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
+       &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;Collection&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;?&lt;/span&gt; &lt;span class="kd"&gt;extends&lt;/span&gt; &lt;span class="n"&gt;GrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nf"&gt;getGrantedAuthorities&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+                       &lt;span class="n"&gt;DirContextOperations&lt;/span&gt; &lt;span class="n"&gt;userData&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+               &lt;span class="n"&gt;Collection&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;GrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;gas&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;HashSet&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;GrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;();&lt;/span&gt;
+               &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;equals&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;spapas&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                       &lt;span class="n"&gt;gas&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;SimpleGrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;admin&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+               &lt;span class="o"&gt;}&lt;/span&gt;
+               &lt;span class="n"&gt;gas&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;add&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;SimpleGrantedAuthority&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;));&lt;/span&gt;
+               &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;gas&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+       &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The &lt;tt class="docutils literal"&gt;getGrantedAuthorities&lt;/tt&gt; just checks the username and add another role if it is a specific one. Of course here we would autowire our user roles repository and query the database to get the roles of the user, however I&amp;#8217;m not going to do that for the case of&amp;nbsp;simplicity.&lt;/p&gt;
 &lt;/div&gt;
@@ -528,4 +530,4 @@ vertical-align: top; --&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</summary><category term="spring"></category><category term="spring-security"></category><category term="java"></category><category term="ldap"></category><category term="authentication"></category></entry></feed>
+</content><category term="spring"></category><category term="spring"></category><category term="spring-security"></category><category term="java"></category><category term="ldap"></category><category term="authentication"></category></entry></feed>

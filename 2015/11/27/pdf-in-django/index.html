@@ -101,7 +101,7 @@
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id4">Introduction</a></li>
 <li><a class="reference internal" href="#the-players" id="id5">The players</a><ul>
@@ -343,7 +343,7 @@ content and back page) to the resulting <span class="caps">PDF</span>.</p>
     <span class="n">pdfs</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">pdfs</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">pdfs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Please enter at least two pdfs for merging!&quot;</span><span class="p">)</span>
+        <span class="nb">exit</span><span class="p">(</span><span class="s2">&quot;Please enter at least two pdfs for merging!&quot;</span><span class="p">)</span>
 
     <span class="n">merger</span> <span class="o">=</span> <span class="n">PdfFileMerger</span><span class="p">()</span>
 
@@ -461,7 +461,7 @@ property to the class or copy <tt class="docutils literal">books_plain_old_view.
         <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
         <span class="n">template</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_template_names</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/pdf&#39;</span><span class="p">)</span>
-        <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;attachment; filename=&quot;</span><span class="si">{0}</span><span class="s1">.pdf&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pdf_name</span><span class="p">())</span>
+        <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;attachment; filename=&quot;{0}.pdf&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pdf_name</span><span class="p">())</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">generate_pdf</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">file_object</span><span class="o">=</span><span class="n">resp</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 </pre></div>
@@ -597,7 +597,7 @@ including both the static and user uploaded images and with the styles defined i
 you may change your django logging configuration like&nbsp;this:</p>
 <div class="highlight"><pre><span></span><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
     <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s1">&#39;console&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
@@ -634,7 +634,7 @@ I will refactor <tt class="docutils literal">PdfResponseMixin</tt> to put some c
 
 
 <span class="k">class</span> <span class="nc">CoverPdfResponseMixin</span><span class="p">(</span><span class="n">PdfResponseMixin</span><span class="p">,</span> <span class="p">):</span>
-    <span class="n">cover_pdf</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">cover_pdf</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">render_to_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">response_kwargs</span><span class="p">):</span>
         <span class="n">merger</span> <span class="o">=</span> <span class="n">PdfFileMerger</span><span class="p">()</span>
@@ -1121,7 +1121,7 @@ is smooth so don&#8217;t afraid to create PDFs from&nbsp;Django!</p>
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

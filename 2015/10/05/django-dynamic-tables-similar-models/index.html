@@ -101,7 +101,7 @@
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#the-problem-we-ll-solve" id="id2">The problem we&#8217;ll&nbsp;solve</a></li>
@@ -223,7 +223,7 @@ inheriting from it and passing the <tt class="docutils literal">attrs</tt> dict.
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AddFormMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="p">):</span>
   <span class="k">def</span> <span class="nf">define_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
       <span class="k">def</span> <span class="nf">get_form_field_type</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-          <span class="k">return</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+          <span class="k">return</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
       <span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
           <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">get_form_field_type</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="k">for</span>
@@ -294,9 +294,9 @@ and <tt class="docutils literal">SingleTableView</tt> and defining the <tt class
 </pre></div>
 <p>Let&#8217;s suppose that the <tt class="docutils literal">AuditLog</tt> is defined as&nbsp;following:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AuditLog</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-  <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span> <span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
-  <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
-  <span class="n">action</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
+  <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span> <span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">,)</span>
+  <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">,)</span>
+  <span class="n">action</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">,)</span>
 </pre></div>
 <p>Using the above <tt class="docutils literal">AuditLogListView</tt>, a dynamic table and a dynamic form will be automaticall created whenever the view is visited.
 The <tt class="docutils literal">Table</tt> class will be like&nbsp;this:</p>
@@ -556,7 +556,7 @@ we could have a single <span class="caps">CBV</span> for all our table/filtering
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

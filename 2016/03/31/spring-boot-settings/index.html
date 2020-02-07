@@ -101,7 +101,7 @@
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#properties-vs-yml-files" id="id2">properties vs yml&nbsp;files</a></li>
@@ -235,23 +235,23 @@ the normal application, you should use the <tt class="docutils literal">&#64;Act
 (for example <tt class="docutils literal"><span class="pre">&#64;ActiveProfiles(&quot;test&quot;)</span></tt>) to make sure that the tests
 will run with the correct settings. So if the contents of your <tt class="docutils literal"><span class="pre">application-test.properties</span></tt>
 are <tt class="docutils literal">config.value=Hello test!</tt> running this test should produce no&nbsp;errors:</p>
-<div class="highlight"><pre><span></span><span class="nd">@RunWith</span><span class="p">(</span><span class="n">SpringJUnit4ClassRunner</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
-<span class="nd">@SpringApplicationConfiguration</span><span class="p">(</span><span class="n">classes</span> <span class="o">=</span> <span class="n">SpringBootConfigApplication</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
-<span class="nd">@ActiveProfiles</span><span class="p">(</span><span class="s">&quot;test&quot;</span><span class="p">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringBootConfigApplicationTests</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><span class="nd">@RunWith</span><span class="o">(</span><span class="n">SpringJUnit4ClassRunner</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@SpringApplicationConfiguration</span><span class="o">(</span><span class="n">classes</span> <span class="o">=</span> <span class="n">SpringBootConfigApplication</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@ActiveProfiles</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpringBootConfigApplicationTests</span> <span class="o">{</span>
 
-    <span class="nd">@Value</span><span class="p">(</span><span class="s">&quot;${config.value}&quot;</span><span class="p">)</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span><span class="p">;</span>
+    <span class="nd">@Value</span><span class="o">(</span><span class="s">&quot;${config.value}&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
 
-    <span class="nd">@Value</span><span class="p">(</span><span class="s">&quot;${spring.profiles.active}&quot;</span><span class="p">)</span>
-    <span class="kd">private</span> <span class="n">String</span> <span class="n">profile</span><span class="p">;</span>
+    <span class="nd">@Value</span><span class="o">(</span><span class="s">&quot;${spring.profiles.active}&quot;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">profile</span><span class="o">;</span>
 
     <span class="nd">@Test</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">contextLoads</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">assertThat</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">is</span><span class="p">(</span><span class="s">&quot;Hello test!&quot;</span><span class="p">));</span>
-        <span class="n">assertThat</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">is</span><span class="p">(</span><span class="s">&quot;test&quot;</span><span class="p">));</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">contextLoads</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">assertThat</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="n">is</span><span class="o">(</span><span class="s">&quot;Hello test!&quot;</span><span class="o">));</span>
+        <span class="n">assertThat</span><span class="o">(</span><span class="n">profile</span><span class="o">,</span> <span class="n">is</span><span class="o">(</span><span class="s">&quot;test&quot;</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </pre></div>
 <p>To activate a different profile when running your Spring Boot applications
 you&#8217;ll need to use the <tt class="docutils literal">spring.profiles.active</tt> setting, so if you set
@@ -647,7 +647,7 @@ quickly deploy the resulting jar as an init.d system&nbsp;service!</p>
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

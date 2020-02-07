@@ -101,7 +101,7 @@
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#job-queues-in-python" id="id2">Job queues in&nbsp;python</a></li>
@@ -196,15 +196,15 @@ instances of each scheduled&nbsp;task.</p>
 
 <span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="c1"># A model to save information about an asynchronous task</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
     <span class="n">job_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ScheduledTask</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="c1"># A model to save information about a scheduled task</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
     <span class="c1"># A scheduled task has a common job id for all its occurences</span>
     <span class="n">job_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
@@ -213,8 +213,8 @@ instances of each scheduled&nbsp;task.</p>
 <span class="k">class</span> <span class="nc">ScheduledTaskInstance</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="c1"># A model to save information about instances of a scheduled task</span>
     <span class="n">scheduled_task</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;ScheduledTask&#39;</span><span class="p">)</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="forms-py">
@@ -228,8 +228,8 @@ instances of each scheduled&nbsp;task.</p>
 <span class="sd">    every schedule_interval seconds.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">url</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;URL&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;Enter a url (starting with http/https) to start a job that will download it and count its words&#39;</span> <span class="p">)</span>
-    <span class="n">schedule_times</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;How many times to run this job. Leave empty or 0 to run it only once.&#39;</span><span class="p">)</span>
-    <span class="n">schedule_interval</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;How much time (in seconds) between runs of the job. Leave empty to run it only once.&#39;</span><span class="p">)</span>
+    <span class="n">schedule_times</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;How many times to run this job. Leave empty or 0 to run it only once.&#39;</span><span class="p">)</span>
+    <span class="n">schedule_interval</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;How much time (in seconds) between runs of the job. Leave empty to run it only once.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">TaskForm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
@@ -309,7 +309,7 @@ are defined, one for the Task form + Task display and another for the Job&nbsp;d
             <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;job&#39;</span><span class="p">],</span> <span class="n">connection</span><span class="o">=</span><span class="n">redis_conn</span><span class="p">)</span>
             <span class="n">job</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="vm">__dict__</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="n">job</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="n">ctx</span><span class="p">[</span><span class="s1">&#39;job&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">job</span>
         <span class="k">return</span> <span class="n">ctx</span>
@@ -378,8 +378,8 @@ for each task, we can save it to that model&#8217;s instance&nbsp;instead.</p>
 <span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 
 <span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;123&#39;</span>
-<span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">TEMPLATE_DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">TEMPLATE_DEBUG</span> <span class="o">=</span> <span class="bp">True</span>
 <span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">(</span>
@@ -418,9 +418,9 @@ for each task, we can save it to that model&#8217;s instance&nbsp;instead.</p>
 
 <span class="n">LANGUAGE_CODE</span> <span class="o">=</span> <span class="s1">&#39;en-us&#39;</span>
 <span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s1">&#39;UTC&#39;</span>
-<span class="n">USE_I18N</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">USE_L10N</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">USE_TZ</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">USE_I18N</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">USE_L10N</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">USE_TZ</span> <span class="o">=</span> <span class="bp">True</span>
 
 <span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s1">&#39;/static/&#39;</span>
 
@@ -444,12 +444,12 @@ for each task, we can save it to that model&#8217;s instance&nbsp;instead.</p>
 
 <span class="n">SESSION_ENGINE</span> <span class="o">=</span> <span class="s2">&quot;django.contrib.sessions.backends.cache&quot;</span>
 <span class="n">SESSION_CACHE_ALIAS</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
-<span class="n">RQ_SHOW_ADMIN_LINK</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">RQ_SHOW_ADMIN_LINK</span> <span class="o">=</span> <span class="bp">True</span>
 
 <span class="c1"># Add a logger for rq_scheduler in order to display when jobs are queueud</span>
 <span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
     <span class="s1">&#39;formatters&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s1">&#39;simple&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
@@ -467,12 +467,12 @@ for each task, we can save it to that model&#8217;s instance&nbsp;instead.</p>
         <span class="s1">&#39;django.request&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;console&#39;</span><span class="p">],</span>
             <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s1">&#39;rq_scheduler&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;console&#39;</span><span class="p">],</span>
             <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s1">&#39;propagate&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">},</span>
 <span class="p">}</span>
@@ -565,7 +565,7 @@ to help readers quickly test the concepts presented&nbsp;here.</p>
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id5">Introduction</a></li>
 <li><a class="reference internal" href="#adding-simple-auditing-functionality-ourselves" id="id6">Adding simple auditing functionality&nbsp;ourselves</a></li>
@@ -615,14 +615,14 @@ Sometimes, these are enough so let&#8217;s see how easy it is to implement it in
 <span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
 
 <span class="k">class</span> <span class="nc">Auditable</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
     <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;created_by&#39;</span><span class="p">)</span>
 
-    <span class="n">modified_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">modified_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
     <span class="n">modified_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;modified_by&#39;</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">abstract</span> <span class="o">=</span> <span class="bp">True</span>
 </pre></div>
 <p>Models inheriting from <tt class="docutils literal">Auditable</tt> will contain their datetime of creation and modification
 which will be automatically filled using the very usefull <tt class="docutils literal">auto_now_add_</tt> (which will
@@ -1059,13 +1059,13 @@ So here&#8217;s a simple program that gets an email in text/mime format as input
 
 <span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
-        <span class="nb">print</span> <span class="s2">&quot;Please enter a file to extract attachments from&quot;</span>
+        <span class="k">print</span> <span class="s2">&quot;Please enter a file to extract attachments from&quot;</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="n">msg</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">message_from_file</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
     <span class="k">for</span> <span class="n">pl</span> <span class="ow">in</span> <span class="n">msg</span><span class="o">.</span><span class="n">get_payload</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">pl</span><span class="o">.</span><span class="n">get_filename</span><span class="p">():</span> <span class="c1"># if it is an attachment</span>
-            <span class="nb">open</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">get_filename</span><span class="p">(),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">get_payload</span><span class="p">(</span><span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">get_filename</span><span class="p">(),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">get_payload</span><span class="p">(</span><span class="n">decode</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 </pre></div>
 <p>Save this to a file named <tt class="docutils literal">get_attachments.py</tt> and, after saving the original message to a file
 named <tt class="docutils literal">0.txt</tt> run <tt class="docutils literal">python get_attachments.py 0.txt</tt> and you&#8217;ll see the attachments of your email in the same&nbsp;folder!</p>
@@ -1099,7 +1099,7 @@ Read more about it <a class="reference external" href="http://www.barfuhok.com/h
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#how-are-cbvs-rendered" id="id2">How are CBVs&nbsp;rendered</a></li>
@@ -1123,9 +1123,9 @@ named <a class="reference external" href="http://ccbv.co.uk/projects/Django/1.7/
 is the method that is used for rendering the output of the Views. Let&#8217;s take a look at
 <a class="reference external" href="http://ccbv.co.uk/projects/Django/1.7/django.views.generic.base/TemplateResponseMixin/">how it is defined</a> (I&#8217;ll remove the&nbsp;comments):</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TemplateResponseMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-  <span class="n">template_name</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="n">template_name</span> <span class="o">=</span> <span class="bp">None</span>
   <span class="n">response_class</span> <span class="o">=</span> <span class="n">TemplateResponse</span>
-  <span class="n">content_type</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="n">content_type</span> <span class="o">=</span> <span class="bp">None</span>
 
   <span class="k">def</span> <span class="nf">render_to_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">response_kwargs</span><span class="p">):</span>
       <span class="n">response_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;content_type&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">content_type</span><span class="p">)</span>
@@ -1137,7 +1137,7 @@ is the method that is used for rendering the output of the Views. Let&#8217;s ta
       <span class="p">)</span>
 
   <span class="k">def</span> <span class="nf">get_template_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
           <span class="k">raise</span> <span class="n">ImproperlyConfigured</span><span class="p">(</span>
               <span class="s2">&quot;TemplateResponseMixin requires either a definition of &quot;</span>
               <span class="s2">&quot;&#39;template_name&#39; or an implementation of &#39;get_template_names()&#39;&quot;</span><span class="p">)</span>
@@ -1200,7 +1200,7 @@ object as&nbsp;text:</p>
       <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
       <span class="n">o</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span>
       <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-          <span class="n">response</span><span class="o">.</span><span class="n">write</span> <span class="p">(</span><span class="sa">u</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>  <span class="n">unicode</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span> <span class="p">)</span> <span class="p">)</span>
+          <span class="n">response</span><span class="o">.</span><span class="n">write</span> <span class="p">(</span><span class="sa">u</span><span class="s1">&#39;{0}: {1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>  <span class="nb">unicode</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span> <span class="p">)</span> <span class="p">)</span>
       <span class="k">return</span> <span class="n">response</span>
 </pre></div>
 <p>and can be used like&nbsp;this</p>
@@ -1504,7 +1504,7 @@ beyond <span class="caps">HTML</span>. This will help us write write clean and <
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

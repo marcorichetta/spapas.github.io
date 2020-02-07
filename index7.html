@@ -101,7 +101,7 @@
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#flux-components" id="id2">Flux&nbsp;components</a></li>
@@ -741,7 +741,7 @@ create a simple app, moving to something more complex (and especially debugging 
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#our-project" id="id2">Our&nbsp;project</a></li>
@@ -1351,7 +1351,7 @@ complex client-side&nbsp;applications!</p>
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#the-problem" id="id1">The&nbsp;problem</a></li>
 <li><a class="reference internal" href="#the-solution" id="id2">The&nbsp;solution</a></li>
@@ -1701,7 +1701,7 @@ if you just add the view to your urls as I propose you&#8217;ll get an exception
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">django</span>
 
 <span class="k">def</span> <span class="nf">custom_page_not_found</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">django</span><span class="o">.</span><span class="n">views</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">page_not_found</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">django</span><span class="o">.</span><span class="n">views</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">page_not_found</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
 
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">path</span><span class="p">(</span><span class="s2">&quot;404/&quot;</span><span class="p">,</span> <span class="n">custom_page_not_found</span><span class="p">),</span>
@@ -1773,7 +1773,7 @@ class which will be initialzed with out pusher key/secret and correctly sign a&n
     <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">)</span>
     <span class="n">params_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-        <span class="n">params_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">=</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="p">)</span>
+        <span class="n">params_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s1">&#39;{0}={1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="p">)</span>
 
     <span class="n">query_string</span> <span class="o">=</span> <span class="s1">&#39;&amp;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">params_list</span><span class="p">)</span>
 
@@ -1793,10 +1793,10 @@ query parameter named (<tt class="docutils literal">auth_signature</tt>).</p>
 <h2>Requesting the users of the presence&nbsp;channel</h2>
 <p>The <tt class="docutils literal">create_signed_query_string</tt> can now be used to get the users of a presence channel like&nbsp;this:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_users</span><span class="p">(</span><span class="n">app_id</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">secret</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
-    <span class="n">partial_path</span> <span class="o">=</span>  <span class="s1">&#39;/apps/</span><span class="si">{0}</span><span class="s1">/channels/</span><span class="si">{1}</span><span class="s1">/users&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_id</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+    <span class="n">partial_path</span> <span class="o">=</span>  <span class="s1">&#39;/apps/{0}/channels/{1}/users&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_id</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">secret</span><span class="p">)</span>
     <span class="n">qs</span> <span class="o">=</span> <span class="n">create_signed_query_string</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">partial_path</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">full_path</span> <span class="o">=</span> <span class="s1">&#39;http://api.pusherapp.com/</span><span class="si">{0}</span><span class="s1">?</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">partial_path</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+    <span class="n">full_path</span> <span class="o">=</span> <span class="s1">&#39;http://api.pusherapp.com/{0}?{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">partial_path</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
 </pre></div>
@@ -1840,7 +1840,7 @@ presence&nbsp;channel.</p>
     <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">)</span>
     <span class="n">params_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-        <span class="n">params_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">=</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="p">)</span>
+        <span class="n">params_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s1">&#39;{0}={1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="p">)</span>
 
     <span class="n">query_string</span> <span class="o">=</span> <span class="s1">&#39;&amp;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">params_list</span><span class="p">)</span>
 
@@ -1850,14 +1850,14 @@ presence&nbsp;channel.</p>
 
 
 <span class="k">def</span> <span class="nf">get_users</span><span class="p">(</span><span class="n">channel</span><span class="p">):</span>
-    <span class="n">partial_path</span> <span class="o">=</span>  <span class="s1">&#39;/apps/</span><span class="si">{0}</span><span class="s1">/channels/</span><span class="si">{1}</span><span class="s1">/users&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_id</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+    <span class="n">partial_path</span> <span class="o">=</span>  <span class="s1">&#39;/apps/{0}/channels/{1}/users&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">app_id</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">secret</span><span class="p">)</span>
     <span class="n">qs</span> <span class="o">=</span>  <span class="n">create_signed_query_string</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">partial_path</span><span class="p">,</span> <span class="s1">&#39;GET&#39;</span> <span class="p">{})</span>
-    <span class="n">full_path</span> <span class="o">=</span> <span class="s1">&#39;http://api.pusherapp.com/</span><span class="si">{0}</span><span class="s1">?</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">partial_path</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
+    <span class="n">full_path</span> <span class="o">=</span> <span class="s1">&#39;http://api.pusherapp.com/{0}?{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">partial_path</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
 
-<span class="nb">print</span> <span class="n">get_users</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">get_users</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="conclusion">
@@ -2069,7 +2069,7 @@ similar to  <tt class="docutils literal">get_users</tt>.</p>
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

@@ -205,7 +205,7 @@ it (i.e bind it with the values of the backing object) here&nbsp;properly.</p>
 <h2>The custom&nbsp;filter</h2>
 <p>The <tt class="docutils literal">getFilter</tt> creates an object instance of a Filter and returns&nbsp;it:</p>
 <div class="highlight"><pre><span></span><span class="k">override</span> <span class="k">fun</span> <span class="nf">getFilter</span><span class="p">():</span> <span class="n">Filter</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">object</span> <span class="p">:</span> <span class="nc">Filter</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">object</span> <span class="err">: </span><span class="nc">Filter</span><span class="p">()</span> <span class="p">{</span>
         <span class="k">override</span> <span class="k">fun</span> <span class="nf">publishResults</span><span class="p">(</span><span class="n">charSequence</span><span class="p">:</span> <span class="n">CharSequence</span><span class="p">?,</span> <span class="n">filterResults</span><span class="p">:</span> <span class="n">Filter</span><span class="p">.</span><span class="n">FilterResults</span><span class="p">)</span> <span class="p">{</span>
             <span class="n">mPois</span> <span class="p">=</span> <span class="n">filterResults</span><span class="p">.</span><span class="n">values</span> <span class="k">as</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">PoiDao</span><span class="p">&gt;</span>
             <span class="n">notifyDataSetChanged</span><span class="p">()</span>
@@ -478,7 +478,7 @@ discussed you can pass something more complex here. The <tt class="docutils lite
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

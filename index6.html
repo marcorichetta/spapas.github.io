@@ -101,7 +101,7 @@
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id4">Introduction</a></li>
 <li><a class="reference internal" href="#the-players" id="id5">The players</a><ul>
@@ -343,7 +343,7 @@ content and back page) to the resulting <span class="caps">PDF</span>.</p>
     <span class="n">pdfs</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">pdfs</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">pdfs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Please enter at least two pdfs for merging!&quot;</span><span class="p">)</span>
+        <span class="nb">exit</span><span class="p">(</span><span class="s2">&quot;Please enter at least two pdfs for merging!&quot;</span><span class="p">)</span>
 
     <span class="n">merger</span> <span class="o">=</span> <span class="n">PdfFileMerger</span><span class="p">()</span>
 
@@ -461,7 +461,7 @@ property to the class or copy <tt class="docutils literal">books_plain_old_view.
         <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
         <span class="n">template</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_template_names</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/pdf&#39;</span><span class="p">)</span>
-        <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;attachment; filename=&quot;</span><span class="si">{0}</span><span class="s1">.pdf&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pdf_name</span><span class="p">())</span>
+        <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;attachment; filename=&quot;{0}.pdf&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pdf_name</span><span class="p">())</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">generate_pdf</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">file_object</span><span class="o">=</span><span class="n">resp</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 </pre></div>
@@ -597,7 +597,7 @@ including both the static and user uploaded images and with the styles defined i
 you may change your django logging configuration like&nbsp;this:</p>
 <div class="highlight"><pre><span></span><span class="n">LOGGING</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
     <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s1">&#39;console&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
@@ -634,7 +634,7 @@ I will refactor <tt class="docutils literal">PdfResponseMixin</tt> to put some c
 
 
 <span class="k">class</span> <span class="nc">CoverPdfResponseMixin</span><span class="p">(</span><span class="n">PdfResponseMixin</span><span class="p">,</span> <span class="p">):</span>
-    <span class="n">cover_pdf</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">cover_pdf</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">render_to_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">response_kwargs</span><span class="p">):</span>
         <span class="n">merger</span> <span class="o">=</span> <span class="n">PdfFileMerger</span><span class="p">()</span>
@@ -915,7 +915,7 @@ is smooth so don&#8217;t afraid to create PDFs from&nbsp;Django!</p>
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#npm-save-save-dev-and-avoiding-global-deps" id="id2"><span class="caps">NPM</span>, &#8212;save, &#8212;save-dev and avoiding global&nbsp;deps</a></li>
@@ -1136,7 +1136,7 @@ the task&nbsp;runners).</p>
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#the-problem-we-ll-solve" id="id2">The problem we&#8217;ll&nbsp;solve</a></li>
@@ -1258,7 +1258,7 @@ inheriting from it and passing the <tt class="docutils literal">attrs</tt> dict.
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AddFormMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="p">):</span>
   <span class="k">def</span> <span class="nf">define_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
       <span class="k">def</span> <span class="nf">get_form_field_type</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-          <span class="k">return</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+          <span class="k">return</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
       <span class="n">attrs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
           <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">get_form_field_type</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="k">for</span>
@@ -1329,9 +1329,9 @@ and <tt class="docutils literal">SingleTableView</tt> and defining the <tt class
 </pre></div>
 <p>Let&#8217;s suppose that the <tt class="docutils literal">AuditLog</tt> is defined as&nbsp;following:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AuditLog</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-  <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span> <span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
-  <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
-  <span class="n">action</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
+  <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span> <span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">,)</span>
+  <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">,)</span>
+  <span class="n">action</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">,)</span>
 </pre></div>
 <p>Using the above <tt class="docutils literal">AuditLogListView</tt>, a dynamic table and a dynamic form will be automaticall created whenever the view is visited.
 The <tt class="docutils literal">Table</tt> class will be like&nbsp;this:</p>
@@ -1385,7 +1385,7 @@ we could have a single <span class="caps">CBV</span> for all our table/filtering
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id2">Introduction</a></li>
 <li><a class="reference internal" href="#more-about-flux-components" id="id3">More about Flux&nbsp;components</a></li>
@@ -2727,7 +2727,7 @@ to research and implement&nbsp;it!</p>
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#displaying-your-task-progress" id="id2">Displaying your task&nbsp;progress</a></li>
@@ -3249,7 +3249,7 @@ any new techniques or tools I find in the&nbsp;future!</p>
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

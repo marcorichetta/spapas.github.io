@@ -126,11 +126,11 @@ what we want to the asynchronous task to do and retrieve the&nbsp;result:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
 
 <span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">url</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
-    <span class="n">url_length</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">job_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">url_length</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 <p>It also has a home view that can be used to start new asynchronous tasks by creating a <tt class="docutils literal">Task</tt> object
 with the url we got and passing it to the asynchronous&nbsp;task:</p>
@@ -194,7 +194,7 @@ request throws an error then the transaction will be rolled back. An example of 
     <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;django.db.backends.sqlite3&#39;</span><span class="p">,</span>
         <span class="s1">&#39;NAME&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;db.sqlite3&#39;</span><span class="p">),</span>
-        <span class="s1">&#39;ATOMIC_REQUESTS&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;ATOMIC_REQUESTS&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -407,9 +407,9 @@ the view will return a response which could be modified (if needed) by the middl
         <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span> <span class="o">=</span> <span class="n">get_response</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;M1 before response&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;M1 before response&quot;</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;M1 after response&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;M1 after response&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span>
 
 <span class="k">class</span> <span class="nc">M2</span><span class="p">:</span>
@@ -417,9 +417,9 @@ the view will return a response which could be modified (if needed) by the middl
         <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span> <span class="o">=</span> <span class="n">get_response</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;M2 before response&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;M2 before response&quot;</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;M2 after response&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;M2 after response&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span>
 </pre></div>
 <p>When you define <tt class="docutils literal"><span class="caps">MIDDLEWARE</span> = ['M1', 'M2']</tt> you&#8217;ll see the&nbsp;following:</p>
@@ -1072,7 +1072,7 @@ either copying directly the pset and pget utils I explained above or just using 
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
+<p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#a-gentle-introduction-to-cbvs" id="id1">A gentle introduction to CBVs</a><ul>
 <li><a class="reference internal" href="#hand-made-cbvs" id="id2">Hand-made&nbsp;CBVs</a></li>
@@ -1235,8 +1235,8 @@ a rather naive first&nbsp;try:</p>
         <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            &lt;html&gt;</span>
 <span class="s2">                &lt;body&gt;</span>
-<span class="s2">                    &lt;h1&gt;</span><span class="si">{header}</span><span class="s2">&lt;/h1&gt;</span>
-<span class="s2">                    </span><span class="si">{body}</span><span class="s2"></span>
+<span class="s2">                    &lt;h1&gt;{header}&lt;/h1&gt;</span>
+<span class="s2">                    {body}</span>
 <span class="s2">                &lt;/body&gt;</span>
 <span class="s2">            &lt;/html&gt;</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -1331,8 +1331,8 @@ when you configure it. The only way to do it would be to re-define the <tt class
     <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        &lt;html&gt;</span>
 <span class="s2">            &lt;body&gt;</span>
-<span class="s2">                &lt;h1&gt;</span><span class="si">{header}</span><span class="s2">&lt;/h1&gt;</span>
-<span class="s2">                </span><span class="si">{body}</span><span class="s2"></span>
+<span class="s2">                &lt;h1&gt;{header}&lt;/h1&gt;</span>
+<span class="s2">                {body}</span>
 <span class="s2">            &lt;/body&gt;</span>
 <span class="s2">        &lt;/html&gt;</span>
 <span class="s2">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -1354,7 +1354,7 @@ part of its functionality is implemented by a different&nbsp;method.</p>
 <p>Here&#8217;s how we could improve the <tt class="docutils literal">CustomClassView</tt> to make it more <span class="caps">DRY</span>:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BetterCustomClassView</span><span class="p">(</span><span class="n">CustomClassView</span><span class="p">,</span> <span class="p">):</span>
     <span class="k">def</span> <span class="nf">get_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">):</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Better Custom Class View&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Better Custom Class View&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">get_context</span><span class="p">(</span><span class="bp">self</span> <span class="p">,</span> <span class="p">):</span>
@@ -1370,8 +1370,8 @@ part of its functionality is implemented by a different&nbsp;method.</p>
         <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            &lt;html&gt;</span>
 <span class="s2">                &lt;body&gt;</span>
-<span class="s2">                    &lt;h1&gt;</span><span class="si">{header}</span><span class="s2">&lt;/h1&gt;</span>
-<span class="s2">                    </span><span class="si">{body}</span><span class="s2"></span>
+<span class="s2">                    &lt;h1&gt;{header}&lt;/h1&gt;</span>
+<span class="s2">                    {body}</span>
 <span class="s2">                &lt;/body&gt;</span>
 <span class="s2">            &lt;/html&gt;</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -1651,43 +1651,43 @@ specified by the <span class="caps">MRO</span> list) same-named method and retri
 of the previous&nbsp;example:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">V</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From V&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From V&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">M1</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From M1&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From M1&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">M2</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From M2&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From M2&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">MIXIN</span><span class="p">(</span><span class="n">M2</span><span class="p">,</span> <span class="n">M1</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From MIXIN&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From MIXIN&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">M1V</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From M1V&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From M1V&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">M2M1V</span><span class="p">(</span><span class="n">M1V</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From M2M1V&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From M2M1V&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">INHERITANCE</span><span class="p">(</span><span class="n">M2M1V</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From INHERITANCE&quot;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From INHERITANCE&quot;</span><span class="p">)</span>
 
-<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;MIXIN OUTPUT&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;MIXIN OUTPUT&quot;</span><span class="p">)</span>
 <span class="n">MIXIN</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
 
-<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;INHERITANCE OUTPUT&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;INHERITANCE OUTPUT&quot;</span><span class="p">)</span>
 <span class="n">INHERITANCE</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
 </pre></div>
 <p>Here&#8217;s the&nbsp;output:</p>
@@ -1863,8 +1863,8 @@ section using <tt class="docutils literal">View</tt> as its&nbsp;ancestor:</p>
         <span class="n">resp</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            &lt;html&gt;</span>
 <span class="s2">                &lt;body&gt;</span>
-<span class="s2">                    &lt;h1&gt;</span><span class="si">{header}</span><span class="s2">&lt;/h1&gt;</span>
-<span class="s2">                    </span><span class="si">{body}</span><span class="s2"></span>
+<span class="s2">                    &lt;h1&gt;{header}&lt;/h1&gt;</span>
+<span class="s2">                    {body}</span>
 <span class="s2">                &lt;/body&gt;</span>
 <span class="s2">            &lt;/html&gt;</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -2114,16 +2114,16 @@ version of it that would inherit from <tt class="docutils literal">SingleObjectM
 <span class="k">class</span> <span class="nc">AbstractGeneralInfo</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="n">status</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">STATUS_CHOICES</span><span class="p">,</span> <span class="p">)</span>
     <span class="n">category</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="p">)</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="p">)</span>
     <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(class)s</span><span class="s1">_created_by&#39;</span><span class="p">,</span> <span class="p">)</span>
-    <span class="n">modified_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>
+    <span class="n">modified_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="p">)</span>
     <span class="n">modified_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(class)s</span><span class="s1">_modified_by&#39;</span><span class="p">,</span> <span class="p">)</span>
 
     <span class="n">owned_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(class)s</span><span class="s1">_owned_by&#39;</span><span class="p">,</span> <span class="p">)</span>
-    <span class="n">published_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">published_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">abstract</span> <span class="o">=</span> <span class="bp">True</span>
 
 
 <span class="k">class</span> <span class="nc">Article</span><span class="p">(</span><span class="n">AbstractGeneralInfo</span><span class="p">):</span>
@@ -2133,7 +2133,7 @@ version of it that would inherit from <tt class="docutils literal">SingleObjectM
 
 <span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">AbstractGeneralInfo</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="p">)</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">()</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">()</span>
 </pre></div>
 <p>All this can be found on the accompanying project <a class="reference external" href="https://github.com/spapas/cbv-tutorial">https://github.com/spapas/cbv-tutorial</a> on the djangocbv app (visit <a class="reference external" href="http://127.0.0.1:8001/djangocbv/">http://127.0.0.1:8001/djangocbv/</a>).</p>
 <div class="section" id="do-something-when-a-valid-form-is-submitted">
@@ -2151,7 +2151,7 @@ create an extra object. Let&#8217;s see a generic example of overriding a <tt cl
     <span class="n">redirect_to</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
 
     <span class="c1"># For Create or UpdateView, the just-saved object will be assigned to self.object</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Created an object with id </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Created an object with id {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="c1"># return the redirect</span>
     <span class="k">return</span> <span class="n">redirect_to</span>
@@ -2256,7 +2256,7 @@ we could have overridden the <tt class="docutils literal">get_object</tt> method
 overridden to raise a 403 Forbidden status when a user tries to access an object that does not belong to&nbsp;him:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">PermissionDenied</span>
 
-<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">owned_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">PermissionDenied</span>
@@ -2295,7 +2295,7 @@ before calling the super&#8217;s constructor. For
 example, here&#8217;s how a form that can accept the request could be&nbsp;implemented:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">RequestForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 <p>We use <tt class="docutils literal">pop</tt> to remove the request from the received <tt class="docutils literal">kwargs</tt> and only then we call the
@@ -2342,7 +2342,7 @@ so try to remember the following 3 needed&nbsp;lines:</p>
 presented in <a class="reference external" href="https://spapas.github.io/2017/10/11/essential-django-packages/">my essential Django package list</a>. Here&#8217;s how a mixin can be created that
 adds a filter to the&nbsp;context:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AddFilterMixin</span><span class="p">:</span>
-    <span class="n">filter_class</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">filter_class</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2607,13 +2607,13 @@ similar is to pass an <tt class="docutils literal">is_create</tt> argument to th
 <p>Thus, on your <tt class="docutils literal">CreateView</tt> you&#8217;ll add this <tt class="docutils literal">get_form_kwargs</tt>:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_form_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyCreateView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">()</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;is_create&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;is_create&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">kwargs</span>
 </pre></div>
 <p>while on your <tt class="docutils literal">UpdateView</tt> you&#8217;ll add&nbsp;this:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_form_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyUpdateView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">()</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;is_create&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;is_create&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">kwargs</span>
 </pre></div>
 <p>Please notice that the form has to properly handle the extra kwarg in its constructor as I&#8217;ve already explained&nbsp;previously.</p>
@@ -2672,7 +2672,7 @@ accompanying project (<a class="reference external" href="https://github.com/spa
 
 
 <span class="k">class</span> <span class="nc">ChangeStatusMixin</span><span class="p">:</span>
-    <span class="n">new_status</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">new_status</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">,</span> <span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_status</span><span class="p">:</span>
@@ -2863,7 +2863,7 @@ or <tt class="docutils literal">dispatch</tt> method of <tt class="docutils lite
 <span class="k">class</span> <span class="nc">DynamicTemplateView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get_template_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;what&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.html&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;{0}.html&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
 </pre></div>
 <p>As you will see there&nbsp;are</p>
 <ul class="simple">
@@ -3117,7 +3117,7 @@ another use case added to the list feel free to ask and I&#8217;ll try to add&nb
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>

@@ -123,7 +123,7 @@ if you just add the view to your urls as I propose you&#8217;ll get an exception
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">django</span>
 
 <span class="k">def</span> <span class="nf">custom_page_not_found</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">django</span><span class="o">.</span><span class="n">views</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">page_not_found</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">django</span><span class="o">.</span><span class="n">views</span><span class="o">.</span><span class="n">defaults</span><span class="o">.</span><span class="n">page_not_found</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
 
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">path</span><span class="p">(</span><span class="s2">&quot;404/&quot;</span><span class="p">,</span> <span class="n">custom_page_not_found</span><span class="p">),</span>
@@ -348,7 +348,7 @@ if you just add the view to your urls as I propose you&#8217;ll get an exception
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2019 Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2019  Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>
