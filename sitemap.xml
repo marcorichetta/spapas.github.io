@@ -5,29 +5,36 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://spapas.github.io/</loc>
-<lastmod>2020-02-28T13:09:13-00:00</lastmod>
+<lastmod>2020-03-18T11:32:39-00:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://spapas.github.io/archives.html</loc>
-<lastmod>2020-02-28T13:09:13-00:00</lastmod>
+<lastmod>2020-03-18T11:32:39-00:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://spapas.github.io/tags.html</loc>
-<lastmod>2020-02-28T13:09:13-00:00</lastmod>
+<lastmod>2020-03-18T11:32:39-00:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://spapas.github.io/categories.html</loc>
-<lastmod>2020-02-28T13:09:13-00:00</lastmod>
+<lastmod>2020-03-18T11:32:39-00:00</lastmod>
 <changefreq>weekly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://spapas.github.io/2020/03/18/django-crispy-form-quick-easy-layout/</loc>
+<lastmod>2020-03-18T11:20:00+02:00</lastmod>
+<changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
 
@@ -383,7 +390,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://spapas.github.io/category/django.html</loc>
-<lastmod>2019-02-25T15:20:00+01:35</lastmod>
+<lastmod>2020-03-18T11:20:00+01:35</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -473,6 +480,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>https://spapas.github.io/tag/django-crispy-forms.html</loc>
+<lastmod>2020-03-18T11:20:00+01:35</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
 <loc>https://spapas.github.io/tag/rest.html</loc>
 <lastmod>2018-03-01T22:40:00+01:35</lastmod>
 <changefreq>weekly</changefreq>
@@ -537,7 +551,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://spapas.github.io/tag/forms.html</loc>
-<lastmod>2015-10-05T14:20:00+01:35</lastmod>
+<lastmod>2020-03-18T11:20:00+01:35</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -573,6 +587,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://spapas.github.io/tag/initd.html</loc>
 <lastmod>2016-03-31T19:20:00+01:35</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://spapas.github.io/tag/django-widget-tweaks.html</loc>
+<lastmod>2020-03-18T11:20:00+01:35</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -1363,7 +1384,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://spapas.github.io/tag/django.html</loc>
-<lastmod>2019-02-25T15:20:00+01:35</lastmod>
+<lastmod>2020-03-18T11:20:00+01:35</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -1398,7 +1419,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://spapas.github.io/author/serafeim-papastefanos.html</loc>
-<lastmod>2019-10-17T12:20:00+01:35</lastmod>
+<lastmod>2020-03-18T11:20:00+01:35</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>

@@ -1,5 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - Serafeim Papastefanos</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/serafeim-papastefanos.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2019-10-17T12:20:00+03:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Declarative Ecto query sorting</title><link href="https://spapas.github.io/2019/10/17/declarative-ecto-query-sorting/" rel="alternate"></link><published>2019-10-17T12:20:00+03:00</published><updated>2019-10-17T12:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2019-10-17:/2019/10/17/declarative-ecto-query-sorting/</id><summary type="html">&lt;p class="first last"&gt;Being able to declare your Ecto query sorting even on fields spanning&amp;nbsp;joins&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - Serafeim Papastefanos</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/serafeim-papastefanos.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2020-03-18T11:20:00+02:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Quick and easy layout of django forms using django-crispy-forms and django-widget-tweaks</title><link href="https://spapas.github.io/2020/03/18/django-crispy-form-quick-easy-layout/" rel="alternate"></link><published>2020-03-18T11:20:00+02:00</published><updated>2020-03-18T11:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2020-03-18:/2020/03/18/django-crispy-form-quick-easy-layout/</id><summary type="html">&lt;p class="first last"&gt;How to easily layout your django-crispy-forms&amp;nbsp;forms&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;One of the first problems you have when you want to create a traditional &lt;span class="caps"&gt;HTML&lt;/span&gt; django site (i.e
+not an &lt;span class="caps"&gt;SPA&lt;/span&gt; one) is how to properly and beautifully layout your forms. In this small article I&amp;#8217;ll
+talk about two very useful django packages that will help you have great layouts in your forms:
+&lt;a class="reference external" href="https://github.com/django-crispy-forms/django-crispy-forms"&gt;django-crispy-forms&lt;/a&gt;  and &lt;a class="reference external" href="https://github.com/jazzband/django-widget-tweaks"&gt;django-widget-tweaks&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="django-crispy-forms"&gt;
+&lt;h2&gt;django-crispy-forms&lt;/h2&gt;
+&lt;p&gt;The django-crispy-forms django package is a great way to properly format your forms. If you don&amp;#8217;t
+already use it I totally recommend to check it out; it&amp;#8217;s very useful and you&amp;#8217;ll definitely love it
+if you are a heavy django forms user. It helps you properly layout your forms either implicitly or&amp;nbsp;explicitly.&lt;/p&gt;
+&lt;p&gt;For explicitly laying out your forms you should add a &lt;tt class="docutils literal"&gt;FormHelper&lt;/tt&gt; to your django form class and
+use the &lt;tt class="docutils literal"&gt;{% crispy %}&lt;/tt&gt; template tag. You can use this to explicitly define your form layout with
+as much detail as you want since you have full control. I won&amp;#8217;t go into more details about this since it&amp;#8217;s
+&lt;a class="reference external" href="https://django-crispy-forms.readthedocs.io/en/latest/crispy_tag_forms.html#crispy-tag-with-forms"&gt;explained thoroughly in the docs&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For implicitly laying out your forms, you will just use the &lt;tt class="docutils literal"&gt;|crispy&lt;/tt&gt; template filter. This gets a
+normal django form (without any modifications) and converts it to a crispy form based on the &lt;a class="reference external" href="https://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs"&gt;template pack&lt;/a&gt;
+you are using. This works great for many situations however sometimes you&amp;#8217;ll need to have more control
+over this without going to the extra effort to add a complete layout to each of your forms using
+the &lt;tt class="docutils literal"&gt;FormHelper&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;So how do you resolve this? Enter the &lt;tt class="docutils literal"&gt;|as_crispy_field&lt;/tt&gt; template filter. To use that filter you&amp;#8217;ll need
+to add the &lt;tt class="docutils literal"&gt;{% load crispy_forms_tags %}&lt;/tt&gt; lines to your template and then you can pass any one of your
+form&amp;#8217;s fields to it so it will be properly &amp;#8220;crispified&amp;#8221;! Let&amp;#8217;s see a quick example of adding the fields of
+a form in a &lt;tt class="docutils literal"&gt;&amp;lt;div &lt;span class="pre"&gt;class='col-md-6'&amp;gt;&lt;/span&gt;&lt;/tt&gt; so they will be in two columns (using&amp;nbsp;bootstrap):&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+&amp;lt;form class='form' method=&amp;quot;POST&amp;quot;&amp;gt;
+    &amp;lt;div class='row'&amp;gt;
+        {% for field in form %}
+            &amp;lt;div class='col-md-6'&amp;gt;
+              {{ field|as_crispy_field }}
+            &amp;lt;/div&amp;gt;
+        {% endfor %}
+        {% csrf_token %}
+    &amp;lt;/div&amp;gt;
+    &amp;lt;input class='btn btn-primary' type='submit'&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;So the above code enumerates all form fields and uses the &lt;tt class="docutils literal"&gt;|as_crispy_field&lt;/tt&gt; to properly add the
+crispified information to it. If you want to re-use the above two column layout in multiple forms and
+be more dry you can create a template snippet and &lt;tt class="docutils literal"&gt;{% include %}&lt;/tt&gt; it in the part of your code you
+want the form to be&amp;nbsp;rendered.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="django-widget-tweaks"&gt;
+&lt;h2&gt;django-widget-tweaks&lt;/h2&gt;
+&lt;p&gt;Using the &lt;tt class="docutils literal"&gt;as_crispy_field&lt;/tt&gt; is excellent however sometimes you may need even more control
+of your for fields, for example add an extra class (like &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;form-control-lg&lt;/span&gt;&lt;/tt&gt;) to your form controls.
+The answer to this is the django-widget-tweaks package: It enables you to easily modify form
+fields by adding classes, attributes etc to them from within your django&amp;nbsp;templates.&lt;/p&gt;
+&lt;p&gt;To use it you need to add a &lt;tt class="docutils literal"&gt;{% load widget_tweaks %}&lt;/tt&gt; to your templates. Then you&amp;#8217;ll be
+able to use the &lt;tt class="docutils literal"&gt;|add_class&lt;/tt&gt; form field to add a class to your form field. For example the
+previous example can be modified like this to have smaller&amp;nbsp;controls:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+&amp;lt;form class='form' method=&amp;quot;POST&amp;quot;&amp;gt;
+    &amp;lt;div class='row'&amp;gt;
+        {% for field in form %}
+            &amp;lt;div class='col-md-6'&amp;gt;
+              {{ field|add_class:&amp;quot;form-control-sm&amp;quot;|as_crispy_field }}
+            &amp;lt;/div&amp;gt;
+        {% endfor %}
+        {% csrf_token %}
+    &amp;lt;/div&amp;gt;
+    &amp;lt;input class='btn btn-primary' type='submit'&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;Please notice that I use both &lt;tt class="docutils literal"&gt;add_class&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;as_crispy_fields&lt;/tt&gt; together; notice the
+order, the &lt;tt class="docutils literal"&gt;add_class&lt;/tt&gt; needs to be &lt;em&gt;before&lt;/em&gt; the &lt;tt class="docutils literal"&gt;as_crispy_field&lt;/tt&gt; or you&amp;#8217;ll get an error. This
+way the django form field will have the &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;form-control-sm&lt;/span&gt;&lt;/tt&gt; class &lt;em&gt;and&lt;/em&gt; then be rendered as a
+crispy&amp;nbsp;field.&lt;/p&gt;
+&lt;p&gt;Let&amp;#8217;s now suppose that you need to more control over your fields. For example you need to add a class
+only to your select fields or even only to a particular field (depending on its name). To do that
+you can use the &lt;tt class="docutils literal"&gt;name&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;field.widget.input_type&lt;/tt&gt; attributes of each for field. So, to make
+select fields smaller and with a &lt;tt class="docutils literal"&gt;warning&lt;/tt&gt; background and fields that have a name of &lt;tt class="docutils literal"&gt;name&lt;/tt&gt;
+or &lt;tt class="docutils literal"&gt;year&lt;/tt&gt; larger you can use something like&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+&amp;lt;form class='form' method=&amp;quot;POST&amp;quot;&amp;gt;
+    &amp;lt;div class='row'&amp;gt;
+        {% for field in form %}
+          {% if field.name == 'name' or field.name == 'year' %}
+              {{ field|add_class:&amp;quot;form-control-lg&amp;quot;|as_crispy_field }}
+          {% elif field.field.widget.input_type == 'select' %}
+              {{ field|add_class:&amp;quot;form-control-sm&amp;quot;|add_class:&amp;quot;bg-warning&amp;quot;|as_crispy_field }}
+          {% else %}
+              {{ field|as_crispy_field }}
+          {% endif %}
+        {% endfor %}
+        {% csrf_token %}
+    &amp;lt;/div&amp;gt;
+    &amp;lt;input class='btn btn-primary' type='submit'&amp;gt;
+&amp;lt;/form&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;Using the above techniques you should be able to quickly layout and format your form fields with
+much control! If you need something more I recommend going the &lt;tt class="docutils literal"&gt;FormLayout&lt;/tt&gt; route I mentioned
+in the&amp;nbsp;beginning.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="django"></category><category term="django"></category><category term="forms"></category><category term="django-crispy-forms"></category><category term="django-widget-tweaks"></category></entry><entry><title>Declarative Ecto query sorting</title><link href="https://spapas.github.io/2019/10/17/declarative-ecto-query-sorting/" rel="alternate"></link><published>2019-10-17T12:20:00+03:00</published><updated>2019-10-17T12:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2019-10-17:/2019/10/17/declarative-ecto-query-sorting/</id><summary type="html">&lt;p class="first last"&gt;Being able to declare your Ecto query sorting even on fields spanning&amp;nbsp;joins&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;In a &lt;a class="reference external" href="https://spapas.github.io/2019/07/25/declarative-ecto-query-filters/"&gt;previous article&lt;/a&gt; I presented a method for declaring dynamic filters for your ecto queries.
 Continuing this article, I&amp;#8217;ll present here a way to allow dynamic sorting for your queries using
 fields that may even span&amp;nbsp;relations.&lt;/p&gt;
