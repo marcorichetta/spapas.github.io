@@ -1,5 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - Serafeim Papastefanos</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/serafeim-papastefanos.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2020-03-18T11:20:00+02:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Quick and easy layout of django forms using django-crispy-forms and django-widget-tweaks</title><link href="https://spapas.github.io/2020/03/18/django-crispy-form-quick-easy-layout/" rel="alternate"></link><published>2020-03-18T11:20:00+02:00</published><updated>2020-03-18T11:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2020-03-18:/2020/03/18/django-crispy-form-quick-easy-layout/</id><summary type="html">&lt;p class="first last"&gt;How to easily layout your django-crispy-forms&amp;nbsp;forms&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - Serafeim Papastefanos</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/serafeim-papastefanos.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2020-03-27T14:20:00+02:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Adding a latest-changes list to your Wagtail site</title><link href="https://spapas.github.io/2020/03/27/wagtail-add-latest-changes/" rel="alternate"></link><published>2020-03-27T14:20:00+02:00</published><updated>2020-03-27T14:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2020-03-27:/2020/03/27/wagtail-add-latest-changes/</id><summary type="html">&lt;p class="first last"&gt;How to add a list of the latest changes to your wagtail&amp;nbsp;site&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I think that a very important tool for a new production &lt;a class="reference external" href="https://wagtail.io"&gt;Wagtail&lt;/a&gt; site is to have a list
+where you&amp;#8217;ll be able to take a look at the latest changes. Most editors are not
+experienced enough when using a new tool so it&amp;#8217;s easy to make bad quality edits. A
+user could take a look at their changes and guide them if something&amp;#8217;s not up to good&amp;nbsp;standards.&lt;/p&gt;
+&lt;p&gt;In this article I&amp;#8217;ll present a simple way to add a latest-changes list in your Wagtail site.
+This is working excellent with Wagtail 2.8, I haven&amp;#8217;t tested it with other wagtail versions
+so your milage may vary. In the meantime, I&amp;#8217;ll also introduce a bunch of concepts of Wagtail
+I find&amp;nbsp;interesting.&lt;/p&gt;
+&lt;div class="section" id="a-starter-project"&gt;
+&lt;h2&gt;A starter&amp;nbsp;project&lt;/h2&gt;
+&lt;p&gt;Let&amp;#8217;s create a simple wagtail-starter project (this is for windows you should be able to easily follow the same steps in Unix like&amp;nbsp;systems):&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+C:\progr\py3&amp;gt;mkdir wagtail-starter
+C:\progr\py3&amp;gt;cd wagtail-starter
+C:\progr\py3\wagtail-starter&amp;gt;py -3 -m venv venv
+C:\progr\py3\wagtail-starter&amp;gt;venv\Scripts\activate
+(venv) C:\progr\py3\wagtail-starter&amp;gt;pip install wagtail
+(venv) C:\progr\py3\wagtail-starter&amp;gt;wagtail.exe start wagtail_starter
+(venv) C:\progr\py3\wagtail-starter&amp;gt;cd wagtail_starter
+(venv) C:\progr\py3\wagtail-starter\wagtail_starter&amp;gt;python manage.py migrate
+(venv) C:\progr\py3\wagtail-starter\wagtail_starter&amp;gt;python manage.py createsuperuser
+(venv) C:\progr\py3\wagtail-starter\wagtail_starter&amp;gt;python manage.py runserver
+&lt;/pre&gt;
+&lt;p&gt;When you&amp;#8217;ve finished all the above you should be able to go to &lt;a class="reference external" href="http://127.0.0.1/"&gt;http://127.0.0.1/&lt;/a&gt; and see your homepage and then
+visit &lt;a class="reference external" href="http://127.0.0.1/admin/"&gt;http://127.0.0.1/admin/&lt;/a&gt; and login with your superuser. What we&amp;#8217;d like to do is add a &amp;#8220;Latest changes&amp;#8221;
+link in the &amp;#8220;Reports&amp;#8221; admin section like&amp;nbsp;this:&lt;/p&gt;
+&lt;img alt="New menu" src="/images/latest-changes-template.png" style="width: 580px;" /&gt;
+&lt;/div&gt;
+&lt;div class="section" id="implementing-the-latest-changes-menu"&gt;
+&lt;h2&gt;Implementing the latest-changes&amp;nbsp;menu&lt;/h2&gt;
+&lt;div class="section" id="start-with-a-new-app"&gt;
+&lt;h3&gt;Start with a new&amp;nbsp;app&lt;/h3&gt;
+&lt;p&gt;To start the menu implementation I recommend putting everything related to it in a separate django application
+so you can easily re-use it to multiple sites. For this, let&amp;#8217;s create a new django app&amp;nbsp;using:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+(venv) C:\progr\py3\wagtail-starter\wagtail_starter&amp;gt;python manage.py startapp latest_changes
+&lt;/pre&gt;
+&lt;p&gt;And add &lt;tt class="docutils literal"&gt;'latest_changes'&lt;/tt&gt; to the list of our &lt;tt class="docutils literal"&gt;INSTALLED_APPS&lt;/tt&gt; at the file &lt;tt class="docutils literal"&gt;wagtail_starter\settings\base.py&lt;/tt&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="add-the-view"&gt;
+&lt;h3&gt;Add the&amp;nbsp;view&lt;/h3&gt;
+&lt;p&gt;Let&amp;#8217;s add the code for the view that will display the latest changes page. Modify the latest_changes/views.py file like&amp;nbsp;this:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+from django.shortcuts import render
+from wagtail.admin.views.reports import ReportView
+from wagtail.core.models import UserPagePermissionsProxy
+from wagtail.core.models import Page
+
+
+class LatestChangesView(ReportView):
+    template_name = &amp;quot;reports/latest_changes.html&amp;quot;
+    title = &amp;quot;Latest changes&amp;quot;
+    header_icon = &amp;quot;date&amp;quot;
+
+    def get_queryset(self):
+        self.queryset = Page.objects.order_by(&amp;quot;-last_published_at&amp;quot;)
+        return super().get_queryset()
+
+    def dispatch(self, request, *args, **kwargs):
+        if not UserPagePermissionsProxy(request.user).can_remove_locks():
+            return permission_denied(request)
+        return super().dispatch(request, *args, **kwargs)
+&lt;/pre&gt;
+&lt;p&gt;As you can see the above code adds a very small view that overrides &lt;tt class="docutils literal"&gt;ReportView&lt;/tt&gt; which is used
+also by the locked pages view so most things are already implemented by that view. The only thing we do
+here is to override the &lt;tt class="docutils literal"&gt;get_queryset&lt;/tt&gt; method to denote which pages we want to display and
+the &lt;tt class="docutils literal"&gt;dispatch&lt;/tt&gt; to add some permission checks. Here we check that a user &lt;tt class="docutils literal"&gt;can_remove_locks&lt;/tt&gt; but we
+could do other checks if needed. Finally, notice that we have overriden the template name which we&amp;#8217;ll
+define in a&amp;nbsp;minute.&lt;/p&gt;
+&lt;p&gt;To properly add that view in our urls.py we can use a wagtail hook named &lt;tt class="docutils literal"&gt;register_admin_py&lt;/tt&gt;. Wagtail hooks
+are a great way to excend the wagtail admin; to use them, you have to generate a file name &lt;tt class="docutils literal"&gt;wagtail_hooks.py&lt;/tt&gt;
+in one of your apps. This file will be auto-impoted by wagtail when your app is&amp;nbsp;started.&lt;/p&gt;
+&lt;p&gt;Thus, in our case we&amp;#8217;ll add a &lt;tt class="docutils literal"&gt;wagtail_hooks.py&lt;/tt&gt; file in the &lt;tt class="docutils literal"&gt;latest_changes&lt;/tt&gt; app with the following&amp;nbsp;code:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+from django.http import HttpResponse
+from django.conf.urls import url
+from wagtail.core import hooks
+from .views import LatestChangesView
+
+&amp;#64;hooks.register('register_admin_urls')
+def urlconf_time():
+  return [
+    url(r'^latest_changes/$', admin_view, name='latest_changes'),
+  ]
+&lt;/pre&gt;
+&lt;p&gt;The above just hooks up the &lt;tt class="docutils literal"&gt;LatestChangesView&lt;/tt&gt; we defined before to the &lt;tt class="docutils literal"&gt;/admin/latest_changes/&lt;/tt&gt; url.&lt;/p&gt;
+&lt;p&gt;If everything&amp;#8217;s ok till now you should be able to visit: &lt;a class="reference external" href="http://127.0.0.1:8000/admin/latest_changes/"&gt;http://127.0.0.1:8000/admin/latest_changes/&lt;/a&gt; and
+get an error for a missing template - remember that we haven&amp;#8217;t yet defined &lt;tt class="docutils literal"&gt;utils/reports/latest_changes.html&lt;/tt&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="add-the-template"&gt;
+&lt;h3&gt;Add the&amp;nbsp;template&lt;/h3&gt;
+&lt;p&gt;To add the template we&amp;#8217;ll need to create a folder named &lt;tt class="docutils literal"&gt;templates&lt;/tt&gt; under our &lt;tt class="docutils literal"&gt;latest_changes&lt;/tt&gt; app and then
+add a &lt;tt class="docutils literal"&gt;reports&lt;/tt&gt; folder to it. Finally in that folder add a &lt;tt class="docutils literal"&gt;latest_changes.html&lt;/tt&gt;. So the full path of
+the &lt;tt class="docutils literal"&gt;latest_changes.html&lt;/tt&gt; should be: &lt;tt class="docutils literal"&gt;wagtail_starter\latest_changes\templates\reports\latest_changes.html&lt;/tt&gt;:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+{% extends 'wagtailadmin/reports/base_report.html' %}
+{% load i18n %}
+{% block listing %}
+    {% include &amp;quot;reports/_list_latest.html&amp;quot; %}
+{% endblock %}
+
+{% block no_results %}
+    &amp;lt;p&amp;gt;{% trans &amp;quot;No changes found.&amp;quot; %}&amp;lt;/p&amp;gt;
+{% endblock %}
+&lt;/pre&gt;
+&lt;p&gt;I&amp;#8217;ve selected the &lt;tt class="docutils literal"&gt;reports&lt;/tt&gt; subfolder just to be compatible with what wagtail does, you can just put &lt;tt class="docutils literal"&gt;latest_changes.html&lt;/tt&gt;  directly
+under &lt;tt class="docutils literal"&gt;templates&lt;/tt&gt;; don&amp;#8217;t forget to update the &lt;tt class="docutils literal"&gt;LatestChangesView&lt;/tt&gt; defined before though! The above page includes a
+snippet named &lt;tt class="docutils literal"&gt;reports/_list_latest.html&amp;quot; thus you also need to add a ``_list_latest.html&lt;/tt&gt; file in the same folder with the
+following&amp;nbsp;contents:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+{% extends &amp;quot;wagtailadmin/pages/listing/_list_explore.html&amp;quot; %}
+
+{% load i18n wagtailadmin_tags %}
+
+{% block post_parent_page_headers %}
+&amp;lt;tr&amp;gt;
+&amp;lt;th&amp;gt;Title&amp;lt;/th&amp;gt;
+&amp;lt;th&amp;gt;Last update&amp;lt;/th&amp;gt;
+&amp;lt;th&amp;gt;Kind&amp;lt;/th&amp;gt;
+&amp;lt;th&amp;gt;Status&amp;lt;/th&amp;gt;
+&amp;lt;th&amp;gt;Owner / last publish / last edit&amp;lt;/th&amp;gt;
+&amp;lt;/tr&amp;gt;
+{% endblock %}
+
+{% block page_navigation %}
+    &amp;lt;td&amp;gt;
+        {{ page.owner }} / {{ page.live_revision.user }} / {{ page.get_latest_revision.user }}
+    &amp;lt;/td&amp;gt;
+{% endblock %}
+&lt;/pre&gt;
+&lt;p&gt;Please notice that my &lt;tt class="docutils literal"&gt;_list_latest.html&lt;/tt&gt; snippet extends the wagtail provided &lt;tt class="docutils literal"&gt;_list_explore.html&lt;/tt&gt; template and
+overrides some things that can be overriden from that file. If you want to do more changes you&amp;#8217;ll need to copy over
+everything and change things as you wish instead of&amp;nbsp;extending.&lt;/p&gt;
+&lt;p&gt;Also, keep in mind that because you added a &lt;tt class="docutils literal"&gt;templates&lt;/tt&gt; folder you&amp;#8217;ll need to restart your django development&amp;nbsp;server.&lt;/p&gt;
+&lt;p&gt;Finally, if everything is ok until now you should be able to visit &lt;a class="reference external" href="http://127.0.0.1:8000/admin/latest_changes/"&gt;http://127.0.0.1:8000/admin/latest_changes/&lt;/a&gt; and see
+your view! It will say &amp;#8220;No changes found&amp;#8221; if you&amp;#8217;ve followed the steps here; just go to Pages - Home from the wagtail
+menu and edit that page (just save it). Now visit &lt;a class="reference external" href="http://127.0.0.1:8000/admin/latest_changes/"&gt;http://127.0.0.1:8000/admin/latest_changes/&lt;/a&gt; again and behold! Your
+own latest changes&amp;nbsp;view:&lt;/p&gt;
+&lt;img alt="The view" src="/images/last_changes_view.png" style="width: 780px;" /&gt;
+&lt;/div&gt;
+&lt;div class="section" id="displaying-our-menu-item"&gt;
+&lt;h3&gt;Displaying our menu&amp;nbsp;item&lt;/h3&gt;
+&lt;p&gt;The last piece of the puzzle missing is to actually display a menu item under the Reports menu of wagtail admin. For this
+we are going to use our friends, the wagtail hooks. So, change the wagtail_hooks.py file like this (I&amp;#8217;m also including
+the code from adding the&amp;nbsp;url):&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;
+from django.http import HttpResponse
+from django.conf.urls import url
+from django.urls import reverse
+from wagtail.admin.menu import MenuItem
+from wagtail.core import hooks
+from wagtail.core.models import UserPagePermissionsProxy
+from .views import LatestChangesView
+
+&amp;#64;hooks.register('register_admin_urls')
+def urlconf_time():
+    return [
+      url(r'^latest_changes/$', LatestChangesView.as_view(), name='latest_changes'),
+    ]
+
+
+class LatestChangesPagesMenuItem(MenuItem):
+    def is_shown(self, request):
+        return UserPagePermissionsProxy(request.user).can_remove_locks()
+
+
+&amp;#64;hooks.register(&amp;quot;register_reports_menu_item&amp;quot;)
+def register_latest_changes_menu_item():
+    return LatestChangesPagesMenuItem(
+        &amp;quot;Latest changes&amp;quot;, reverse(&amp;quot;latest_changes&amp;quot;), classnames=&amp;quot;icon icon-date&amp;quot;, order=100,
+    )
+&lt;/pre&gt;
+&lt;p&gt;The above code uses the &lt;tt class="docutils literal"&gt;register_reports_menu_item&lt;/tt&gt; which is a hook that can be used to add a child
+specifically to the Reports menu item. Notice that it uses the &lt;tt class="docutils literal"&gt;LatestChangesPagesMenuItem&lt;/tt&gt; which
+is a class that inherits from &lt;tt class="docutils literal"&gt;MenuItem&lt;/tt&gt;; the only thing that is overriden there is the &lt;tt class="docutils literal"&gt;is_shown&lt;/tt&gt;
+method so it will have the same permissions as the &lt;tt class="docutils literal"&gt;LatestChangesView&lt;/tt&gt; we defined above so user
+that will see the menu item will also have permissions to display the view. Here&amp;#8217;s the final menu&amp;nbsp;item:&lt;/p&gt;
+&lt;img alt="The menu item" src="/images/latest_changes_menu.png" style="width: 380px;" /&gt;
+&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;We&amp;#8217;ve seen the steps required to add a latest pages view to your wagtail admin site. I have to admit that
+it is a little work however the nice thing is that this is all self-included in a single application. You can
+just get tha application and copy over it to your wagtail site; after you add that application to INSTALLED_APPS
+you should get the whole functionality without any more modifications to your project. To help you more
+with this I&amp;#8217;ve included the whole code of this project in the &lt;a class="reference external" href="https://github.com/spapas/wagtail-latest-changes"&gt;https://github.com/spapas/wagtail-latest-changes&lt;/a&gt;&amp;nbsp;repository.&lt;/p&gt;
+&lt;p&gt;You can either clone this repository to see the functionality or just copy over the &lt;tt class="docutils literal"&gt;latest_changes&lt;/tt&gt; folder to
+your wagtail project to include the functionality directly (don&amp;#8217;t forget to fix the &lt;tt class="docutils literal"&gt;INSTALLED_APPS&lt;/tt&gt; setting)!&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</content><category term="wagtail"></category><category term="django"></category><category term="wagtail"></category></entry><entry><title>Quick and easy layout of django forms using django-crispy-forms and django-widget-tweaks</title><link href="https://spapas.github.io/2020/03/18/django-crispy-form-quick-easy-layout/" rel="alternate"></link><published>2020-03-18T11:20:00+02:00</published><updated>2020-03-18T11:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2020-03-18:/2020/03/18/django-crispy-form-quick-easy-layout/</id><summary type="html">&lt;p class="first last"&gt;How to easily layout your django-crispy-forms&amp;nbsp;forms&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;One of the first problems you have when you want to create a traditional &lt;span class="caps"&gt;HTML&lt;/span&gt; django site (i.e
 not an &lt;span class="caps"&gt;SPA&lt;/span&gt; one) is how to properly and beautifully layout your forms. In this small article I&amp;#8217;ll
 talk about two very useful django packages that will help you have great layouts in your forms:
@@ -22655,7 +22846,7 @@ people familiar with drawing APIs) for your &lt;span class="caps"&gt;PDF&lt;/spa
 reportlab of cours) you should see no errors and a pdf named &lt;tt class="docutils literal"&gt;hello1.pdf&lt;/tt&gt; created. If you open it in your &lt;span class="caps"&gt;PDF&lt;/span&gt;
 reader you&amp;#8217;ll see a blank page with &amp;#8220;Hello World&amp;#8221; written in its lower right&amp;nbsp;corner.&lt;/p&gt;
 &lt;p&gt;If you try to add a unicode text, for example &amp;#8220;Καλημέρα ελλάδα&amp;#8221;, you should see something like the&amp;nbsp;following:&lt;/p&gt;
-&lt;img alt="Hello PDF" src="/images/hellopdf2.png" style="width: 280px;" /&gt;
+&lt;img alt="Hello PDF" src="/images/hellopdf2.png" style="width: 480px;" /&gt;
 &lt;p&gt;It seems that the default font that ReportLab uses does not have a good support for accented greek characters
 since they are missing  (and probably for various other&amp;nbsp;characters).&lt;/p&gt;
 &lt;p&gt;To resolve this, we could try changing the font to one that contains the missing symbols. You can find free

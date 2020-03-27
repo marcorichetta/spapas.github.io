@@ -3855,7 +3855,7 @@ people familiar with drawing APIs) for your &lt;span class="caps"&gt;PDF&lt;/spa
 reportlab of cours) you should see no errors and a pdf named &lt;tt class="docutils literal"&gt;hello1.pdf&lt;/tt&gt; created. If you open it in your &lt;span class="caps"&gt;PDF&lt;/span&gt;
 reader you&amp;#8217;ll see a blank page with &amp;#8220;Hello World&amp;#8221; written in its lower right&amp;nbsp;corner.&lt;/p&gt;
 &lt;p&gt;If you try to add a unicode text, for example &amp;#8220;Καλημέρα ελλάδα&amp;#8221;, you should see something like the&amp;nbsp;following:&lt;/p&gt;
-&lt;img alt="Hello PDF" src="/images/hellopdf2.png" style="width: 280px;" /&gt;
+&lt;img alt="Hello PDF" src="/images/hellopdf2.png" style="width: 480px;" /&gt;
 &lt;p&gt;It seems that the default font that ReportLab uses does not have a good support for accented greek characters
 since they are missing  (and probably for various other&amp;nbsp;characters).&lt;/p&gt;
 &lt;p&gt;To resolve this, we could try changing the font to one that contains the missing symbols. You can find free
