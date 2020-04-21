@@ -1517,7 +1517,7 @@ It is interesting to take a look at the list of its
 ancestors: <tt class="docutils literal">TemplateResponseMixin</tt>, <tt class="docutils literal">BaseFormView</tt>, <tt class="docutils literal">FormMixin</tt>, <tt class="docutils literal">ContextMixin</tt>, <tt class="docutils literal">ProcessFormView</tt> and <tt class="docutils literal">View</tt>.
 We are familiar with <tt class="docutils literal">TemplateResponseMixin</tt>, <tt class="docutils literal">ContextMixin</tt> and <tt class="docutils literal">View</tt> but not with
 the others. Before discussing these classes let&#8217;s take a look at the FormView
-hierarchy, courtesy of <a class="reference external" href="http://ccbv.cco.uk">http://ccbv.cco.uk</a> and <a class="reference external" href="http://yuml.me">http://yuml.me</a>:</p>
+hierarchy, courtesy of <a class="reference external" href="http://ccbv.co.uk">http://ccbv.co.uk</a> and <a class="reference external" href="http://yuml.me">http://yuml.me</a>:</p>
 <img src="https://yuml.me/diagram/plain;/class/[TemplateResponseMixin%7Bbg:white%7D]%5E-[FormView%7Bbg:green%7D],%20[BaseFormView%7Bbg:white%7D]%5E-[FormView%7Bbg:green%7D],%20[FormMixin%7Bbg:white%7D]%5E-[BaseFormView%7Bbg:white%7D],%20[ContextMixin%7Bbg:white%7D]%5E-[FormMixin%7Bbg:white%7D],%20[ProcessFormView%7Bbg:white%7D]%5E-[BaseFormView%7Bbg:white%7D],%20[View%7Bbg:lightblue%7D]%5E-[ProcessFormView%7Bbg:white%7D].svg" alt="FormView"><p>The above diagram should make everything easier: The <tt class="docutils literal">FormMixin</tt> inherits
 from <tt class="docutils literal">ContextMixin</tt> and overrides its <tt class="docutils literal">get_context_data</tt> method to add the
 form to the view. Beyond this, it adds some attributes and methods for proper form handling, for
@@ -1548,7 +1548,7 @@ functionality (i.e both the <tt class="docutils literal">ProcessFormView</tt> an
 <h3>The ListView and&nbsp;DetailView</h3>
 <p>Next in our Django <span class="caps">CBV</span> tour is the <a class="reference external" href="https://docs.djangoproject.com/en/2.0/ref/class-based-views/generic-display/#listview">ListView</a>. The <tt class="docutils literal">ListView</tt> is used to render multiple
 objects in a template, for example in a list or table. Here&#8217;s a diagram of the class
-hierarchy (courtesy of <a class="reference external" href="http://ccbv.cco.uk">http://ccbv.cco.uk</a> and <a class="reference external" href="http://yuml.me">http://yuml.me</a>):</p>
+hierarchy (courtesy of <a class="reference external" href="http://ccbv.co.uk">http://ccbv.co.uk</a> and <a class="reference external" href="http://yuml.me">http://yuml.me</a>):</p>
 <img src="https://yuml.me/diagram/plain;/class/[MultipleObjectTemplateResponseMixin%7Bbg:white%7D]%5E-[ListView%7Bbg:green%7D],%20[TemplateResponseMixin%7Bbg:white%7D]%5E-[MultipleObjectTemplateResponseMixin%7Bbg:white%7D],%20[BaseListView%7Bbg:white%7D]%5E-[ListView%7Bbg:green%7D],%20[MultipleObjectMixin%7Bbg:white%7D]%5E-[BaseListView%7Bbg:white%7D],%20[ContextMixin%7Bbg:white%7D]%5E-[MultipleObjectMixin%7Bbg:white%7D],%20[View%7Bbg:lightblue%7D]%5E-[BaseListView%7Bbg:white%7D].svg" alt="ListView"><p>The <tt class="docutils literal">MultipleObjectMixin</tt> is used make a query to the database (either using a
 model or a queryset) and pass the results to the context. It also supports
 custom ordering (<tt class="docutils literal">get_ordering()</tt>) and pagination (<tt class="docutils literal">paginate_queryset()</tt>).
@@ -2504,6 +2504,9 @@ needed for CBVs and be able to properly understand which method or attribute you
 implement some specific functionality. Finally, the list of examples in the third chapter should help
 you get started in all your <span class="caps">CBV</span> needs - if you have some specific question about CBVs or you&#8217;d like
 another use case added to the list feel free to ask and I&#8217;ll try to add&nbsp;it!</p>
+<p><em>Update 21/04/2020</em> As per commenter&#8217;s Ahmed I. Elsayed comment, there are sites with a similar
+functionality with the <span class="caps">CBV</span> inspector for the Django Rest Framework (<a class="reference external" href="http://www.cdrf.co/">http://www.cdrf.co/</a>) and
+Django Forms (<a class="reference external" href="https://cdf.9vo.lt/">https://cdf.9vo.lt/</a>)! They are an excellent resource for&nbsp;reference!!</p>
 </div>
 </div>
   		</article>
