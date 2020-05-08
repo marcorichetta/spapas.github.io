@@ -32,19 +32,6 @@
 
     <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans:400,700&amp;subset=greek" rel="stylesheet">
 
-<style>
-#gHPzseYvFrhZ123 {
-display: none;
-margin-bottom: 30px;
-padding: 20px 10px;
-background: #D30000;
-text-align: center;
-font-weight: bold;
-color: #fff;
-border-radius: 5px;
-}
-</style>
-
 
     <script data-ad-client="ca-pub-7673322832689008" async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -105,11 +92,6 @@ border-radius: 5px;
 </ul></nav>
   <div id="main">
     <div id="content">
-    <div id="gHPzseYvFrhZ123">
-      Hello! I see that you have an ad blocker. If you find something useful here 
-      and want to support me somehow please consider disabling your ad blocker for this site. It won't cost you anything.
-      
-    </div>
 <div>
   <article class="hentry" role="article">
 <header>
@@ -123,9 +105,18 @@ where you&#8217;ll be able to take a look at the latest changes. Most editors ar
 experienced enough when using a new tool so it&#8217;s easy to make bad quality edits. A
 user could take a look at their changes and guide them if something&#8217;s not up to good&nbsp;standards.</p>
 <p>In this article I&#8217;ll present a simple way to add a latest-changes list in your Wagtail site.
-This is working excellent with Wagtail 2.8, I haven&#8217;t tested it with other wagtail versions
+This is working excellent with Wagtail 2.9, I haven&#8217;t tested it with other wagtail versions
 so your milage may vary. In the meantime, I&#8217;ll also introduce a bunch of concepts of Wagtail
 I find&nbsp;interesting.</p>
+<p><strong>Update 08/05/2020</strong> Please notice that this article was originally written for Wagtail 2.8
+projects. However, Wagtail 2.8 didn&#8217;t have an official <span class="caps">API</span> for adding reports thus I had to
+check the source code for some things. Those things since were not part of any <span class="caps">API</span> have
+been changed and are not working in Wagtail&nbsp;2.9.</p>
+<p>Thus I&#8217;ve updated
+the project to use the proper APIs and work with Wagtail 2.9 (and hopefully the next versions).
+If you want to see what&#8217;s changed between the two versions you can take a look at
+<a class="reference external" href="https://github.com/spapas/wagtail-latest-changes/commit/d751cd7978fc99c3b2f10e84c2f9b72c555f0930">this commit</a> from the companion project. You may also want to take a look at the
+<a class="reference external" href="https://docs.wagtail.io/en/stable/advanced_topics/adding_reports.html">adding reports</a> tutorial on the Wagtail&nbsp;docs.</p>
 <div class="section" id="a-starter-project">
 <h2>A starter&nbsp;project</h2>
 <p>Let&#8217;s create a simple wagtail-starter project (this is for windows you should be able to easily follow the same steps in Unix like&nbsp;systems):</p>
@@ -162,12 +153,12 @@ so you can easily re-use it to multiple sites. For this, let&#8217;s create a ne
 <p>Let&#8217;s add the code for the view that will display the latest changes page. Modify the latest_changes/views.py file like&nbsp;this:</p>
 <pre class="code literal-block">
 from django.shortcuts import render
-from wagtail.admin.views.reports import ReportView
+from wagtail.admin.views.reports import PageReportView
 from wagtail.core.models import UserPagePermissionsProxy
 from wagtail.core.models import Page
 
 
-class LatestChangesView(ReportView):
+class LatestChangesView(PageReportView):
     template_name = &quot;reports/latest_changes.html&quot;
     title = &quot;Latest changes&quot;
     header_icon = &quot;date&quot;
@@ -181,12 +172,14 @@ class LatestChangesView(ReportView):
             return permission_denied(request)
         return super().dispatch(request, *args, **kwargs)
 </pre>
-<p>As you can see the above code adds a very small view that overrides <tt class="docutils literal">ReportView</tt> which is used
+<p>As you can see the above code adds a very small view that overrides <tt class="docutils literal">PageReportView</tt> which is used
 also by the locked pages view so most things are already implemented by that view. The only thing we do
 here is to override the <tt class="docutils literal">get_queryset</tt> method to denote which pages we want to display and
 the <tt class="docutils literal">dispatch</tt> to add some permission checks. Here we check that a user <tt class="docutils literal">can_remove_locks</tt> but we
 could do other checks if needed. Finally, notice that we have overriden the template name which we&#8217;ll
 define in a&nbsp;minute.</p>
+<p>Beyond <tt class="docutils literal">PageReportView</tt> that should be used for generating <tt class="docutils literal">Page</tt> reports, you can override
+<tt class="docutils literal">ReportView</tt> which can be used to implement generic&nbsp;reports.</p>
 <p>To properly add that view in our urls.py we can use a wagtail hook named <tt class="docutils literal">register_admin_py</tt>. Wagtail hooks
 are a great way to excend the wagtail admin; to use them, you have to generate a file name <tt class="docutils literal">wagtail_hooks.py</tt>
 in one of your apps. This file will be auto-impoted by wagtail when your app is&nbsp;started.</p>
@@ -200,7 +193,7 @@ from .views import LatestChangesView
 &#64;hooks.register('register_admin_urls')
 def urlconf_time():
   return [
-    url(r'^latest_changes/$', admin_view, name='latest_changes'),
+    url(r'^latest_changes/$', LatestChangesView.as_view(), name='latest_changes'),
   ]
 </pre>
 <p>The above just hooks up the <tt class="docutils literal">LatestChangesView</tt> we defined before to the <tt class="docutils literal">/admin/latest_changes/</tt> url.</p>
@@ -213,7 +206,7 @@ get an error for a missing template - remember that we haven&#8217;t yet defined
 add a <tt class="docutils literal">reports</tt> folder to it. Finally in that folder add a <tt class="docutils literal">latest_changes.html</tt>. So the full path of
 the <tt class="docutils literal">latest_changes.html</tt> should be: <tt class="docutils literal">wagtail_starter\latest_changes\templates\reports\latest_changes.html</tt>:</p>
 <pre class="code literal-block">
-{% extends 'wagtailadmin/reports/base_report.html' %}
+{% extends 'wagtailadmin/reports/base_page_report.html' %}
 {% load i18n %}
 {% block listing %}
     {% include &quot;reports/_list_latest.html&quot; %}
@@ -224,7 +217,8 @@ the <tt class="docutils literal">latest_changes.html</tt> should be: <tt class="
 {% endblock %}
 </pre>
 <p>I&#8217;ve selected the <tt class="docutils literal">reports</tt> subfolder just to be compatible with what wagtail does, you can just put <tt class="docutils literal">latest_changes.html</tt>  directly
-under <tt class="docutils literal">templates</tt>; don&#8217;t forget to update the <tt class="docutils literal">LatestChangesView</tt> defined before though! The above page includes a
+under <tt class="docutils literal">templates</tt>; don&#8217;t forget to update the <tt class="docutils literal">LatestChangesView</tt> defined before though! This template extends the
+<tt class="docutils literal">base_page_report.html</tt> template that Wagtail provides for page reports. It also includes a
 snippet named <tt class="docutils literal">reports/_list_latest.html&quot; thus you also need to add a ``_list_latest.html</tt> file in the same folder with the
 following&nbsp;contents:</p>
 <pre class="code literal-block">
@@ -248,7 +242,7 @@ following&nbsp;contents:</p>
     &lt;/td&gt;
 {% endblock %}
 </pre>
-<p>Please notice that my <tt class="docutils literal">_list_latest.html</tt> snippet extends the wagtail provided <tt class="docutils literal">_list_explore.html</tt> template and
+<p>Please notice that my <tt class="docutils literal">_list_latest.html</tt> snippet extends the Wagtail provided <tt class="docutils literal">_list_explore.html</tt> template and
 overrides some things that can be overriden from that file. If you want to do more changes you&#8217;ll need to copy over
 everything and change things as you wish instead of&nbsp;extending.</p>
 <p>Also, keep in mind that because you added a <tt class="docutils literal">templates</tt> folder you&#8217;ll need to restart your django development&nbsp;server.</p>
@@ -305,7 +299,8 @@ just get tha application and copy over it to your wagtail site; after you add th
 you should get the whole functionality without any more modifications to your project. To help you more
 with this I&#8217;ve included the whole code of this project in the <a class="reference external" href="https://github.com/spapas/wagtail-latest-changes">https://github.com/spapas/wagtail-latest-changes</a>&nbsp;repository.</p>
 <p>You can either clone this repository to see the functionality or just copy over the <tt class="docutils literal">latest_changes</tt> folder to
-your wagtail project to include the functionality directly (don&#8217;t forget to fix the <tt class="docutils literal">INSTALLED_APPS</tt> setting)!</p>
+your wagtail project to include the functionality directly (don&#8217;t forget to fix the <tt class="docutils literal">INSTALLED_APPS</tt> setting)!
+It should work with all Wagtail 2.9 and later&nbsp;projects.</p>
 </div>
 </div>
 </div>
@@ -526,13 +521,12 @@ your wagtail project to include the functionality directly (don&#8217;t forget t
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2020  Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2020 Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>
   <script src="https://spapas.github.io/theme/js/ender.js"></script>
   <script src="https://spapas.github.io/theme/js/octopress.js" type="text/javascript"></script>
-  <script src="https://spapas.github.io/theme/js/ads.js"></script>
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -562,13 +556,6 @@ your wagtail project to include the functionality directly (don&#8217;t forget t
       twitterWidgets.src = '//platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
-  </script>
-  <script>
-    if( window.canRunAds === undefined ){
-        // adblocker detected, show fallback
-        console.log("CANNOT RUN ADS");
-        document.getElementById('gHPzseYvFrhZ123').style.display='block';
-      }
   </script>
 </body>
 

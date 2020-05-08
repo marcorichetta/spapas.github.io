@@ -30,19 +30,6 @@
 
     <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans:400,700&amp;subset=greek" rel="stylesheet">
 
-<style>
-#gHPzseYvFrhZ123 {
-display: none;
-margin-bottom: 30px;
-padding: 20px 10px;
-background: #D30000;
-text-align: center;
-font-weight: bold;
-color: #fff;
-border-radius: 5px;
-}
-</style>
-
 
     <script data-ad-client="ca-pub-7673322832689008" async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -103,11 +90,6 @@ border-radius: 5px;
 </ul></nav>
   <div id="main">
     <div id="content">
-    <div id="gHPzseYvFrhZ123">
-      Hello! I see that you have an ad blocker. If you find something useful here 
-      and want to support me somehow please consider disabling your ad blocker for this site. It won't cost you anything.
-      
-    </div>
 <div class="blog-index">
   		<article>
 <header>
@@ -663,7 +645,7 @@ either copying directly the pset and pget utils I explained above or just using 
 </header>
 
 <div class="entry-content"><div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#a-gentle-introduction-to-cbvs" id="id1">A gentle introduction to CBVs</a><ul>
 <li><a class="reference internal" href="#hand-made-cbvs" id="id2">Hand-made&nbsp;CBVs</a></li>
@@ -826,8 +808,8 @@ a rather naive first&nbsp;try:</p>
         <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            &lt;html&gt;</span>
 <span class="s2">                &lt;body&gt;</span>
-<span class="s2">                    &lt;h1&gt;{header}&lt;/h1&gt;</span>
-<span class="s2">                    {body}</span>
+<span class="s2">                    &lt;h1&gt;</span><span class="si">{header}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">                    </span><span class="si">{body}</span><span class="s2"></span>
 <span class="s2">                &lt;/body&gt;</span>
 <span class="s2">            &lt;/html&gt;</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -922,8 +904,8 @@ when you configure it. The only way to do it would be to re-define the <tt class
     <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        &lt;html&gt;</span>
 <span class="s2">            &lt;body&gt;</span>
-<span class="s2">                &lt;h1&gt;{header}&lt;/h1&gt;</span>
-<span class="s2">                {body}</span>
+<span class="s2">                &lt;h1&gt;</span><span class="si">{header}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">                </span><span class="si">{body}</span><span class="s2"></span>
 <span class="s2">            &lt;/body&gt;</span>
 <span class="s2">        &lt;/html&gt;</span>
 <span class="s2">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -945,7 +927,7 @@ part of its functionality is implemented by a different&nbsp;method.</p>
 <p>Here&#8217;s how we could improve the <tt class="docutils literal">CustomClassView</tt> to make it more <span class="caps">DRY</span>:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BetterCustomClassView</span><span class="p">(</span><span class="n">CustomClassView</span><span class="p">,</span> <span class="p">):</span>
     <span class="k">def</span> <span class="nf">get_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">):</span>
-        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Better Custom Class View&quot;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Better Custom Class View&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">get_context</span><span class="p">(</span><span class="bp">self</span> <span class="p">,</span> <span class="p">):</span>
@@ -961,8 +943,8 @@ part of its functionality is implemented by a different&nbsp;method.</p>
         <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            &lt;html&gt;</span>
 <span class="s2">                &lt;body&gt;</span>
-<span class="s2">                    &lt;h1&gt;{header}&lt;/h1&gt;</span>
-<span class="s2">                    {body}</span>
+<span class="s2">                    &lt;h1&gt;</span><span class="si">{header}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">                    </span><span class="si">{body}</span><span class="s2"></span>
 <span class="s2">                &lt;/body&gt;</span>
 <span class="s2">            &lt;/html&gt;</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -1242,43 +1224,43 @@ specified by the <span class="caps">MRO</span> list) same-named method and retri
 of the previous&nbsp;example:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">V</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From V&quot;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From V&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">M1</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From M1&quot;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From M1&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">M2</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From M2&quot;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From M2&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">MIXIN</span><span class="p">(</span><span class="n">M2</span><span class="p">,</span> <span class="n">M1</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From MIXIN&quot;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From MIXIN&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">M1V</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From M1V&quot;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From M1V&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">M2M1V</span><span class="p">(</span><span class="n">M1V</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From M2M1V&quot;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From M2M1V&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">INHERITANCE</span><span class="p">(</span><span class="n">M2M1V</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
-        <span class="k">print</span> <span class="p">(</span><span class="s2">&quot;From INHERITANCE&quot;</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;From INHERITANCE&quot;</span><span class="p">)</span>
 
-<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;MIXIN OUTPUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;MIXIN OUTPUT&quot;</span><span class="p">)</span>
 <span class="n">MIXIN</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
 
-<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;INHERITANCE OUTPUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;INHERITANCE OUTPUT&quot;</span><span class="p">)</span>
 <span class="n">INHERITANCE</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">()</span>
 </pre></div>
 <p>Here&#8217;s the&nbsp;output:</p>
@@ -1454,8 +1436,8 @@ section using <tt class="docutils literal">View</tt> as its&nbsp;ancestor:</p>
         <span class="n">resp</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            &lt;html&gt;</span>
 <span class="s2">                &lt;body&gt;</span>
-<span class="s2">                    &lt;h1&gt;{header}&lt;/h1&gt;</span>
-<span class="s2">                    {body}</span>
+<span class="s2">                    &lt;h1&gt;</span><span class="si">{header}</span><span class="s2">&lt;/h1&gt;</span>
+<span class="s2">                    </span><span class="si">{body}</span><span class="s2"></span>
 <span class="s2">                &lt;/body&gt;</span>
 <span class="s2">            &lt;/html&gt;</span>
 <span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -1705,16 +1687,16 @@ version of it that would inherit from <tt class="docutils literal">SingleObjectM
 <span class="k">class</span> <span class="nc">AbstractGeneralInfo</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="n">status</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">STATUS_CHOICES</span><span class="p">,</span> <span class="p">)</span>
     <span class="n">category</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="p">)</span>
-    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="p">)</span>
+    <span class="n">created_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>
     <span class="n">created_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(class)s</span><span class="s1">_created_by&#39;</span><span class="p">,</span> <span class="p">)</span>
-    <span class="n">modified_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="p">)</span>
+    <span class="n">modified_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)</span>
     <span class="n">modified_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(class)s</span><span class="s1">_modified_by&#39;</span><span class="p">,</span> <span class="p">)</span>
 
     <span class="n">owned_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">AUTH_USER_MODEL</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">PROTECT</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(class)s</span><span class="s1">_owned_by&#39;</span><span class="p">,</span> <span class="p">)</span>
-    <span class="n">published_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">published_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
-        <span class="n">abstract</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">abstract</span> <span class="o">=</span> <span class="kc">True</span>
 
 
 <span class="k">class</span> <span class="nc">Article</span><span class="p">(</span><span class="n">AbstractGeneralInfo</span><span class="p">):</span>
@@ -1724,7 +1706,7 @@ version of it that would inherit from <tt class="docutils literal">SingleObjectM
 
 <span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">AbstractGeneralInfo</span><span class="p">):</span>
     <span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="p">)</span>
-    <span class="nb">file</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">()</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">()</span>
 </pre></div>
 <p>All this can be found on the accompanying project <a class="reference external" href="https://github.com/spapas/cbv-tutorial">https://github.com/spapas/cbv-tutorial</a> on the djangocbv app (visit <a class="reference external" href="http://127.0.0.1:8001/djangocbv/">http://127.0.0.1:8001/djangocbv/</a>).</p>
 <div class="section" id="do-something-when-a-valid-form-is-submitted">
@@ -1742,7 +1724,7 @@ create an extra object. Let&#8217;s see a generic example of overriding a <tt cl
     <span class="n">redirect_to</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
 
     <span class="c1"># For Create or UpdateView, the just-saved object will be assigned to self.object</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Created an object with id {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Created an object with id </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="c1"># return the redirect</span>
     <span class="k">return</span> <span class="n">redirect_to</span>
@@ -1847,7 +1829,7 @@ we could have overridden the <tt class="docutils literal">get_object</tt> method
 overridden to raise a 403 Forbidden status when a user tries to access an object that does not belong to&nbsp;him:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">PermissionDenied</span>
 
-<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">owned_by</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">PermissionDenied</span>
@@ -1886,7 +1868,7 @@ before calling the super&#8217;s constructor. For
 example, here&#8217;s how a form that can accept the request could be&nbsp;implemented:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">RequestForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 <p>We use <tt class="docutils literal">pop</tt> to remove the request from the received <tt class="docutils literal">kwargs</tt> and only then we call the
@@ -1933,7 +1915,7 @@ so try to remember the following 3 needed&nbsp;lines:</p>
 presented in <a class="reference external" href="https://spapas.github.io/2017/10/11/essential-django-packages/">my essential Django package list</a>. Here&#8217;s how a mixin can be created that
 adds a filter to the&nbsp;context:</p>
 <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AddFilterMixin</span><span class="p">:</span>
-    <span class="n">filter_class</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">filter_class</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ctx</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2198,13 +2180,13 @@ similar is to pass an <tt class="docutils literal">is_create</tt> argument to th
 <p>Thus, on your <tt class="docutils literal">CreateView</tt> you&#8217;ll add this <tt class="docutils literal">get_form_kwargs</tt>:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_form_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyCreateView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">()</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;is_create&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;is_create&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">kwargs</span>
 </pre></div>
 <p>while on your <tt class="docutils literal">UpdateView</tt> you&#8217;ll add&nbsp;this:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_form_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyUpdateView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">()</span>
-    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;is_create&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">})</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;is_create&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">kwargs</span>
 </pre></div>
 <p>Please notice that the form has to properly handle the extra kwarg in its constructor as I&#8217;ve already explained&nbsp;previously.</p>
@@ -2263,7 +2245,7 @@ accompanying project (<a class="reference external" href="https://github.com/spa
 
 
 <span class="k">class</span> <span class="nc">ChangeStatusMixin</span><span class="p">:</span>
-    <span class="n">new_status</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">new_status</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">,</span> <span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_status</span><span class="p">:</span>
@@ -2454,7 +2436,7 @@ or <tt class="docutils literal">dispatch</tt> method of <tt class="docutils lite
 <span class="k">class</span> <span class="nc">DynamicTemplateView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get_template_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">what</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;what&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="s1">&#39;{0}.html&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.html&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
 </pre></div>
 <p>As you will see there&nbsp;are</p>
 <ul class="simple">
@@ -2770,8 +2752,8 @@ a list of urls. Here&#8217;s a small script that downloads the input video&nbsp;
         <span class="n">ydl</span> <span class="o">=</span> <span class="n">YoutubeDL</span><span class="p">(</span><span class="n">ydl_opts</span><span class="p">)</span>
         <span class="n">ydl</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Enter list of urls to download&quot;</span><span class="p">)</span>
-        <span class="nb">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Enter list of urls to download&quot;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 <p>Save it in a file named getvideo.py and run it like <tt class="docutils literal">py <span class="pre">-3</span> getvideo.py AjFfsOA7AQI 3dDtACSYVx0 G17E4Muylis</tt> to download all three&nbsp;videos!</p>
 </div>
@@ -2791,10 +2773,10 @@ script to rename all mp3 files in a directory to using english characters&nbsp;o
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">unidecode</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;mp3&#39;</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Renaming {0} to {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">unidecode</span><span class="o">.</span><span class="n">unidecode</span><span class="p">(</span><span class="nb">file</span><span class="p">)))</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">unidecode</span><span class="o">.</span><span class="n">unidecode</span><span class="p">(</span><span class="nb">file</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;mp3&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Renaming </span><span class="si">{0}</span><span class="s2"> to </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">unidecode</span><span class="o">.</span><span class="n">unidecode</span><span class="p">(</span><span class="n">file</span><span class="p">)))</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">unidecode</span><span class="o">.</span><span class="n">unidecode</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
 </pre></div>
 <p>Copy this to a file named transliterate.py and run it in a directory containing mp3 files (<tt class="docutils literal">py <span class="pre">-3</span> transliterate.py</tt>) to rename them to non-unicode&nbsp;characters.</p>
 </div>
@@ -2912,8 +2894,8 @@ displays an html page and loads the client side code - we&#8217;ll talk about it
     <span class="n">authentication_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">authentication</span><span class="o">.</span><span class="n">TokenAuthentication</span><span class="p">,)</span>
     <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">permissions</span><span class="o">.</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
 
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="s2">&quot;Hello {0}!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="s2">&quot;Hello </span><span class="si">{0}</span><span class="s2">!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">))</span>
 </pre></div>
 <p>This is very simple however I&#8217;d like to make a few comments about the above. First of all you see that
 I&#8217;ve defined <tt class="docutils literal">authentication_classes</tt> and <tt class="docutils literal">permission_classes</tt>. These options&nbsp;define</p>
@@ -3587,13 +3569,12 @@ Python 3.6.4
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2013&ndash;2020  Serafeim Papastefanos &mdash;
+    Copyright &copy;  2013&ndash;2020 Serafeim Papastefanos &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://spapas.github.io/theme/js/modernizr-2.0.js"></script>
   <script src="https://spapas.github.io/theme/js/ender.js"></script>
   <script src="https://spapas.github.io/theme/js/octopress.js" type="text/javascript"></script>
-  <script src="https://spapas.github.io/theme/js/ads.js"></script>
     <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -3620,13 +3601,6 @@ Python 3.6.4
       twitterWidgets.src = '//platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
-  </script>
-  <script>
-    if( window.canRunAds === undefined ){
-        // adblocker detected, show fallback
-        console.log("CANNOT RUN ADS");
-        document.getElementById('gHPzseYvFrhZ123').style.display='block';
-      }
   </script>
 </body>
 

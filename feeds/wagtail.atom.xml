@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - wagtail</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/wagtail.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2020-03-27T14:20:00+02:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Adding a latest-changes list to your Wagtail site</title><link href="https://spapas.github.io/2020/03/27/wagtail-add-latest-changes/" rel="alternate"></link><published>2020-03-27T14:20:00+02:00</published><updated>2020-03-27T14:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2020-03-27:/2020/03/27/wagtail-add-latest-changes/</id><summary type="html">&lt;p class="first last"&gt;How to add a list of the latest changes to your wagtail&amp;nbsp;site&lt;/p&gt;
-</summary><content type="html">&lt;p&gt;I think that a very important tool for a new production &lt;a class="reference external" href="https://wagtail.io"&gt;Wagtail&lt;/a&gt; site is to have a list
+<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/wagtail.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2020-03-27T14:20:00+02:00</updated><entry><title>Adding a latest-changes list to your Wagtail site</title><link href="https://spapas.github.io/2020/03/27/wagtail-add-latest-changes/" rel="alternate"></link><published>2020-03-27T14:20:00+02:00</published><updated>2020-03-27T14:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2020-03-27:2020/03/27/wagtail-add-latest-changes/</id><summary type="html">&lt;p&gt;I think that a very important tool for a new production &lt;a class="reference external" href="https://wagtail.io"&gt;Wagtail&lt;/a&gt; site is to have a list
 where you&amp;#8217;ll be able to take a look at the latest changes. Most editors are not
 experienced enough when using a new tool so it&amp;#8217;s easy to make bad quality edits. A
 user could take a look at their changes and guide them if something&amp;#8217;s not up to good&amp;nbsp;standards.&lt;/p&gt;
 &lt;p&gt;In this article I&amp;#8217;ll present a simple way to add a latest-changes list in your Wagtail site.
-This is working excellent with Wagtail 2.8, I haven&amp;#8217;t tested it with other wagtail versions
+This is working excellent with Wagtail 2.9, I haven&amp;#8217;t tested it with other wagtail versions
 so your milage may vary. In the meantime, I&amp;#8217;ll also introduce a bunch of concepts of Wagtail
 I find&amp;nbsp;interesting.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Update 08/05/2020&lt;/strong&gt; Please notice that this article was originally written for Wagtail 2.8
+projects. However, Wagtail 2.8 didn&amp;#8217;t have an official &lt;span class="caps"&gt;API&lt;/span&gt; for adding reports thus I had to
+check the source code for some things. Those things since were not part of any &lt;span class="caps"&gt;API&lt;/span&gt; have
+been changed and are not working in Wagtail&amp;nbsp;2.9.&lt;/p&gt;
+&lt;p&gt;Thus I&amp;#8217;ve updated
+the project to use the proper APIs and work with Wagtail 2.9 (and hopefully the next versions).
+If you want to see what&amp;#8217;s changed between the two versions you can take a look at
+&lt;a class="reference external" href="https://github.com/spapas/wagtail-latest-changes/commit/d751cd7978fc99c3b2f10e84c2f9b72c555f0930"&gt;this commit&lt;/a&gt; from the companion project. You may also want to take a look at the
+&lt;a class="reference external" href="https://docs.wagtail.io/en/stable/advanced_topics/adding_reports.html"&gt;adding reports&lt;/a&gt; tutorial on the Wagtail&amp;nbsp;docs.&lt;/p&gt;
 &lt;div class="section" id="a-starter-project"&gt;
 &lt;h2&gt;A starter&amp;nbsp;project&lt;/h2&gt;
 &lt;p&gt;Let&amp;#8217;s create a simple wagtail-starter project (this is for windows you should be able to easily follow the same steps in Unix like&amp;nbsp;systems):&lt;/p&gt;
@@ -44,12 +52,12 @@ so you can easily re-use it to multiple sites. For this, let&amp;#8217;s create 
 &lt;p&gt;Let&amp;#8217;s add the code for the view that will display the latest changes page. Modify the latest_changes/views.py file like&amp;nbsp;this:&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;
 from django.shortcuts import render
-from wagtail.admin.views.reports import ReportView
+from wagtail.admin.views.reports import PageReportView
 from wagtail.core.models import UserPagePermissionsProxy
 from wagtail.core.models import Page
 
 
-class LatestChangesView(ReportView):
+class LatestChangesView(PageReportView):
     template_name = &amp;quot;reports/latest_changes.html&amp;quot;
     title = &amp;quot;Latest changes&amp;quot;
     header_icon = &amp;quot;date&amp;quot;
@@ -63,12 +71,14 @@ class LatestChangesView(ReportView):
             return permission_denied(request)
         return super().dispatch(request, *args, **kwargs)
 &lt;/pre&gt;
-&lt;p&gt;As you can see the above code adds a very small view that overrides &lt;tt class="docutils literal"&gt;ReportView&lt;/tt&gt; which is used
+&lt;p&gt;As you can see the above code adds a very small view that overrides &lt;tt class="docutils literal"&gt;PageReportView&lt;/tt&gt; which is used
 also by the locked pages view so most things are already implemented by that view. The only thing we do
 here is to override the &lt;tt class="docutils literal"&gt;get_queryset&lt;/tt&gt; method to denote which pages we want to display and
 the &lt;tt class="docutils literal"&gt;dispatch&lt;/tt&gt; to add some permission checks. Here we check that a user &lt;tt class="docutils literal"&gt;can_remove_locks&lt;/tt&gt; but we
 could do other checks if needed. Finally, notice that we have overriden the template name which we&amp;#8217;ll
 define in a&amp;nbsp;minute.&lt;/p&gt;
+&lt;p&gt;Beyond &lt;tt class="docutils literal"&gt;PageReportView&lt;/tt&gt; that should be used for generating &lt;tt class="docutils literal"&gt;Page&lt;/tt&gt; reports, you can override
+&lt;tt class="docutils literal"&gt;ReportView&lt;/tt&gt; which can be used to implement generic&amp;nbsp;reports.&lt;/p&gt;
 &lt;p&gt;To properly add that view in our urls.py we can use a wagtail hook named &lt;tt class="docutils literal"&gt;register_admin_py&lt;/tt&gt;. Wagtail hooks
 are a great way to excend the wagtail admin; to use them, you have to generate a file name &lt;tt class="docutils literal"&gt;wagtail_hooks.py&lt;/tt&gt;
 in one of your apps. This file will be auto-impoted by wagtail when your app is&amp;nbsp;started.&lt;/p&gt;
@@ -82,7 +92,7 @@ from .views import LatestChangesView
 &amp;#64;hooks.register('register_admin_urls')
 def urlconf_time():
   return [
-    url(r'^latest_changes/$', admin_view, name='latest_changes'),
+    url(r'^latest_changes/$', LatestChangesView.as_view(), name='latest_changes'),
   ]
 &lt;/pre&gt;
 &lt;p&gt;The above just hooks up the &lt;tt class="docutils literal"&gt;LatestChangesView&lt;/tt&gt; we defined before to the &lt;tt class="docutils literal"&gt;/admin/latest_changes/&lt;/tt&gt; url.&lt;/p&gt;
@@ -95,7 +105,7 @@ get an error for a missing template - remember that we haven&amp;#8217;t yet def
 add a &lt;tt class="docutils literal"&gt;reports&lt;/tt&gt; folder to it. Finally in that folder add a &lt;tt class="docutils literal"&gt;latest_changes.html&lt;/tt&gt;. So the full path of
 the &lt;tt class="docutils literal"&gt;latest_changes.html&lt;/tt&gt; should be: &lt;tt class="docutils literal"&gt;wagtail_starter\latest_changes\templates\reports\latest_changes.html&lt;/tt&gt;:&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;
-{% extends 'wagtailadmin/reports/base_report.html' %}
+{% extends 'wagtailadmin/reports/base_page_report.html' %}
 {% load i18n %}
 {% block listing %}
     {% include &amp;quot;reports/_list_latest.html&amp;quot; %}
@@ -106,7 +116,8 @@ the &lt;tt class="docutils literal"&gt;latest_changes.html&lt;/tt&gt; should be:
 {% endblock %}
 &lt;/pre&gt;
 &lt;p&gt;I&amp;#8217;ve selected the &lt;tt class="docutils literal"&gt;reports&lt;/tt&gt; subfolder just to be compatible with what wagtail does, you can just put &lt;tt class="docutils literal"&gt;latest_changes.html&lt;/tt&gt;  directly
-under &lt;tt class="docutils literal"&gt;templates&lt;/tt&gt;; don&amp;#8217;t forget to update the &lt;tt class="docutils literal"&gt;LatestChangesView&lt;/tt&gt; defined before though! The above page includes a
+under &lt;tt class="docutils literal"&gt;templates&lt;/tt&gt;; don&amp;#8217;t forget to update the &lt;tt class="docutils literal"&gt;LatestChangesView&lt;/tt&gt; defined before though! This template extends the
+&lt;tt class="docutils literal"&gt;base_page_report.html&lt;/tt&gt; template that Wagtail provides for page reports. It also includes a
 snippet named &lt;tt class="docutils literal"&gt;reports/_list_latest.html&amp;quot; thus you also need to add a ``_list_latest.html&lt;/tt&gt; file in the same folder with the
 following&amp;nbsp;contents:&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;
@@ -130,7 +141,7 @@ following&amp;nbsp;contents:&lt;/p&gt;
     &amp;lt;/td&amp;gt;
 {% endblock %}
 &lt;/pre&gt;
-&lt;p&gt;Please notice that my &lt;tt class="docutils literal"&gt;_list_latest.html&lt;/tt&gt; snippet extends the wagtail provided &lt;tt class="docutils literal"&gt;_list_explore.html&lt;/tt&gt; template and
+&lt;p&gt;Please notice that my &lt;tt class="docutils literal"&gt;_list_latest.html&lt;/tt&gt; snippet extends the Wagtail provided &lt;tt class="docutils literal"&gt;_list_explore.html&lt;/tt&gt; template and
 overrides some things that can be overriden from that file. If you want to do more changes you&amp;#8217;ll need to copy over
 everything and change things as you wish instead of&amp;nbsp;extending.&lt;/p&gt;
 &lt;p&gt;Also, keep in mind that because you added a &lt;tt class="docutils literal"&gt;templates&lt;/tt&gt; folder you&amp;#8217;ll need to restart your django development&amp;nbsp;server.&lt;/p&gt;
@@ -187,22 +198,23 @@ just get tha application and copy over it to your wagtail site; after you add th
 you should get the whole functionality without any more modifications to your project. To help you more
 with this I&amp;#8217;ve included the whole code of this project in the &lt;a class="reference external" href="https://github.com/spapas/wagtail-latest-changes"&gt;https://github.com/spapas/wagtail-latest-changes&lt;/a&gt;&amp;nbsp;repository.&lt;/p&gt;
 &lt;p&gt;You can either clone this repository to see the functionality or just copy over the &lt;tt class="docutils literal"&gt;latest_changes&lt;/tt&gt; folder to
-your wagtail project to include the functionality directly (don&amp;#8217;t forget to fix the &lt;tt class="docutils literal"&gt;INSTALLED_APPS&lt;/tt&gt; setting)!&lt;/p&gt;
+your wagtail project to include the functionality directly (don&amp;#8217;t forget to fix the &lt;tt class="docutils literal"&gt;INSTALLED_APPS&lt;/tt&gt; setting)!
+It should work with all Wagtail 2.9 and later&amp;nbsp;projects.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</content><category term="wagtail"></category><category term="django"></category><category term="wagtail"></category></entry><entry><title>A Wagtail tutorial</title><link href="https://spapas.github.io/2014/02/13/wagtail-tutorial/" rel="alternate"></link><published>2014-02-13T21:20:00+02:00</published><updated>2014-02-13T21:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2014-02-13:/2014/02/13/wagtail-tutorial/</id><summary type="html">&lt;p&gt;This is a from scratch tutorial for creating a wagtail based&amp;nbsp;Blog.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://wagtail.io"&gt;Wagtail&lt;/a&gt; is a new Open Source &lt;a href="https://www.djangoproject.com"&gt;Django&lt;/a&gt;-based &lt;span class="caps"&gt;CMS&lt;/span&gt;. In this 20 minute tutorial we will see how you can create a blog from scratch using Wagtail. If you want to see some more examples of usage please take a look at the &lt;a href="https://github.com/torchbox/wagtaildemo"&gt;wagtaildemo&lt;/a&gt; GitHub&amp;nbsp;project.&lt;/p&gt;
+</summary><category term="django"></category><category term="wagtail"></category></entry><entry><title>A Wagtail tutorial</title><link href="https://spapas.github.io/2014/02/13/wagtail-tutorial/" rel="alternate"></link><published>2014-02-13T21:20:00+02:00</published><updated>2014-02-13T21:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2014-02-13:2014/02/13/wagtail-tutorial/</id><summary type="html">&lt;p&gt;&lt;a href="http://wagtail.io"&gt;Wagtail&lt;/a&gt; is a new Open Source &lt;a href="https://www.djangoproject.com"&gt;Django&lt;/a&gt;-based &lt;span class="caps"&gt;CMS&lt;/span&gt;. In this 20 minute tutorial we will see how you can create a blog from scratch using Wagtail. If you want to see some more examples of usage please take a look at the &lt;a href="https://github.com/torchbox/wagtaildemo"&gt;wagtaildemo&lt;/a&gt; GitHub&amp;nbsp;project.&lt;/p&gt;
 &lt;p&gt;To follow this tutorial you will need to have &lt;a href="http://python.org/"&gt;Python&lt;/a&gt; 2.7 installed with a working version of &lt;a href="https://pypi.python.org/pypi/pip"&gt;pip&lt;/a&gt; and &lt;a href="https://pypi.python.org/pypi/virtualenv"&gt;virtualenv&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: The result of this tutorial has been deployed to &lt;a href="https://www.heroku.com/"&gt;Heroku&lt;/a&gt;: &lt;a href="http://gentle-refuge-2590.herokuapp.com/"&gt;http://gentle-refuge-2590.herokuapp.com/&lt;/a&gt; - you may visit the &lt;a href="http://gentle-refuge-2590.herokuapp.com/admin/"&gt;admin site&lt;/a&gt; and login with root / 123 to play with Wagtail! Please don&amp;#8217;t do anything naughty !!! Also, notice that &lt;a href="https://devcenter.heroku.com/articles/dynos#isolation-and-security"&gt;because of how Heroku works&lt;/a&gt; you won&amp;#8217;t be able to upload&amp;nbsp;anything.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Update 08/09/2015: This tutorial has been written during the first days of Wagtail, when documentation and tutorials about it were sparce; right now it should be considered by all accounts obsolete and &lt;em&gt;not&lt;/em&gt; be followed! Instead, you should read the official (and very well written) tutorial @ http://docs.wagtail.io/en/latest/getting_started/tutorial.html in the official Wagtail&amp;nbsp;documentation!&lt;/strong&gt;&lt;/p&gt;
 &lt;h2&gt;Installing the wagtail&amp;nbsp;dependencies&lt;/h2&gt;
 &lt;p&gt;It is recomended to create a new virtual environment that will host the wagtail tutorial. After you have changed to the virtual environment you will need to installl the Wagtail requirements. Create a file named &lt;code&gt;requirements.txt&lt;/code&gt; containing the&amp;nbsp;following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Django==1.6.2
-South==1.0.0
-django-compressor==1.4
-django-modelcluster==0.3
--e git://github.com/torchbox/wagtail.git#egg=wagtail
-django-taggit==0.11.2
-django-libsass==0.2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;Django==1.6.2&lt;/span&gt;
+&lt;span class="err"&gt;South==1.0.0&lt;/span&gt;
+&lt;span class="err"&gt;django-compressor==1.4&lt;/span&gt;
+&lt;span class="err"&gt;django-modelcluster==0.3&lt;/span&gt;
+&lt;span class="err"&gt;-e git://github.com/torchbox/wagtail.git#egg=wagtail&lt;/span&gt;
+&lt;span class="err"&gt;django-taggit==0.11.2&lt;/span&gt;
+&lt;span class="err"&gt;django-libsass==0.2&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -299,7 +311,7 @@ executable from your path (which, if you&amp;#8217;re inside the virtual envirom
 
 &lt;span class="n"&gt;PROJECT_ROOT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dirname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__file__&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;..&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;..&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
-&lt;span class="n"&gt;DEBUG&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;span class="n"&gt;DEBUG&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
 &lt;span class="n"&gt;TEMPLATE_DEBUG&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;DEBUG&lt;/span&gt;
 
 &lt;span class="n"&gt;ADMINS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt;
@@ -321,9 +333,9 @@ executable from your path (which, if you&amp;#8217;re inside the virtual envirom
 &lt;span class="n"&gt;TIME_ZONE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Europe/London&amp;#39;&lt;/span&gt;
 &lt;span class="n"&gt;LANGUAGE_CODE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;en-gb&amp;#39;&lt;/span&gt;
 &lt;span class="n"&gt;SITE_ID&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
-&lt;span class="n"&gt;USE_I18N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
-&lt;span class="n"&gt;USE_L10N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
-&lt;span class="n"&gt;USE_TZ&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;span class="n"&gt;USE_I18N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
+&lt;span class="n"&gt;USE_L10N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;
+&lt;span class="n"&gt;USE_TZ&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
 &lt;span class="n"&gt;MEDIA_ROOT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PROJECT_ROOT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;media&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;MEDIA_URL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/media/&amp;#39;&lt;/span&gt;
 &lt;span class="n"&gt;STATIC_ROOT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PROJECT_ROOT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;static&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -404,7 +416,7 @@ executable from your path (which, if you&amp;#8217;re inside the virtual envirom
 
 &lt;span class="n"&gt;LOGGING&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="s1"&gt;&amp;#39;version&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s1"&gt;&amp;#39;disable_existing_loggers&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;disable_existing_loggers&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
     &lt;span class="s1"&gt;&amp;#39;filters&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
         &lt;span class="s1"&gt;&amp;#39;require_debug_false&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
             &lt;span class="s1"&gt;&amp;#39;()&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;django.utils.log.RequireDebugFalse&amp;#39;&lt;/span&gt;
@@ -421,7 +433,7 @@ executable from your path (which, if you&amp;#8217;re inside the virtual envirom
         &lt;span class="s1"&gt;&amp;#39;django.request&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
             &lt;span class="s1"&gt;&amp;#39;handlers&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;mail_admins&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
             &lt;span class="s1"&gt;&amp;#39;level&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ERROR&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-            &lt;span class="s1"&gt;&amp;#39;propagate&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="s1"&gt;&amp;#39;propagate&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
         &lt;span class="p"&gt;},&lt;/span&gt;
     &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
@@ -469,7 +481,7 @@ python manage.py migrate
 &lt;p&gt;page &amp;#8212; congratulations&amp;nbsp;!&lt;/p&gt;
 &lt;p&gt;The homepage is rather simple (for now!) but you may already navigate to http://127.0.0.1:8000/admin and from there, login to Wagtail admin with the superuser you created earlier. 
 Now you may start experiencing Wagtail&amp;nbsp;! &lt;/p&gt;
-&lt;p&gt;&lt;img alt="Wagtail admin index" src="https://spapas.github.io/images/wagtail-index.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Wagtail admin index" src="https://spapas.github.io/images/wagtail-index.png" /&gt;&lt;/p&gt;
 &lt;h2&gt;Exploring Wagtail&amp;nbsp;admin&lt;/h2&gt;
 &lt;p&gt;When you login to Wagtail admin you will see a menu at the left with the&amp;nbsp;options:&lt;/p&gt;
 &lt;ul&gt;
@@ -517,7 +529,7 @@ Now you may start experiencing Wagtail&amp;nbsp;! &lt;/p&gt;
 &lt;p&gt;and run &lt;code&gt;python manage.py syncdb&lt;/code&gt; to create the &lt;code&gt;tutorial_blogpage&lt;/code&gt; table. &lt;/p&gt;
 &lt;p&gt;Now, if you visit again the /admin and click on the &amp;#8220;Add Child Page&amp;#8221; action of &amp;#8220;Welcome to your new Wagtail Site!&amp;#8221; you will see the &amp;#8220;Blog Page&amp;#8221; page and after you click it you will be able to see a form with the Fields you defined &lt;em&gt;and&lt;/em&gt; title(title, body, date). The title is a field inherited from Page, along with the fields  in the Promote&amp;nbsp;tab. &lt;/p&gt;
 &lt;p&gt;In our declaration of BlogPage we added three &lt;code&gt;FieldPanel&lt;/code&gt;s on its content_panes. A &lt;code&gt;FieldPanel&lt;/code&gt; is a special edit handler for each Field. That is why when you try to edit the body you will see a rich text toolbar that enables you to not only format text but also embed images, documents and even oembed links. If you hadn&amp;#8217;t included the &lt;code&gt;FieldPanel('body', classname="full")&lt;/code&gt; then you wouldn&amp;#8217;t see the rich text&amp;nbsp;editor.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Editing pages in Wagtail" src="https://spapas.github.io/images/wagtail-edit-page.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Editing pages in Wagtail" src="https://spapas.github.io/images/wagtail-edit-page.png" /&gt;&lt;/p&gt;
 &lt;p&gt;So now we can add as many posts as we&amp;nbsp;like! &lt;/p&gt;
 &lt;p&gt;The time has come to take a look at our fine blog post: After we publish our page we click to the view live action&amp;nbsp;and&amp;#8230; &lt;/p&gt;
 &lt;blockquote&gt;
@@ -551,8 +563,8 @@ Now you may start experiencing Wagtail&amp;nbsp;! &lt;/p&gt;
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LinkFields&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;link_page&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ForeignKey&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
         &lt;span class="s1"&gt;&amp;#39;wagtailcore.Page&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-        &lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;blank&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
         &lt;span class="n"&gt;related_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;+&amp;#39;&lt;/span&gt;
     &lt;span class="p"&gt;)&lt;/span&gt;
 
@@ -561,7 +573,7 @@ Now you may start experiencing Wagtail&amp;nbsp;! &lt;/p&gt;
     &lt;span class="p"&gt;]&lt;/span&gt;
 
     &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="n"&gt;abstract&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+        &lt;span class="n"&gt;abstract&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;RelatedLink&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LinkFields&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;255&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;help_text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Link title&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -571,7 +583,7 @@ Now you may start experiencing Wagtail&amp;nbsp;! &lt;/p&gt;
     &lt;span class="p"&gt;]&lt;/span&gt;
 
     &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="n"&gt;abstract&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+        &lt;span class="n"&gt;abstract&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt;
 
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;BlogIndexPageRelatedLink&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Orderable&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;RelatedLink&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -608,7 +620,7 @@ Now you may start experiencing Wagtail&amp;nbsp;! &lt;/p&gt;
 
 
 &lt;p&gt;So self is the context name of the  BlogPageIndex instance that is used to render this page. Beyond that, it&amp;#8217;s normal&amp;nbsp;django.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Rendering the Blog Index" src="https://spapas.github.io/images/wagtail-index-template.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Rendering the Blog Index" src="https://spapas.github.io/images/wagtail-index-template.png" /&gt;&lt;/p&gt;
 &lt;p&gt;Now you can view your Blog Index &amp;#8212; however before clicking on a link to also view your posts add the template for your &lt;code&gt;BlogPost&lt;/code&gt; (&lt;code&gt;tutorial/blog_page.html&lt;/code&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{% load rich_text %}
 &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
@@ -636,4 +648,4 @@ change it at will), or even creating a completely different kind of site by addi
 no complete documentation yet however you&amp;nbsp;can &lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Use the source&amp;nbsp;Luke!&lt;/p&gt;
-&lt;/blockquote&gt;</content><category term="wagtail"></category><category term="wagtail"></category><category term="python"></category><category term="django"></category></entry></feed>
+&lt;/blockquote&gt;</summary><category term="wagtail"></category><category term="python"></category><category term="django"></category></entry></feed>
