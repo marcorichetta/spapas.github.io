@@ -1044,7 +1044,7 @@ python manage.py migrate
 <p>page &#8212; congratulations&nbsp;!</p>
 <p>The homepage is rather simple (for now!) but you may already navigate to http://127.0.0.1:8000/admin and from there, login to Wagtail admin with the superuser you created earlier. 
 Now you may start experiencing Wagtail&nbsp;! </p>
-<p><img alt="Wagtail admin index" src="https://spapas.github.io/images/wagtail-index.png" /></p>
+<p><img alt="Wagtail admin index" src="https://spapas.github.io/images/wagtail-index.png"></p>
 <h2>Exploring Wagtail&nbsp;admin</h2>
 <p>When you login to Wagtail admin you will see a menu at the left with the&nbsp;options:</p>
 <ul>
@@ -1092,7 +1092,7 @@ Now you may start experiencing Wagtail&nbsp;! </p>
 <p>and run <code>python manage.py syncdb</code> to create the <code>tutorial_blogpage</code> table. </p>
 <p>Now, if you visit again the /admin and click on the &#8220;Add Child Page&#8221; action of &#8220;Welcome to your new Wagtail Site!&#8221; you will see the &#8220;Blog Page&#8221; page and after you click it you will be able to see a form with the Fields you defined <em>and</em> title(title, body, date). The title is a field inherited from Page, along with the fields  in the Promote&nbsp;tab. </p>
 <p>In our declaration of BlogPage we added three <code>FieldPanel</code>s on its content_panes. A <code>FieldPanel</code> is a special edit handler for each Field. That is why when you try to edit the body you will see a rich text toolbar that enables you to not only format text but also embed images, documents and even oembed links. If you hadn&#8217;t included the <code>FieldPanel('body', classname="full")</code> then you wouldn&#8217;t see the rich text&nbsp;editor.</p>
-<p><img alt="Editing pages in Wagtail" src="https://spapas.github.io/images/wagtail-edit-page.png" /></p>
+<p><img alt="Editing pages in Wagtail" src="https://spapas.github.io/images/wagtail-edit-page.png"></p>
 <p>So now we can add as many posts as we&nbsp;like! </p>
 <p>The time has come to take a look at our fine blog post: After we publish our page we click to the view live action&nbsp;and&#8230; </p>
 <blockquote>
@@ -1183,7 +1183,7 @@ Now you may start experiencing Wagtail&nbsp;! </p>
 
 
 <p>So self is the context name of the  BlogPageIndex instance that is used to render this page. Beyond that, it&#8217;s normal&nbsp;django.</p>
-<p><img alt="Rendering the Blog Index" src="https://spapas.github.io/images/wagtail-index-template.png" /></p>
+<p><img alt="Rendering the Blog Index" src="https://spapas.github.io/images/wagtail-index-template.png"></p>
 <p>Now you can view your Blog Index &#8212; however before clicking on a link to also view your posts add the template for your <code>BlogPost</code> (<code>tutorial/blog_page.html</code>):</p>
 <div class="highlight"><pre><span></span>{% load rich_text %}
 <span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>

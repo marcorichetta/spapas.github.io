@@ -5,28 +5,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://spapas.github.io/</loc>
-<lastmod>2020-05-08T14:07:24-00:00</lastmod>
-<changefreq>weekly</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://spapas.github.io/archives.html</loc>
-<lastmod>2020-05-08T14:07:24-00:00</lastmod>
+<lastmod>2020-05-08T14:17:56-00:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://spapas.github.io/tags.html</loc>
-<lastmod>2020-05-08T14:07:24-00:00</lastmod>
+<lastmod>2020-05-08T14:17:56-00:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://spapas.github.io/categories.html</loc>
-<lastmod>2020-05-08T14:07:24-00:00</lastmod>
+<lastmod>2020-05-08T14:17:56-00:00</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://spapas.github.io/authors.html</loc>
+<lastmod>2020-05-08T14:17:56-00:00</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://spapas.github.io/archives.html</loc>
+<lastmod>2020-05-08T14:17:56-00:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
