@@ -31,7 +31,7 @@ actual reason of why gen_event is not very&amp;nbsp;loved).&lt;/p&gt;
 &lt;p&gt;The &lt;span class="caps"&gt;SASL&lt;/span&gt; alarm handler (the gen_event event manager)
 is implemented in a module named &lt;tt class="docutils literal"&gt;:alarm_handler&lt;/tt&gt;. A rather
 unfortunate decision is that the default simple alarm handler
-(the gen_event eevent handler) is &lt;em&gt;also&lt;/em&gt; implemented
+(the gen_event event handler) is &lt;em&gt;also&lt;/em&gt; implemented
 in the same module so in the following you&amp;#8217;ll see &lt;tt class="docutils literal"&gt;:alarm_handler&lt;/tt&gt; twice!&lt;/p&gt;
 &lt;p&gt;The default simple alarm handler can be exchanged with your own custom implementation or
 you can even add additional alarm handlers so they&amp;#8217;ll be called one after the&amp;nbsp;other.&lt;/p&gt;
@@ -122,7 +122,7 @@ disk usage threshold to 90% and will not start the cpu_sup process to get &lt;sp
 &lt;/div&gt;
 &lt;div class="section" id="testing-with-the-terminal"&gt;
 &lt;h2&gt;Testing with the&amp;nbsp;terminal&lt;/h2&gt;
-&lt;p&gt;If no alerts are active in your systemm, you can test your custom event handler using something like this
+&lt;p&gt;If no alerts are active in your system, you can test your custom event handler using something like this
 from an &lt;tt class="docutils literal"&gt;iex &lt;span class="pre"&gt;-S&lt;/span&gt; mix&lt;/tt&gt; terminal:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ss"&gt;:alarm_handler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_alarm&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="ss"&gt;:koko&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ZZZZZZZZZ&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="c1"&gt;# or&lt;/span&gt;

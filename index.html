@@ -149,7 +149,7 @@ actual reason of why gen_event is not very&nbsp;loved).</p>
 <p>The <span class="caps">SASL</span> alarm handler (the gen_event event manager)
 is implemented in a module named <tt class="docutils literal">:alarm_handler</tt>. A rather
 unfortunate decision is that the default simple alarm handler
-(the gen_event eevent handler) is <em>also</em> implemented
+(the gen_event event handler) is <em>also</em> implemented
 in the same module so in the following you&#8217;ll see <tt class="docutils literal">:alarm_handler</tt> twice!</p>
 <p>The default simple alarm handler can be exchanged with your own custom implementation or
 you can even add additional alarm handlers so they&#8217;ll be called one after the&nbsp;other.</p>
@@ -240,7 +240,7 @@ disk usage threshold to 90% and will not start the cpu_sup process to get <span 
 </div>
 <div class="section" id="testing-with-the-terminal">
 <h2>Testing with the&nbsp;terminal</h2>
-<p>If no alerts are active in your systemm, you can test your custom event handler using something like this
+<p>If no alerts are active in your system, you can test your custom event handler using something like this
 from an <tt class="docutils literal">iex <span class="pre">-S</span> mix</tt> terminal:</p>
 <div class="highlight"><pre><span></span><span class="ss">:alarm_handler</span><span class="o">.</span><span class="n">set_alarm</span><span class="p">({</span><span class="ss">:koko</span><span class="p">,</span> <span class="s2">&quot;ZZZZZZZZZ&quot;</span><span class="p">}</span>
 <span class="c1"># or</span>
