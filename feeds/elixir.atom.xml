@@ -138,6 +138,15 @@ from an &lt;tt class="docutils literal"&gt;iex &lt;span class="pre"&gt;-S&lt;/sp
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Please notice that the check interval is in seconds when you set it, in ms when you retrieve&amp;nbsp;it.&lt;/p&gt;
 &lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The above should help you if you also want to better understand alert_handler, os_mon and
+how to configure it to run your own custom alert handlers. Of course in a production server
+you should have proper monitoring tools for the health of your server but since os_mon is more
+or less free thanks to erlang, why not add another safety&amp;nbsp;valve?&lt;/p&gt;
+&lt;p&gt;If you want to take a look at an application that has everything configured, take a
+look at my &lt;a class="reference external" href="https://github.com/spapas/phxcrd/"&gt;Phoenix template application&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
 </content><category term="elixir"></category><category term="elixir"></category><category term="osmon"></category><category term="phoenix"></category><category term="erlang"></category><category term="os-monitoring"></category></entry><entry><title>Declarative Ecto query sorting</title><link href="https://spapas.github.io/2019/10/17/declarative-ecto-query-sorting/" rel="alternate"></link><published>2019-10-17T12:20:00+03:00</published><updated>2019-10-17T12:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2019-10-17:/2019/10/17/declarative-ecto-query-sorting/</id><summary type="html">&lt;p class="first last"&gt;Being able to declare your Ecto query sorting even on fields spanning&amp;nbsp;joins&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;In a &lt;a class="reference external" href="https://spapas.github.io/2019/07/25/declarative-ecto-query-filters/"&gt;previous article&lt;/a&gt; I presented a method for declaring dynamic filters for your ecto queries.
 Continuing this article, I&amp;#8217;ll present here a way to allow dynamic sorting for your queries using

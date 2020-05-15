@@ -138,6 +138,15 @@ from an &lt;tt class="docutils literal"&gt;iex &lt;span class="pre"&gt;-S&lt;/sp
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Please notice that the check interval is in seconds when you set it, in ms when you retrieve&amp;nbsp;it.&lt;/p&gt;
 &lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The above should help you if you also want to better understand alert_handler, os_mon and
+how to configure it to run your own custom alert handlers. Of course in a production server
+you should have proper monitoring tools for the health of your server but since os_mon is more
+or less free thanks to erlang, why not add another safety&amp;nbsp;valve?&lt;/p&gt;
+&lt;p&gt;If you want to take a look at an application that has everything configured, take a
+look at my &lt;a class="reference external" href="https://github.com/spapas/phxcrd/"&gt;Phoenix template application&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
 </content><category term="elixir"></category><category term="elixir"></category><category term="osmon"></category><category term="phoenix"></category><category term="erlang"></category><category term="os-monitoring"></category></entry><entry><title>Adding a latest-changes list to your Wagtail site</title><link href="https://spapas.github.io/2020/03/27/wagtail-add-latest-changes/" rel="alternate"></link><published>2020-03-27T14:20:00+02:00</published><updated>2020-03-27T14:20:00+02:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2020-03-27:/2020/03/27/wagtail-add-latest-changes/</id><summary type="html">&lt;p class="first last"&gt;How to add a list of the latest changes to your wagtail&amp;nbsp;site&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;I think that a very important tool for a new production &lt;a class="reference external" href="https://wagtail.io"&gt;Wagtail&lt;/a&gt; site is to have a list
 where you&amp;#8217;ll be able to take a look at the latest changes. Most editors are not
