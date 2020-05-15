@@ -5,9 +5,9 @@
 enable the &lt;tt class="docutils literal"&gt;:os_mon&lt;/tt&gt; erlang application by adding it (along with &lt;tt class="docutils literal"&gt;:logger&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;:runtime_tools&lt;/tt&gt;) to
 your &lt;tt class="docutils literal"&gt;extra_applications&lt;/tt&gt; setting &lt;a class="reference external" href="https://hexdocs.pm/phoenix_live_dashboard/os_mon.html#enabling-os_mon"&gt;as described here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;When I enabled the &lt;tt class="docutils literal"&gt;os_mon&lt;/tt&gt; application I immediately saw a warning in my logs that one of disks is almost full (which is
-a fact). I knew that I wanted to understand how these warniings are generated and if I could handle them with
+a fact). I knew that I wanted to understand how these warnings are generated and if I could handle them with
 some custom code to send an email for&amp;nbsp;example.&lt;/p&gt;
-&lt;p&gt;This journey lead me to an interesting erlang rabit hole which I&amp;#8217;ll describe in this small&amp;nbsp;post.&lt;/p&gt;
+&lt;p&gt;This journey lead me to an interesting erlang rabbit hole which I&amp;#8217;ll describe in this small&amp;nbsp;post.&lt;/p&gt;
 &lt;div class="section" id="the-os-mon-erlang-application"&gt;
 &lt;h2&gt;The os_mon erlang&amp;nbsp;application&lt;/h2&gt;
 &lt;p&gt;&lt;a class="reference external" href="http://erlang.org/doc/man/os_mon_app.html"&gt;os_mon&lt;/a&gt; is an erlang application that, when started will run 4 processes for monitoring
