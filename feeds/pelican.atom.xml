@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - pelican</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/pelican.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2013-10-07T10:20:00+03:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Using pelican to generate static sites on windows</title><link href="https://spapas.github.io/2013/10/07/pelican-static-windows/" rel="alternate"></link><published>2013-10-07T10:20:00+03:00</published><updated>2013-10-07T10:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2013-10-07:/2013/10/07/pelican-static-windows/</id><summary type="html">&lt;p class="first last"&gt;A quick and dirty tutorial for generating a static site with pelican on Windows and hosting it to github.io as&amp;nbsp;username.github.io.&lt;/p&gt;
 </summary><content type="html">&lt;div class="contents topic" id="contents"&gt;
-&lt;p class="topic-title"&gt;Contents&lt;/p&gt;
+&lt;p class="topic-title first"&gt;Contents&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#introduction" id="id1"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#installing-pelican-and-generating-a-skeleton-for-your-site" id="id2"&gt;Installing pelican and generating a skeleton for your&amp;nbsp;site&lt;/a&gt;&lt;/li&gt;

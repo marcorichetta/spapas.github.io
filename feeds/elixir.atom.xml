@@ -1,5 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - elixir</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/elixir.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2019-10-17T12:20:00+03:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Declarative Ecto query sorting</title><link href="https://spapas.github.io/2019/10/17/declarative-ecto-query-sorting/" rel="alternate"></link><published>2019-10-17T12:20:00+03:00</published><updated>2019-10-17T12:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2019-10-17:/2019/10/17/declarative-ecto-query-sorting/</id><summary type="html">&lt;p class="first last"&gt;Being able to declare your Ecto query sorting even on fields spanning&amp;nbsp;joins&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - elixir</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/elixir.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2020-05-15T14:20:00+03:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Getting alerts from OS Mon in your Elixir application</title><link href="https://spapas.github.io/2020/05/15/elixir-osmon-alerts/" rel="alternate"></link><published>2020-05-15T14:20:00+03:00</published><updated>2020-05-15T14:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2020-05-15:/2020/05/15/elixir-osmon-alerts/</id><summary type="html">&lt;p class="first last"&gt;How to receive alerts from the Erlang osmon (&lt;span class="caps"&gt;OS&lt;/span&gt; Monitoring) application in your elixir/phoenix&amp;nbsp;application&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;When I upgraded my &lt;a class="reference external" href="https://github.com/spapas/phxcrd/"&gt;Phoenix template application&lt;/a&gt; to Phoenix 1.5.1 I also enabled the new
+&lt;a class="reference external" href="https://github.com/phoenixframework/phoenix_live_dashboard"&gt;Phoenix LiveDashboard&lt;/a&gt; and its &amp;#8220;&lt;span class="caps"&gt;OS&lt;/span&gt; Data&amp;#8221; tab. To enable that &lt;span class="caps"&gt;OS&lt;/span&gt; Data tab you have to
+enable the &lt;tt class="docutils literal"&gt;:os_mon&lt;/tt&gt; erlang application by adding it (along with &lt;tt class="docutils literal"&gt;:logger&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;:runtime_tools&lt;/tt&gt;) to
+your &lt;tt class="docutils literal"&gt;extra_applications&lt;/tt&gt; setting &lt;a class="reference external" href="https://hexdocs.pm/phoenix_live_dashboard/os_mon.html#enabling-os_mon"&gt;as described here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;When I enabled the &lt;tt class="docutils literal"&gt;os_mon&lt;/tt&gt; application I immediately saw a warning in my logs that one of disks is almost full (which is
+a fact). I knew that I wanted to understand how these warniings are generated and if I could handle them with
+some custom code to send an email for&amp;nbsp;example.&lt;/p&gt;
+&lt;p&gt;This journey lead me to an interesting erlang rabit hole which I&amp;#8217;ll describe in this small&amp;nbsp;post.&lt;/p&gt;
+&lt;div class="section" id="the-os-mon-erlang-application"&gt;
+&lt;h2&gt;The os_mon erlang&amp;nbsp;application&lt;/h2&gt;
+&lt;p&gt;&lt;a class="reference external" href="http://erlang.org/doc/man/os_mon_app.html"&gt;os_mon&lt;/a&gt; is an erlang application that, when started will run 4 processes for monitoring
+&lt;span class="caps"&gt;CPU&lt;/span&gt; load, disk, memory and some &lt;span class="caps"&gt;OS&lt;/span&gt; settings. These don&amp;#8217;t work for all operating systems
+but memory and disk which are the most interesting to me do work on both unix and&amp;nbsp;Windows.&lt;/p&gt;
+&lt;p&gt;The disk and memory monitoring processes are called &lt;tt class="docutils literal"&gt;memsup&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;disksup&lt;/tt&gt; and run a periodic
+configurable check that checks if the  memory or disk space usage is above a (configurable)
+threshold. If the usage is over the threashold then an error will be reported to the
+&lt;a class="reference external" href="http://erlang.org/doc/man/alarm_handler.html"&gt;&lt;span class="caps"&gt;SASL&lt;/span&gt; alarm handler&lt;/a&gt; (&lt;span class="caps"&gt;SASL&lt;/span&gt; is erlang&amp;#8217;s System Architecture Support&amp;nbsp;Libraries).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="the-alarm-handler-situation"&gt;
+&lt;h2&gt;The alarm handler&amp;nbsp;situation&lt;/h2&gt;
+&lt;p&gt;The &lt;span class="caps"&gt;SASL&lt;/span&gt; alarm handler is a process that implements the &lt;a class="reference external" href="http://erlang.org/doc/man/gen_event.html"&gt;gen_event&lt;/a&gt; behavior. It must
+be noted that this behavior is &lt;a class="reference external" href="https://pattern-match.com/blog/2018/08/31/what-is-wrong-with-gen-event-an-update/"&gt;rather controversial&lt;/a&gt; and should not be used
+for your own event handling (you can use your own gen server solution or gen stage).
+A &lt;tt class="docutils literal"&gt;gen_event&lt;/tt&gt; process is an event manager. This event manager keeps a list of
+event handlers; when an event happens the event manager will notify each of the
+event handlers. Each event handler is just a module so when an event occurs all
+event handlers will be run in the same process one after the other (that&amp;#8217;s the
+actual reason of why gen_event is not very&amp;nbsp;loved).&lt;/p&gt;
+&lt;p&gt;The &lt;span class="caps"&gt;SASL&lt;/span&gt; alarm handler (the gen_event event manager)
+is implemented in a module named &lt;tt class="docutils literal"&gt;:alarm_handler&lt;/tt&gt;. A rather
+unfortunate decision is that the default simple alarm handler
+(the gen_event eevent handler) is &lt;em&gt;also&lt;/em&gt; implemented
+in the same module so in the following you&amp;#8217;ll see &lt;tt class="docutils literal"&gt;:alarm_handler&lt;/tt&gt; twice!&lt;/p&gt;
+&lt;p&gt;The default simple alarm handler can be exchanged with your own custom implementation or
+you can even add additional alarm handlers so they&amp;#8217;ll be called one after the&amp;nbsp;other.&lt;/p&gt;
+&lt;p&gt;To add another custom event handler for alarms, you&amp;#8217;ll use the &lt;a class="reference external" href="http://erlang.org/doc/man/gen_event.html#add_handler-3"&gt;add_handler&lt;/a&gt; method of gen_event. To change it
+with your own, you&amp;#8217;ll use the &lt;a class="reference external" href="http://erlang.org/doc/man/gen_event.html#swap_handler-3"&gt;swap_handler&lt;/a&gt; of gen_event. When the default simple alarm handler
+is swapped it will return a list of the existing alarms in the system which will the be passed to
+the new alarm&amp;nbsp;handler.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="a-simple-alarm-handler-implementation"&gt;
+&lt;h2&gt;A simple alarm handler&amp;nbsp;implementation&lt;/h2&gt;
+&lt;p&gt;As noted in the docs, an alarm handler implementation must handle the following two&amp;nbsp;events:&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;{:set_alarm, {alarm_id, alarm_description}}&lt;/tt&gt; and
+&lt;tt class="docutils literal"&gt;{:clear_alarm, alarm_id}&lt;/tt&gt;. The first one will be called from the event manager when a new alarm
+is created and the send one when the cause of the alarm not longer&amp;nbsp;exists.&lt;/p&gt;
+&lt;p&gt;Let&amp;#8217;s see a simple implementation of an alarm event&amp;nbsp;handler:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  &lt;span class="kd"&gt;defmodule&lt;/span&gt; &lt;span class="nc"&gt;Phxcrd.AlarmHandler&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nc"&gt;Bamboo.Email&lt;/span&gt;
+  &lt;span class="kn"&gt;require&lt;/span&gt; &lt;span class="nc"&gt;Logger&lt;/span&gt;
+
+  &lt;span class="kd"&gt;def&lt;/span&gt; &lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="n"&gt;_args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="ss"&gt;:alarm_handler&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alarms&lt;/span&gt;&lt;span class="p"&gt;}})&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nc"&gt;Logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;  &lt;span class="s2"&gt;&amp;quot;Custom alarm handler init!&amp;quot;&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alarm_description&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="n"&gt;alarms&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;do&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;handle_alarm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alarm_description&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="ss"&gt;:ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[]}&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="kd"&gt;def&lt;/span&gt; &lt;span class="n"&gt;handle_event&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="ss"&gt;:set_alarm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alarm_description&lt;/span&gt;&lt;span class="p"&gt;}},&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nc"&gt;Logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;warn&lt;/span&gt;  &lt;span class="s2"&gt;&amp;quot;Got an alarm &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="nc"&gt;Atom&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;alarm_description&lt;/span&gt;
+    &lt;span class="n"&gt;handle_alarm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alarm_description&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="ss"&gt;:ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="kd"&gt;def&lt;/span&gt; &lt;span class="n"&gt;handle_event&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="ss"&gt;:clear_alarm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nc"&gt;Logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;  &lt;span class="s2"&gt;&amp;quot;Clearing the alarm  &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;  &lt;span class="nc"&gt;Atom&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;state&lt;/span&gt; &lt;span class="o"&gt;|&amp;gt;&lt;/span&gt; &lt;span class="nc"&gt;IO&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;inspect&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="ss"&gt;:ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+  &lt;span class="kd"&gt;def&lt;/span&gt; &lt;span class="n"&gt;handle_alarm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;alarm_description&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nc"&gt;Logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;  &lt;span class="s2"&gt;&amp;quot;Handling alarm &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;  &lt;span class="nc"&gt;Atom&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;new_email&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+      &lt;span class="ss"&gt;to&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;foo@foo.com&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="ss"&gt;from&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;bar@bar.gr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="ss"&gt;subject&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;New alarm!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="ss"&gt;html_body&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;strong&amp;gt;Alert:&amp;quot;&lt;/span&gt;  &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;  &lt;span class="nc"&gt;Atom&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;alarm_description&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;  &lt;span class="s2"&gt;&amp;quot;&amp;lt;/strong&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="ss"&gt;text_body&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Alert:&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt;  &lt;span class="nc"&gt;Atom&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;alarm_description&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;|&amp;gt;&lt;/span&gt; &lt;span class="nc"&gt;Phxcrd.Mailer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;deliver_later&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="nc"&gt;Logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;  &lt;span class="s2"&gt;&amp;quot;End handling alarm &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="nc"&gt;Atom&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;alarm_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This implementation also has an &lt;tt class="docutils literal"&gt;init&lt;/tt&gt; function that is called when the handler
+is first started. Notice that it receives a list of the existing alarms; for each
+one of them I&amp;#8217;ll calle the handle_alarm function. This is needed to handle any
+existing alarms when the application is starting. The &lt;tt class="docutils literal"&gt;:set_alarm&lt;/tt&gt; handler also
+calls &lt;tt class="docutils literal"&gt;handle_alarm&lt;/tt&gt; passing the &lt;tt class="docutils literal"&gt;alarm_id&lt;/tt&gt; and &lt;tt class="docutils literal"&gt;alarm_description&lt;/tt&gt; it&amp;nbsp;received.&lt;/p&gt;
+&lt;p&gt;The &lt;tt class="docutils literal"&gt;clear_alarm&lt;/tt&gt; doesn&amp;#8217;t do anything (it would be useful if this module used state to
+keep a list of the current alarms). Finally, the &lt;tt class="docutils literal"&gt;handle_alarm&lt;/tt&gt; will just send an
+email using &lt;a class="reference external" href="https://github.com/fewlinesco/bamboo_smtp"&gt;bamboo_smtp&lt;/a&gt;. Notice that I use deliver_later() to send the mail&amp;nbsp;asynchronously.&lt;/p&gt;
+&lt;p&gt;As you can see this is a very simple example. You can do more things here but I think that
+getting the Alarm email should be enough for most&amp;nbsp;situations!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="integrating-the-alarm-handler-into-your-elixir-app"&gt;
+&lt;h2&gt;Integrating the alarm handler into your elixir&amp;nbsp;app&lt;/h2&gt;
+&lt;p&gt;To use the above mentioned custom alarm event handler I&amp;#8217;ve added the following line to
+the start of my  &lt;tt class="docutils literal"&gt;Application.start&lt;/tt&gt; function:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ss"&gt;:gen_event&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;swap_handler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:alarm_handler&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="ss"&gt;:alarm_handler&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:swap&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nc"&gt;Phxcrd.AlarmHandler&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;:ok&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Please notice that the &lt;tt class="docutils literal"&gt;:alarm_handler&lt;/tt&gt; atom is encountered twice: The first is the event manager
+module (for which we want to swich the event handler) while the second is the event handler module
+(which is the one we want to&amp;nbsp;replace).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="os-mon-configuration"&gt;
+&lt;h2&gt;os_mon&amp;nbsp;configuration&lt;/h2&gt;
+&lt;p&gt;The are a number of options you can configure for &lt;cite&gt;os_mon&lt;/cite&gt;. You can find them all at the manual page.
+For example, just add the following to your &lt;tt class="docutils literal"&gt;config.exs&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt; &lt;span class="ss"&gt;:os_mon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="ss"&gt;disk_space_check_interval&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="ss"&gt;memory_check_interval&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="ss"&gt;disk_almost_full_threshold&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.90&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="ss"&gt;start_cpu_sup&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="no"&gt;false&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will set the interval for disk space check to 1 minute, for memory check to 5 minutes, the
+disk usage threshold to 90% and will not start the cpu_sup process to get &lt;span class="caps"&gt;CPU&lt;/span&gt;&amp;nbsp;info.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="testing-with-the-terminal"&gt;
+&lt;h2&gt;Testing with the&amp;nbsp;terminal&lt;/h2&gt;
+&lt;p&gt;If no alerts are active in your systemm, you can test your custom event handler using something like this
+from an &lt;tt class="docutils literal"&gt;iex &lt;span class="pre"&gt;-S&lt;/span&gt; mix&lt;/tt&gt; terminal:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ss"&gt;:alarm_handler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_alarm&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="ss"&gt;:koko&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ZZZZZZZZZ&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="c1"&gt;# or&lt;/span&gt;
+&lt;span class="ss"&gt;:alarm_handler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clear_alarm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:koko&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Also you can see some of the current data or configuration&amp;nbsp;options:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;iex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="ss"&gt;:disksup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_disk_data&lt;/span&gt;
+&lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;C:\\&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;234195964&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;55&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;E:\\&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;822396924&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# or&lt;/span&gt;
+&lt;span class="n"&gt;iex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="ss"&gt;:disksup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_check_interval&lt;/span&gt;
+&lt;span class="mi"&gt;60000&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Please notice that the check interval is in seconds when you set it, in ms when you retrieve&amp;nbsp;it.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="elixir"></category><category term="elixir"></category><category term="osmon"></category><category term="phoenix"></category><category term="erlang"></category><category term="os-monitoring"></category></entry><entry><title>Declarative Ecto query sorting</title><link href="https://spapas.github.io/2019/10/17/declarative-ecto-query-sorting/" rel="alternate"></link><published>2019-10-17T12:20:00+03:00</published><updated>2019-10-17T12:20:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2019-10-17:/2019/10/17/declarative-ecto-query-sorting/</id><summary type="html">&lt;p class="first last"&gt;Being able to declare your Ecto query sorting even on fields spanning&amp;nbsp;joins&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;In a &lt;a class="reference external" href="https://spapas.github.io/2019/07/25/declarative-ecto-query-filters/"&gt;previous article&lt;/a&gt; I presented a method for declaring dynamic filters for your ecto queries.
 Continuing this article, I&amp;#8217;ll present here a way to allow dynamic sorting for your queries using
 fields that may even span&amp;nbsp;relations.&lt;/p&gt;

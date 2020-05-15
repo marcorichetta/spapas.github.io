@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>/var/ - flask</title><link href="https://spapas.github.io/" rel="alternate"></link><link href="https://spapas.github.io/feeds/flask.atom.xml" rel="self"></link><id>https://spapas.github.io/</id><updated>2014-06-30T15:23:00+03:00</updated><subtitle>Various programming stuff</subtitle><entry><title>Implementing a simple, Heroku-hosted REST service using Flask and mongoDB</title><link href="https://spapas.github.io/2014/06/30/rest-flask-mongodb-heroku/" rel="alternate"></link><published>2014-06-30T15:23:00+03:00</published><updated>2014-06-30T15:23:00+03:00</updated><author><name>Serafeim Papastefanos</name></author><id>tag:spapas.github.io,2014-06-30:/2014/06/30/rest-flask-mongodb-heroku/</id><summary type="html">&lt;p class="first last"&gt;An implementation &lt;span class="amp"&gt;&amp;amp;&lt;/span&gt; discussion of a simple &lt;span class="caps"&gt;REST&lt;/span&gt; service with Flask that is hosted on Heroku and is using mongoDB for&amp;nbsp;persistance.&lt;/p&gt;
 </summary><content type="html">&lt;div class="contents topic" id="contents"&gt;
-&lt;p class="topic-title"&gt;Contents&lt;/p&gt;
+&lt;p class="topic-title first"&gt;Contents&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#introduction" id="id1"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#requirements" id="id2"&gt;Requirements&lt;/a&gt;&lt;/li&gt;
